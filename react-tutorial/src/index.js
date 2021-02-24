@@ -72,13 +72,16 @@ function Square(props) {
         }]),
         stepNumber: history.length,
         xIsNext: !this.state.xIsNext,
+        selectedButton: null,
     });
     }
 
     jumpTo(step) {
+      console.log(this.move)
       this.setState({
         stepNumber: step,
         xIsNext: (step % 2) === 0,
+        selectedButton : step,
       });
     }
 
@@ -92,7 +95,7 @@ function Square(props) {
         const desc = move ? 'Go to move #' + move : 'Go to game start';
         return (
           <li key={move}>
-            <button onClick={() => this.jumpTo(move)}>{desc}</button>
+            <button onClick={() => this.jumpTo(move)} style={move === this.state.selectedButton ? {fontWeight:"Bold"} : {}}>{desc}</button>
           </li>
         );
       });
