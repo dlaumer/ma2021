@@ -33,6 +33,12 @@ define([
             name: "Demo",
             url: "https://egregis.maps.arcgis.com",           // portal URL for config
             webscene: "d9d1688d71d6414badc25c508b40e786",   // portal item ID of the webscene
+            colors: {
+                now: "#17BEBB",
+                no_project: "#0E7C7B",
+                project: "#F3511B",
+                highlight: "#E0CA3C",
+            }
         };
 
         return Accessor.createSubclass({
@@ -72,55 +78,84 @@ define([
                     map: this.scene,
                     qualityProfile: "high"
                 });
+            
+                // wait until view is loaded
 
-                // environment settings for better visuals (shadows)
-                this.view.environment.lighting.ambientOcclusionEnabled = true;
-                this.view.environment.lighting.directShadowsEnabled = true;
+                    // environment settings for better visuals (shadows)
+                    this.view.environment.lighting.ambientOcclusionEnabled = true;
+                    this.view.environment.lighting.directShadowsEnabled = true;
 
-                // create header with title according to choice on welcome page
-                var header = domCtr.create("div", { id: "header" }, win.body());
-                domCtr.create("img", { id: "Logo2", src: "images/Logo.png"}, header);
-                domCtr.create("div", { id: "headerTitle", innerHTML: settings}, header);
+                    // create header with title according to choice on welcome page
+                    var header = domCtr.create("div", { id: "header" }, win.body());
+                    domCtr.create("img", { id: "Logo2", src: "images/Logo.png"}, header);
+                    domCtr.create("div", { id: "headerTitle", innerHTML: settings}, header);
 
-                var modeContainer = domCtr.create("div", { id: "modeContainer" }, win.body());
-                domCtr.create("div", { id: "mode_now", className: "mode", innerHTML: "Now"}, modeContainer);
-                domCtr.create("div", { id: "mode_no_project", className: "mode", innerHTML: "No Project"}, modeContainer);
-                domCtr.create("div", { id: "mode_project", className: "mode", innerHTML: "Project"}, modeContainer);
+                    var modeContainer = domCtr.create("div", { id: "modeContainer" }, win.body());
+                    var now = domCtr.create("div", { id: "mode_now", className: "mode", innerHTML: "Now"}, modeContainer);
+                    var no_project = domCtr.create("div", { id: "mode_no_project", className: "mode", innerHTML: "No Project"}, modeContainer);
+                    var project = domCtr.create("div", { id: "mode_project", className: "mode", innerHTML: "Project"}, modeContainer);
+                    var selection = domCtr.create("div", { id: "mode_selection", className: "mode", style: "position: absolute; z-index:99;height:5vh;"}, modeContainer);
 
 
-                var dashboard = domCtr.create("div", { id: "dashboard", innerHTML: "Dashboard" }, win.body());
-                
+                    var dashboard = domCtr.create("div", { id: "dashboard", innerHTML: "<b>Dashboard</b>" }, win.body());
 
-                var legendContainer = domCtr.create("div", { id: "legend" }, win.body());
-                new Legend({
-                    view: this.view,
-                    container: legendContainer,
-                  });
-                
-                var layerlistContainer = domCtr.create("div", { id: "layerlist" }, win.body());
 
-                new LayerList({
-                    view: this.view,
-                    container: layerlistContainer,
+                    var legendContainer = domCtr.create("div", { id: "legend" }, win.body());
+                    new Legend({
+                        view: this.view,
+                        container: legendContainer,
+                    });
+
+                    var layerlistContainer = domCtr.create("div", { id: "layerlist" }, win.body());
+
+                    var layerlist = new LayerList({
+                        view: this.view,
+                        container: layerlistContainer,
+                    });
+
+                   
+                    // Adds widget below other elements in the top left corner of the view
+
+                    // Add widget to the bottom right corner of the view
+
+                    this.view.ui.add(header, "top-right"); // Add it to the map
+                    this.view.ui.add(modeContainer,"top-right");
+                    this.view.ui.add(layerlistContainer,"top-right");
+
+                    this.view.ui.add(legendContainer, "bottom-right");
+                    this.view.ui.add(dashboard, "bottom-right"); // Add it to the map
+
+
+                    on(header, "click", function () {
+                        var URI = window.location.href;
+                        var newURI = URI.substring(0, URI.lastIndexOf("?"));
+                        window.location.href = newURI;
+                    }.bind(this));
+
+                    on(now, "click", function () {
+                        selection.style.marginLeft = "0";
+                        selection.style.background = settings_demo.colors.now;
+                    });
+                    on(no_project, "click", function () {
+                        selection.style.marginLeft = "35%";
+                        selection.style.background = settings_demo.colors.no_project;
+                    });
+                    on(project, "click", function () {
+                        selection.style.marginLeft = "70%";
+                        selection.style.background = settings_demo.colors.project;
+                    });
+
+                this.view.when(function () {
+                    layerlist.viewModel.operationalItems.getItemAt(2).layer.listMode = "hide"
+                    layerlist.viewModel.operationalItems.getItemAt(3).layer.listMode = "hide"
+
+
+                }.bind(this)).catch(function (err) {
+                    console.error(err);
                 });
-                  // Adds widget below other elements in the top left corner of the view
-        
-                  // Add widget to the bottom right corner of the view
 
-                this.view.ui.add(header, "top-right"); // Add it to the map
-                this.view.ui.add(modeContainer,"top-right");
-                this.view.ui.add(layerlistContainer,"top-right");
-
-                this.view.ui.add(legendContainer, "bottom-right");
-                this.view.ui.add(dashboard, "bottom-right"); // Add it to the map
-
-
-                on(header, "click", function () {
-                    var URI = window.location.href;
-                    var newURI = URI.substring(0, URI.lastIndexOf("?"));
-                    window.location.href = newURI;
-                }.bind(this));
-
+                
+            
 
             },
 
