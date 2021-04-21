@@ -1,0 +1,161 @@
+:root {
+  --now: #17BEBB;
+  --no_project: #0E7C7B;
+  --project: #F3511B;
+  --highlight: #E0CA3C;
+}
+
+body, html {
+  width:100%;
+  height:100%;
+}
+
+#background {
+  width: 100%;
+  height: 100%;
+  display: flex;
+
+  align-items: center;
+
+  
+}
+
+#welcome{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: nowrap;
+  justify-content: normal;
+  align-content: stretch;
+
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height:auto;
+  background: white;
+  opacity: 0.8;
+  animation: fadein 2s;
+  -webkit-animation: fadein 2s;
+}
+
+#Logo{
+  width: 400px;
+  margin: 20px;
+}
+
+#welcomeLine{
+  width:300px;
+  margin:10px;
+}
+
+
+#containerLinks {
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  width:100%;
+}
+
+
+.link{
+  border-radius: 10px;
+  border: 1px solid grey;
+  margin: 2%;
+  padding: 10px;
+  font-size: 20pt;
+  cursor: pointer;
+}
+
+.link:hover{
+  background: grey;
+  color: white;
+}
+
+.description {
+  font-size: 10pt
+}
+
+#header {
+  width: 25vw;
+  padding-left: 0;
+  padding-right: 0;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+#Logo2 {
+  width: 80%;
+}
+
+#headerTitle{
+  display: flex;
+  justify-content: center;
+}
+
+#modeContainer {
+  background: white;
+  height: 5vh;
+  width: 25vw;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  border-radius: 20px;
+}
+
+.mode {
+width: 30%;
+display: flex;
+justify-content: center;
+align-items: center;
+border-radius: 20px;
+}
+
+#mode_now {
+  background: var(--now);
+}
+
+#mode_no_project {
+  background: var(--no_project);
+}
+
+#mode_project {
+  background: var(--project);
+}
+
+#layerlist{
+  width: 25vw;
+  height: 25vh;
+}
+
+.esri-layer-list__item-title {
+  font-size: 12px;
+}
+
+#legend {
+  background: white;
+  width: 25vw;
+  height: 40vh;
+}
+
+#dashboard {
+  background: white;
+  padding: 0;
+  width:70vw;
+  height: 25vh;
+}
+
+.button{ 
+  border-radius: 10px;
+  font-size: 16px;
+  padding: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
+  border: 1px solid grey
+}
