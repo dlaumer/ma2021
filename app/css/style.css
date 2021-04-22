@@ -157,7 +157,26 @@ body, html {
   width:70vw;
   height: 25vh;
   font-size: 1.3vw;
+  display: flex;
+  justify-content: space-around;
 
+
+}
+
+#dashboard-text {
+  width: 20%;
+  margin: 0 5px
+}
+
+#dashboard-info {
+  width: 20%;
+  margin: 0 5px
+
+}
+
+#dashboard-chart {
+  width: 60%;
+  margin: 0 5px
 }
 
 .button{ 

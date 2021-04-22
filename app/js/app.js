@@ -8,8 +8,6 @@ define([
     "esri/layers/SceneLayer",
     "esri/Basemap",
 
-    "esri/widgets/BasemapToggle",
-    "esri/widgets/Home",
     "esri/widgets/Legend",
     "esri/widgets/LayerList",
 
@@ -21,18 +19,26 @@ define([
 
     "esri/widgets/Search",
 
+    "urbanmobility/dataDrill",
+    "urbanmobility/graphMaker",
+
 ], function (
     Accessor, esriConfig,
-    WebScene, SceneView, SceneLayer, Basemap,
-    BasemapToggle, Home, Legend, LayerList,
+    WebScene, SceneView, SceneLayer, Basemap, Legend, LayerList,
     dom, on, domCtr, win, domStyle,
-    Search) {
+    Search, dataDrill, graphMaker) {
 
         // application settings
         var settings_demo = {
             name: "Demo",
             url: "https://egregis.maps.arcgis.com",           // portal URL for config
             webscene: "d9d1688d71d6414badc25c508b40e786",   // portal item ID of the webscene
+            layerNames: {
+                pt_flow_now: "PT_Occupancy",
+                traffic_flow_now: "traffic_measurements",
+                air_pollution: "PM10_Emissions",
+                traffic_geometry_now: "Streets"
+            },
             colors: {
                 now: "#17BEBB",
                 no_project: "#0E7C7B",
@@ -42,10 +48,9 @@ define([
         };
 
         return Accessor.createSubclass({
-            declaredClass: "c-through.App",
+            declaredClass: "urbanmobility.app",
 
             constructor: function () {
-
             },
 
             init: function (settings) {
@@ -97,8 +102,11 @@ define([
                     var selection = domCtr.create("div", { id: "mode_selection", className: "mode", style: "position: absolute; z-index:99;height:5vh;"}, modeContainer);
 
 
-                    var dashboard = domCtr.create("div", { id: "dashboard", innerHTML: "<b>Dashboard</b>" }, win.body());
-
+                    var dashboard = domCtr.create("div", { id: "dashboard" }, win.body());
+                    domCtr.create("div", { id: "dashboard-text" , innerHTML: "<b>Dashboard</b>"}, dashboard);
+                    domCtr.create("div", { id: "dashboard-info" }, dashboard);
+                    domCtr.create("div", { id: "dashboard-chart" }, dashboard);
+                    
 
                     var legendContainer = domCtr.create("div", { id: "legend" }, win.body());
                     new Legend({
@@ -146,9 +154,16 @@ define([
                     });
 
                 this.view.when(function () {
-                    layerlist.viewModel.operationalItems.getItemAt(2).layer.listMode = "hide"
                     layerlist.viewModel.operationalItems.getItemAt(3).layer.listMode = "hide"
+                    layerlist.viewModel.operationalItems.getItemAt(4).layer.listMode = "hide"
+                    
+                    for (var i = 0;  i < this.scene.layers.length; i++) {
+                        this.scene.layers.getItemAt(i).popupEnabled = false;
+                    }
+                    this.dataDrill = new dataDrill(this.scene, this.view, this.settings);
 
+                    this.dataDrill.clickHandler();
+                    this.dataDrill.processAllData(layerlist.viewModel.operationalItems.getItemAt(0).layer);
 
                 }.bind(this)).catch(function (err) {
                     console.error(err);

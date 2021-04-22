@@ -16,7 +16,7 @@ define([
     domCtr, win, dom, domStyle, on, mouse, App) {
 
         return Accessor.createSubclass({
-            declaredClass: "urbanmobility.Welcome",
+            declaredClass: "urbanmobility.welcome",
 
             constructor: function () {
                 
