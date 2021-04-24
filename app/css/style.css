@@ -187,3 +187,17 @@ body, html {
   padding-right: 4px;
   border: 1px solid grey
 }
+
+div.tooltip {	
+  position: absolute;			
+  text-align: center;			
+  width: 50px;					
+  height: 20px;					
+  padding: 4px;				
+  font: 12px sans-serif;		
+  background: var(--now);	
+  color: white;
+  border: 0px;		
+  border-radius: 8px;			
+  pointer-events: none;			
+}

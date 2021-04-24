@@ -22,7 +22,7 @@ define([
                 this.view = view;
                 this.settings = settings;
                 this.graphMaker = new graphMaker(scene, view, settings)
-                this.graphMaker.initPTDiagramm()
+                this.currentData = null;
             },
 
             clickHandler: function () {
@@ -31,18 +31,33 @@ define([
                 view.on("click", function (event) {
                     view.hitTest(event.screenPoint).then(function (response) {
                         var result = response.results[0];
-                        if (result && result.graphic.layer.title != this.settings.layerNames.traffic_geometry_now){
+                        if (result && result.graphic.layer.title != this.settings.layerNames.traffic_geometry_now && result.graphic.layer.title != this.settings.layerNames.buildings){
                             var that = this;
-                            this.processGraphic(result.graphic, result.graphic.layer.title, function(data) {
-                                that.graphMaker.updatePTDiagramm(data);
+                            that.view.whenLayerView(result.graphic.layer).then((layerView) => {
+                                if (that.highlight) {
+                                    that.highlight.remove();
+                                  }
+                                that.highlight = layerView.highlight([result.graphic.getObjectId()]);
+
+                                that.processGraphic(result.graphic, result.graphic.layer.title, function(data) {
+                                    that.currentData = data;
+                                    that.graphMaker.render(data.all);
+                                    dom.byId("dashboard-text").innerHTML = data.text;
+                                    that.graphMaker.updatePTDiagramm(data.hourData);
+                                });
                             });
                         }
                         else {
-                            this.graphMaker.updatePTDiagramm(this.allData);
-                            this.graphMaker.render(this.allDataAll);
-                            var dashboardText = dom.byId("dashboard-text");
-                            dashboardText.innerHTML = "<b>Occupancy</b> <br><br> Whole Project Area";
+                            if (this.highlight) {
+                                this.highlight.remove();
+                            }
+                            this.currentData = this.allData;
+                            this.graphMaker.updatePTDiagramm(this.allData.hourData);
+                            this.graphMaker.render(this.allData.all);
+                            dom.byId("dashboard-text").innerHTML = this.allData.text;
                         }
+
+                        
 
                     }.bind(this)).catch(function (err) {
                         console.error(err);
@@ -67,12 +82,10 @@ define([
                     }
 
                     if (layerName == this.settings.layerNames.pt_flow_now) {
-                        var data = this.parsePTData(results);
-                        this.graphMaker.render(results.features[0].attributes["all_"]);
-                        var dashboardText = dom.byId("dashboard-text");
-                        dashboardText.innerHTML = "<b>Occupancy</b> <br><br> From: " + results.features[0].attributes["Fr"] + "<br>To: " + results.features[0].attributes["To_"];
-
-
+                        var data = {}
+                        data.hourData = this.parsePTData(results);
+                        data.all = results.features[0].attributes["all_"];
+                        data.text =  "<b>Occupancy</b> <br><br> From: " + results.features[0].attributes["Fr"] + "<br>To: " + results.features[0].attributes["To_"];
                     }
                     callback(data);
 
@@ -83,7 +96,10 @@ define([
 
             processAllData: function(layer) {
                 if (layer.title == this.settings.layerNames.pt_flow_now) {
-                    
+                    if (layer.layers && (layer.layers.length == 2)) {
+                        layer = layer.layers.getItemAt(0);
+
+                    }
                     // query for the average population in all features
                     var statQuery = [{
                         onStatisticField: "all_",  // service field for 2015 population
@@ -107,16 +123,12 @@ define([
                     query.outFields = ["*"];
 
                     layer.queryFeatures(query).then(function (results) {
-                        
-                        this.allData = this.parsePTData(results);
-                        this.allDataAll = results.features[0].attributes["all"]
-                        var dashboardText = dom.byId("dashboard-text");
-                        dashboardText.innerHTML = "<b>Occupancy</b> <br><br> Whole Project Area";
-
-                        this.graphMaker.updatePTDiagramm(this.allData, true);
-                        this.graphMaker.updateDonutChart(this.allDataAll);
-
-
+                        this.allData = {};
+                        this.allData.hourData = this.parsePTData(results);
+                        this.allData.all = results.features[0].attributes["all"];
+                        this.allData.text = "<b>Occupancy</b> <br><br> Whole Project Area";
+                        this.currentData = this.allData;
+                        this.renderDiagrams();
 
                     }.bind(this)).catch(function (err) {
                         console.error(err);
@@ -134,9 +146,27 @@ define([
                     if (value == null) {
                         value = 0;
                     }
-                    data.push({time: i.toString() + ":00", percentage: value});
+                    if (i==28) {
+                        data[0].percentage = (data[0].percentage + value) / 2;
+                    }
+                    else {
+                        data.push({time: (i%24).toString() + ":00", percentage: value});
+                    }
                 }
                 return data;
+            },
+
+            renderDiagrams: function() {
+                this.graphMaker.initPTDiagramm()
+
+                this.graphMaker.updatePTDiagramm(this.currentData.hourData, true);
+                this.graphMaker.updatePTDiagramm(this.currentData.hourData);     // Second time bc forsome reason the tooltip did not work the first time
+
+                this.graphMaker.updateDonutChart(this.currentData.all);
+                dom.byId("dashboard-text").innerHTML = this.currentData.text;
+
+
+
             }
         });
 

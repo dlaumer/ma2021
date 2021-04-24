@@ -22,6 +22,7 @@ define([
 
             initPTDiagramm: function() {
                 this.margin = { top: 10, right: 10, bottom: 40, left: 50 };
+
                 this.widthTimeline = d3
                   .select('#dashboard-chart')
                   .node()
@@ -35,6 +36,7 @@ define([
 
                 this.svgTimeline = d3.select("#dashboard-chart")
                 .append("svg")
+                .attr("id", "svgTimeline")
                 .attr("width", this.widthTimeline + this.margin.left + this.margin.right)
                 .attr("height", this.heightTimeline + this.margin.top + this.margin.bottom)
                 .append("g")
@@ -70,6 +72,13 @@ define([
                 this.yAxis = this.svgTimeline.append("g")
                 .attr("class", "yAxis")
 
+                // Define the div for the tooltip
+                this.tooltip = d3.select("body").append("div")	
+                .attr("class", "tooltip")				
+                .style("opacity", 0);
+
+                dom.byId("svgTimeline").remove(); // To remove the old one. Weirdly there were aleays two created in the beginning, so this also the extra on in the first call
+
             },
 
             updateDonutChart: function(percentage) {
@@ -89,9 +98,13 @@ define([
                 // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
                 this.radius = Math.min(width, height) / 2 - marg
 
-
+                if(this.svg) {
+                    dom.byId("svgDonut").remove(); // To remove the old one.
+                }
     
-                this.svg = d3.select("#dashboard-info").append("svg")
+                this.svg = d3.select("#dashboard-info")
+                    .append("svg")
+                    .attr("id", "svgDonut")
                     .attr("width", width)
                     .attr("height", height)
                     .append("g")
@@ -178,7 +191,7 @@ define([
                 that.yAxis.conditionalTransition(firstTime).call(d3.axisLeft(that.yScale).ticks(3));
               
                 // variable u: map data to existing bars
-                var u = that.svgTimeline.selectAll("rect")
+                var u = that.svgTimeline.selectAll(".bars")
                   .data(hourData)
               
                 // Update bars
@@ -196,13 +209,35 @@ define([
                       return that.heightTimeline - that.yScale(d.percentage); })
                   .attr("fill", that.settings.colors.now)
                   .attr("class", "bars")
+                  
+                  
+                u.on("mouseover", function(d) {		
+                    that.tooltip.transition()		
+                        .duration(200)		
+                        .style("opacity", .9);		
+                    that.tooltip	
+                        .html(d.percentage.toFixed() + "%")	
+                        .style("left", (d3.event.pageX) + "px")		
+                        .style("top", (d3.event.pageY - 28) + "px");	
+                    })					
+                .on("mouseout", function(d) {		
+                        that.tooltip.transition()		
+                            .duration(500)		
+                            .style("opacity", 0);	
+                    });
                    // Update bars
                 
-                   /*
-                u
+                  
+                // variable u: map data to existing bars
+                var o = that.svgTimeline.selectAll(".bars2")
+                .data(hourData)
+            
+              // Update bars
+              
+                o
                 .enter()
                 .append("rect")
-                .merge(u)
+                .merge(o)
                 .conditionalTransition(firstTime)
                 .attr("x", function (d) { 
                     return that.xScale(d.time); })
@@ -212,9 +247,22 @@ define([
                 .attr("height", function (d) { 
                     return that.heightTimeline- that.yScale(100-d.percentage); })
                 .attr("fill", "#17BEBB40")
-                .attr("class", "bars")
+                .attr("class", "bars2")
               
-              */
+              o.on("mouseover", function(d) {		
+                that.tooltip.transition()		
+                    .duration(200)		
+                    .style("opacity", .9);		
+                that.tooltip	
+                    .html(d.percentage.toFixed() + "%")	
+                    .style("left", (d3.event.pageX) + "px")		
+                    .style("top", (d3.event.pageY - 28) + "px");	
+                })					
+            .on("mouseout", function(d) {		
+                    that.tooltip.transition()		
+                        .duration(500)		
+                        .style("opacity", 0);	
+                });
               
               }
 

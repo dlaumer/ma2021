@@ -34,10 +34,11 @@ define([
             url: "https://egregis.maps.arcgis.com",           // portal URL for config
             webscene: "d9d1688d71d6414badc25c508b40e786",   // portal item ID of the webscene
             layerNames: {
-                pt_flow_now: "PT_Occupancy",
-                traffic_flow_now: "traffic_measurements",
-                air_pollution: "PM10_Emissions",
-                traffic_geometry_now: "Streets"
+                pt_flow_now: "Public Transport",
+                traffic_flow_now: "Traffic",
+                air_pollution: "Air Pollution",
+                traffic_geometry_now: "Streets",
+                buildings: "Buildings LOD2"
             },
             colors: {
                 now: "#17BEBB",
@@ -81,7 +82,11 @@ define([
                 this.view = new SceneView({
                     container: "viewDiv",
                     map: this.scene,
-                    qualityProfile: "high"
+                    qualityProfile: "high",
+                    highlightOptions: {
+                        color: this.settings.colors.highlight,
+                        fillOpacity: 0.2,
+                      },
                 });
             
                 // wait until view is loaded
@@ -105,7 +110,8 @@ define([
                     var dashboard = domCtr.create("div", { id: "dashboard" }, win.body());
                     domCtr.create("div", { id: "dashboard-text" , innerHTML: "<b>Dashboard</b>"}, dashboard);
                     domCtr.create("div", { id: "dashboard-info" }, dashboard);
-                    domCtr.create("div", { id: "dashboard-chart" }, dashboard);
+                    var dashboard_chart = domCtr.create("div", { id: "dashboard-chart" }, dashboard);
+                    domCtr.create("svg", { id: "svgTimeline" }, dashboard_chart);
                     
 
                     var legendContainer = domCtr.create("div", { id: "legend" }, win.body());
@@ -154,22 +160,35 @@ define([
                     });
 
                 this.view.when(function () {
-                    layerlist.viewModel.operationalItems.getItemAt(3).layer.listMode = "hide"
-                    layerlist.viewModel.operationalItems.getItemAt(4).layer.listMode = "hide"
-                    
+                    //layerlist.viewModel.operationalItems.getItemAt(3).layer.listMode = "hide"
+                    //layerlist.viewModel.operationalItems.getItemAt(4).layer.listMode = "hide"
+                    this.dataDrill = new dataDrill(this.scene, this.view, this.settings);
                     for (var i = 0;  i < this.scene.layers.length; i++) {
                         this.scene.layers.getItemAt(i).popupEnabled = false;
+                        this.dataDrill.processAllData(this.scene.layers.getItemAt(i));
                     }
-                    this.dataDrill = new dataDrill(this.scene, this.view, this.settings);
 
                     this.dataDrill.clickHandler();
-                    this.dataDrill.processAllData(layerlist.viewModel.operationalItems.getItemAt(0).layer);
 
                 }.bind(this)).catch(function (err) {
                     console.error(err);
                 });
 
-                
+                var that = this;
+                that.timeOutFunctionId = null;
+                window.addEventListener('resize', debounce(function(event){
+
+                that.dataDrill.renderDiagrams();
+
+                  }));
+
+                  function debounce(func){
+                    var timer;
+                    return function(event){
+                      if(timer) clearTimeout(timer);
+                      timer = setTimeout(func,500,event);
+                    };
+                  }
             
 
             },
