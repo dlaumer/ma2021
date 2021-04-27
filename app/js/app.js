@@ -56,6 +56,7 @@ define([
 
             init: function (settings) {
 
+
                 // destroy welcome page when app is started
                 domCtr.destroy("background");
                 
@@ -63,6 +64,10 @@ define([
 
                 // get settings from choice on welcome page
                 this.settings = this.getSettingsFromUser(settings);
+
+                if (this.settings.version == "Version1") {
+                    this.settings.layerNames.pt_flow_now = "Public Transport (Ver 1)";
+                }
 
                 // set portal url
                 esriConfig.portalUrl = this.settings.url;
@@ -195,6 +200,7 @@ define([
 
             getSettingsFromUser: function (settings) {
                 if (settings === "Version1" || settings === "Version2"){
+                    settings_demo.version = settings;
                     return settings_demo;
                 }
             }
