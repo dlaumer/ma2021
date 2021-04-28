@@ -125,7 +125,7 @@ body, html {
   border-radius: 20px;
   z-index:100;
   cursor: pointer;
-  font-size: 1.3vw;
+  font-size: 1.2vw;
 }
 
 #mode_selection {
@@ -137,8 +137,27 @@ body, html {
 }
 
 #layerlist{
+  background: white;
   width: 25vw;
   height: 26vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.layer {
+  height: 30%;
+  width: 90%;
+  box-shadow: 3px 3px 4px rgb(182, 182, 182);
+  display: flex;
+  align-items: center;
+
+
+}
+
+.layer:hover { 
+  background-color: #e0ca3c85;
 }
 
 .esri-layer-list__item-title {

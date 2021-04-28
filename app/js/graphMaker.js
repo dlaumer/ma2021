@@ -33,6 +33,10 @@ define([
                   .node()
                   .getBoundingClientRect().height - this.margin.top - this.margin.bottom;
               
+                  if (dom.byId("svgTimeline")) {
+                    dom.byId("svgTimeline").remove(); // To remove the old one. Weirdly there were aleays two created in the beginning, so this also the extra on in the first call
+                }
+
 
                 this.svgTimeline = d3.select("#dashboard-chart")
                 .append("svg")
@@ -77,8 +81,16 @@ define([
                 .attr("class", "tooltip")				
                 .style("opacity", 0);
 
-                dom.byId("svgTimeline").remove(); // To remove the old one. Weirdly there were aleays two created in the beginning, so this also the extra on in the first call
 
+            },
+
+            removeDiagrams: function() {
+                if(dom.byId("svgTimeline")) {
+                    dom.byId("svgTimeline").remove(); // To remove the old one. Weirdly there were aleays two created in the beginning, so this also the extra on in the first call
+                }
+                if(dom.byId("svgDonut")) {
+                    dom.byId("svgDonut").remove(); // To remove the old one.
+                }
             },
 
             updateDonutChart: function(percentage) {
@@ -98,7 +110,7 @@ define([
                 // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
                 this.radius = Math.min(width, height) / 2 - marg
 
-                if(this.svg) {
+                if(dom.byId("svgDonut")) {
                     dom.byId("svgDonut").remove(); // To remove the old one.
                 }
     

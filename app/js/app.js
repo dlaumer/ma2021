@@ -20,13 +20,17 @@ define([
     "esri/widgets/Search",
 
     "urbanmobility/dataDrill",
-    "urbanmobility/graphMaker",
+    "urbanmobility/graphMaker",    
+    "urbanmobility/modeManager",
+    "urbanmobility/vizChanger",
+
+
 
 ], function (
     Accessor, esriConfig,
     WebScene, SceneView, SceneLayer, Basemap, Legend, LayerList,
     dom, on, domCtr, win, domStyle,
-    Search, dataDrill, graphMaker) {
+    Search, dataDrill, graphMaker, modeManager, vizChanger) {
 
         // application settings
         var settings_demo = {
@@ -34,11 +38,9 @@ define([
             url: "https://egregis.maps.arcgis.com",           // portal URL for config
             webscene: "d9d1688d71d6414badc25c508b40e786",   // portal item ID of the webscene
             layerNames: {
-                pt_flow_now: "Public Transport",
-                traffic_flow_now: "Traffic",
-                air_pollution: "Air Pollution",
-                traffic_geometry_now: "Streets",
-                buildings: "Buildings LOD2"
+                pt: "Public Transport",
+                traffic: "Traffic",
+                air: "Air Pollution",
             },
             colors: {
                 now: "#17BEBB",
@@ -66,7 +68,7 @@ define([
                 this.settings = this.getSettingsFromUser(settings);
 
                 if (this.settings.version == "Version1") {
-                    this.settings.layerNames.pt_flow_now = "Public Transport (Ver 1)";
+                    this.settings.layerNames.pt = "Public Transport (Ver 1)";
                 }
 
                 // set portal url
@@ -94,7 +96,6 @@ define([
                       },
                 });
             
-                // wait until view is loaded
 
                     // environment settings for better visuals (shadows)
                     this.view.environment.lighting.ambientOcclusionEnabled = true;
@@ -126,12 +127,22 @@ define([
                     });
 
                     var layerlistContainer = domCtr.create("div", { id: "layerlist" }, win.body());
+                    var pt = domCtr.create("div", { id: "pt", className: "layer"}, layerlistContainer);
+                    domCtr.create("img", { id:"pt_image", src:"images/pt.png", style:'height: 80%; width: auto; object-fit: contain'}, pt);
+                    pt.innerHTML = pt.innerHTML + "   Public Transport";
+                    var traffic = domCtr.create("div", { id: "traffic",className: "layer" }, layerlistContainer);
+                    domCtr.create("img", { id:"traffic_image", src:"images/traffic.png", style:'height: 80%; width: auto; object-fit: contain'}, traffic);
+                    traffic.innerHTML = traffic.innerHTML + "   Traffic";
+                    var air = domCtr.create("div", { id: "air",className: "layer" }, layerlistContainer);
+                    domCtr.create("img", { id:"air_image", src:"images/air.png", style:'height: 80%; width: auto; object-fit: contain'}, air);
+                    air.innerHTML = air.innerHTML + "   Air Pollution";
 
+                    /*
                     var layerlist = new LayerList({
                         view: this.view,
                         container: layerlistContainer,
                     });
-
+                    */
                    
                     // Adds widget below other elements in the top left corner of the view
 
@@ -144,7 +155,7 @@ define([
                     this.view.ui.add(legendContainer, "bottom-right");
                     this.view.ui.add(dashboard, "bottom-right"); // Add it to the map
 
-
+                    var that = this;
                     on(header, "click", function () {
                         var URI = window.location.href;
                         var newURI = URI.substring(0, URI.lastIndexOf("?"));
@@ -154,23 +165,102 @@ define([
                     on(now, "click", function () {
                         selection.style.marginLeft = "0";
                         selection.style.background = settings_demo.colors.now;
+                        modeManager.changeMode("mode", "now");
+                        that.vizChanger.changeVisualization();
+                        that.dataDrill.processAllData(modeManager.viewSettings.layer);
+
                     });
                     on(no_project, "click", function () {
                         selection.style.marginLeft = "35%";
                         selection.style.background = settings_demo.colors.no_project;
+                        modeManager.changeMode("mode", "no_project");
+                        that.vizChanger.changeVisualization();
+                        that.dataDrill.processAllData(modeManager.viewSettings.layer);
+
                     });
                     on(project, "click", function () {
                         selection.style.marginLeft = "70%";
                         selection.style.background = settings_demo.colors.project;
+                        modeManager.changeMode("mode", "project");
+                        that.vizChanger.changeVisualization();
+                        that.dataDrill.processAllData(modeManager.viewSettings.layer);
+
+
                     });
+
+
+                    on(pt, "click", function () {
+                        if (modeManager.viewSettings.theme != "none") {
+                            dom.byId(modeManager.viewSettings.theme).style.backgroundColor = "white";
+                        }
+                        if (modeManager.viewSettings.theme == "pt") {
+                            pt.style.backgroundColor = "white";
+                            modeManager.changeMode("theme", "none");
+                        }
+                        else {
+                            pt.style.backgroundColor = that.settings.colors.highlight;
+                            modeManager.changeMode("theme", "pt");
+                            }
+                        
+                        that.vizChanger.changeVisualization();
+                        that.dataDrill.processAllData(modeManager.viewSettings.layer);
+
+
+                    });
+                    on(traffic, "click", function () {
+                        if (modeManager.viewSettings.theme != "none") {
+                            dom.byId(modeManager.viewSettings.theme).style.backgroundColor = "white";
+                        }
+                        if (modeManager.viewSettings.theme == "traffic") {
+                            traffic.style.backgroundColor = "white";
+                            modeManager.changeMode("theme", "none");
+                        }
+                        else {
+                            traffic.style.backgroundColor = that.settings.colors.highlight;
+                            modeManager.changeMode("theme", "traffic");
+                        }
+                        that.vizChanger.changeVisualization();
+                        that.dataDrill.processAllData(modeManager.viewSettings.layer);
+
+
+                    });
+                    on(air, "click", function () {
+                        if (modeManager.viewSettings.theme != "none") {
+                            dom.byId(modeManager.viewSettings.theme).style.backgroundColor = "white";
+                        }
+                        if (modeManager.viewSettings.theme == "air") {
+                            air.style.backgroundColor = "white";
+                            modeManager.changeMode("theme", "none");
+                        }
+                        else {
+                            air.style.backgroundColor = that.settings.colors.highlight;
+                            modeManager.changeMode("theme", "air");
+                        }
+
+                        that.vizChanger.changeVisualization();
+                        that.dataDrill.processAllData(modeManager.viewSettings.layer);
+
+
+                    });
+
 
                 this.view.when(function () {
                     //layerlist.viewModel.operationalItems.getItemAt(3).layer.listMode = "hide"
                     //layerlist.viewModel.operationalItems.getItemAt(4).layer.listMode = "hide"
+
+                    modeManager.setSettings(this.scene, this.view, this.settings);
+
+                    var rendererCallouts = modeManager.getLayer("Public Transport Stops").renderer.clone();
+                    rendererCallouts.getSymbol().callout.color = this.settings.colors.project;
+                    modeManager.getLayer("Public Transport Stops").renderer  = rendererCallouts;
+
+
+                    this.vizChanger = new vizChanger(this.scene, this.view, this.settings);
+                    
                     this.dataDrill = new dataDrill(this.scene, this.view, this.settings);
                     for (var i = 0;  i < this.scene.layers.length; i++) {
                         this.scene.layers.getItemAt(i).popupEnabled = false;
-                        this.dataDrill.processAllData(this.scene.layers.getItemAt(i));
+                        //this.dataDrill.processAllData(this.scene.layers.getItemAt(i));
                     }
 
                     this.dataDrill.clickHandler();
@@ -182,18 +272,16 @@ define([
                 var that = this;
                 that.timeOutFunctionId = null;
                 window.addEventListener('resize', debounce(function(event){
+                    that.dataDrill.renderDiagrams(true);
+                }));
 
-                that.dataDrill.renderDiagrams();
-
-                  }));
-
-                  function debounce(func){
+                function debounce(func){
                     var timer;
                     return function(event){
-                      if(timer) clearTimeout(timer);
-                      timer = setTimeout(func,500,event);
+                    if(timer) clearTimeout(timer);
+                    timer = setTimeout(func,500,event);
                     };
-                  }
+                }
             
 
             },

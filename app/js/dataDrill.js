@@ -8,11 +8,13 @@ define([
     "dojo/on",
 
     "urbanmobility/graphMaker",
+    "urbanmobility/modeManager",
+
 
 
 ], function (
     Accessor, Query,
-    domCtr, win, dom, on, graphMaker
+    domCtr, win, dom, on, graphMaker, modeManager
 ) {
         return Accessor.createSubclass({
             declaredClass: "urbanmobility.dataDrill",
@@ -31,14 +33,14 @@ define([
                 view.on("click", function (event) {
                     view.hitTest(event.screenPoint).then(function (response) {
                         var result = response.results[0];
-                        if (result && result.graphic.layer.title != this.settings.layerNames.traffic_geometry_now && result.graphic.layer.title != this.settings.layerNames.buildings){
+                        if (result && (result.graphic.layer.title == this.settings.layerNames.pt || result.graphic.layer.title == this.settings.layerNames.traffic || result.graphic.layer.title == this.settings.layerNames.air)){
                             var that = this;
                             that.view.whenLayerView(result.graphic.layer).then((layerView) => {
                                 if (that.highlight) {
                                     that.highlight.remove();
                                   }
                                 that.highlight = layerView.highlight([result.graphic.getObjectId()]);
-
+                                result.graphic.visible = false;
                                 that.processGraphic(result.graphic, result.graphic.layer.title, function(data) {
                                     that.currentData = data;
                                     that.graphMaker.render(data.all);
@@ -81,12 +83,13 @@ define([
                         console.log("Wrong ObjectID");
                     }
 
-                    if (layerName == this.settings.layerNames.pt_flow_now) {
+                    if (layerName == this.settings.layerNames.pt) {
                         var data = {}
                         data.hourData = this.parsePTData(results);
-                        data.all = results.features[0].attributes["all_"];
-                        data.text =  "<b>Occupancy</b> <br><br> From: " + results.features[0].attributes["Fr"] + "<br>To: " + results.features[0].attributes["To_"];
+                        data.all = results.features[0].attributes[modeManager.viewSettings.prefix + modeManager.viewSettings.attribute];
+                        data.text =  "<b>Occupancy</b> <br><br> From: " + results.features[0].attributes["Fr_name"] + "<br>To: " + results.features[0].attributes["To_name"];
                     }
+                    results.features[0].visible = false;
                     callback(data);
 
                 }.bind(this)).catch(function (err) {
@@ -95,22 +98,26 @@ define([
             }, 
 
             processAllData: function(layer) {
-                if (layer.title == this.settings.layerNames.pt_flow_now) {
+                if (layer == "none" || layer.title == this.settings.layerNames.traffic || layer.title == this.settings.layerNames.air) {
+                    dom.byId("dashboard-text").innerHTML = "<b>Dashboard</b>";
+                    this.graphMaker.removeDiagrams();
+                }
+                else if (layer.title == this.settings.layerNames.pt) {
                     if (layer.layers && (layer.layers.length == 2)) {
                         layer = layer.layers.getItemAt(0);
 
                     }
                     // query for the average population in all features
                     var statQuery = [{
-                        onStatisticField: "all_",  // service field for 2015 population
+                        onStatisticField: modeManager.viewSettings.prefix + modeManager.viewSettings.attribute,  // service field for 2015 population
                         outStatisticFieldName: "all",
                         statisticType: "avg"
                     }];
 
                     for (var i = 4; i < 29; i++) {
                         statQuery.push({
-                            onStatisticField: "h_" + i.toString(),  // service field for 2015 population
-                            outStatisticFieldName: "h_" + i.toString(),
+                            onStatisticField: modeManager.viewSettings.prefix + "h_" + i.toString(),  // service field for 2015 population
+                            outStatisticFieldName: modeManager.viewSettings.prefix + "h_" + i.toString(),
                             statisticType: "avg"
                         });
                     }
@@ -128,7 +135,12 @@ define([
                         this.allData.all = results.features[0].attributes["all"];
                         this.allData.text = "<b>Occupancy</b> <br><br> Whole Project Area";
                         this.currentData = this.allData;
-                        this.renderDiagrams();
+                        if (dom.byId("svgDonut")) {
+                            this.renderDiagrams(false);
+                        }
+                        else {
+                            this.renderDiagrams(true);
+                        }
 
                     }.bind(this)).catch(function (err) {
                         console.error(err);
@@ -142,7 +154,7 @@ define([
             parsePTData: function(results) {
                 var data = []
                 for (var i = 4; i < 29; i++) {
-                    var value = results.features[0].attributes["h_" + i.toString()];
+                    var value = results.features[0].attributes[modeManager.viewSettings.prefix + "h_" + i.toString()];
                     if (value == null) {
                         value = 0;
                     }
@@ -156,13 +168,16 @@ define([
                 return data;
             },
 
-            renderDiagrams: function() {
-                this.graphMaker.initPTDiagramm()
+            renderDiagrams: function(init) {
+                if (init) {
+                    this.graphMaker.initPTDiagramm()
+                    this.graphMaker.updatePTDiagramm(this.currentData.hourData, true);
+                    this.graphMaker.updateDonutChart(this.currentData.all);
 
-                this.graphMaker.updatePTDiagramm(this.currentData.hourData, true);
-                this.graphMaker.updatePTDiagramm(this.currentData.hourData);     // Second time bc forsome reason the tooltip did not work the first time
+                }
+                     this.graphMaker.updatePTDiagramm(this.currentData.hourData);     // Second time bc forsome reason the tooltip did not work the first time
+                     this.graphMaker.render(this.currentData.all);
 
-                this.graphMaker.updateDonutChart(this.currentData.all);
                 dom.byId("dashboard-text").innerHTML = this.currentData.text;
 
 
