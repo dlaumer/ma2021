@@ -9,11 +9,12 @@ define([
     "dojo/on",
     "dojo/mouse",
 
-    "urbanmobility/App",
+    "urbanmobility/Home",
+
 
 ], function (
     Accessor,
-    domCtr, win, dom, domStyle, on, mouse, App) {
+    domCtr, win, dom, domStyle, on, mouse, Home) {
 
         return Accessor.createSubclass({
             declaredClass: "urbanmobility.welcome",
@@ -36,10 +37,12 @@ define([
                 var container = domCtr.create("div", { id: "welcome"},  background);
 
                 domCtr.create("img", { id: "Logo", src: "images/Logo.png" }, container);
+                this.email = domCtr.create("input", { id: "email", name:"email",  placeholder:"Email Address" }, container);
+
                 var containerLinks = domCtr.create("div", { id: "containerLinks"}, container);
 
-                this.version1 = domCtr.create("div", { id: "version1", className: "link", innerHTML: "2D" }, containerLinks);
-                this.version2 = domCtr.create("div", { id: "version2", className: "link", innerHTML: "3D" }, containerLinks);
+                this.newUser = domCtr.create("div", { id: "newUser", className: "link", innerHTML: "New User" }, containerLinks);
+                this.existingUser = domCtr.create("div", { id: "existingUser", className: "link", innerHTML: "Existing User" }, containerLinks);
 
                 domCtr.create("hr", { id: "welcomeLine"}, container);
                 
@@ -51,21 +54,31 @@ define([
 
             clickHandler: function () {
 
-                on(this.version1, "click", function (evt) {
-                    window.location.href = window.location.href + "?2D";
+                on(this.newUser, "click", function (evt) {
+                    if (this.email.value == "") {
+                        alert("Please provide an email")
+                    }
+                    else {
+                        window.location.href = window.location.href + "?Login=" + this.email.value;
+                    }
                 }.bind(this));
 
-                on(this.version2, "click", function (evt) {
-                    window.location.href = window.location.href + "?3D";
+                on(this.existingUser, "click", function (evt) {
+                    if (this.email.value == "") {
+                        alert("Please provide an email")
+                    }
+                    else {
+                        window.location.href = window.location.href + "?Login=" + this.email.value;
+                    }
                 }.bind(this));
 
             },
 
             urlParser: function () {
                 var urlParams = Object.keys(getJsonFromUrl());
-                if (urlParams.length >= 1 && (urlParams[0] === "2D" || urlParams[0] === "3D")) {
-                    var app = new App();
-                    app.init(urlParams[0]);
+                if (urlParams.length >= 1 && (urlParams[0] === "Login")) {
+                    var home = new Home();
+                    home.init(getJsonFromUrl());
                 }
             }
         });

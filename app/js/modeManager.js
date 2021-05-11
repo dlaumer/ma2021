@@ -88,21 +88,21 @@ define([
                     case "now|traffic":
                         this.viewSettings.layer =  this.getLayer(this.settings.layerNames.traffic);
                         this.viewSettings.prefix = ""
-                        this.viewSettings.attribute = "all_";
+                        this.viewSettings.attribute = "all_1";
 
                         break;
                         
                     case "no_project|traffic":
                         this.viewSettings.layer =  this.getLayer(this.settings.layerNames.traffic);
-                        this.viewSettings.prefix = "";
-                        this.viewSettings.attribute = "h_8";
+                        this.viewSettings.prefix = "no_";
+                        this.viewSettings.attribute = "all";
 
                         break;
 
                     case "project|traffic":
                         this.viewSettings.layer =   this.getLayer(this.settings.layerNames.traffic);
-                        this.viewSettings.prefix = "";
-                        this.viewSettings.attribute = "h_12";
+                        this.viewSettings.prefix = "pro_";
+                        this.viewSettings.attribute = "all";
 
                         break;
 
@@ -117,14 +117,14 @@ define([
                     case "no_project|air":
                         this.viewSettings.layer =  this.getLayer(this.settings.layerNames.air);
                         this.viewSettings.prefix = "";
-                        this.viewSettings.attribute = "PM_30T";
+                        this.viewSettings.attribute = "PM_30";
 
                         break;
 
                     case "project|air":
                         this.viewSettings.layer =  this.getLayer(this.settings.layerNames.air);
-                        this.viewSettings.prefix = "";
-                        this.viewSettings.attribute = "PM_30_pro";
+                        this.viewSettings.prefix = "pro_";
+                        this.viewSettings.attribute = "PM_30";
 
                         break;
                 

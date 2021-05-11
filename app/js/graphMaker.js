@@ -47,14 +47,6 @@ define([
                 .attr("transform",
                     "translate(" + this.margin.left + "," + this.margin.top + ")")
 
-                // Text label for the y axis
-                this.svgTimeline.append("text")
-                .attr("font-size", "10px")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 0 - this.margin.left / 2)
-                .attr("x", 0 - (this.heightTimeline / 2))
-                .style("text-anchor", "middle")
-                .text("Occupancy [%]");
 
                 // Initialize the X axis
                 this.xScale = d3.scaleBand()
@@ -187,6 +179,16 @@ define([
                 var that = this;
                 // Parse the Data
                 // X axis
+                // Text label for the y axis
+                that.svgTimeline.append("text")
+                .attr("font-size", "10px")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 0 - this.margin.left / 2)
+                .attr("x", 0 - (this.heightTimeline / 2))
+                .style("text-anchor", "middle")
+                .text("Occupancy [%]");
+
+                
                 that.xScale.domain(hourData.map(function (d) { return d.time; }))
                 that.xAxis.conditionalTransition(firstTime).call(d3.axisBottom(that.xScale).tickFormat(function (d) {
                   return d

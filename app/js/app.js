@@ -4,7 +4,9 @@ define([
     "esri/config",
 
     "esri/WebScene",
+    "esri/WebMap",
     "esri/views/SceneView",
+    "esri/views/MapView",
     "esri/layers/SceneLayer",
     "esri/Basemap",
 
@@ -28,7 +30,7 @@ define([
 
 ], function (
     Accessor, esriConfig,
-    WebScene, SceneView, SceneLayer, Basemap, Legend, LayerList,
+    WebScene,WebMap, SceneView, MapView, SceneLayer, Basemap, Legend, LayerList,
     dom, on, domCtr, win, domStyle,
     Search, dataDrill, graphMaker, modeManager, vizChanger) {
 
@@ -36,11 +38,13 @@ define([
         var settings_demo = {
             name: "Demo",
             url: "https://egregis.maps.arcgis.com",           // portal URL for config
-            webscene: "d9d1688d71d6414badc25c508b40e786",   // portal item ID of the webscene
+            webscene: "03c3431c5e984f4ab52144950552e6c6",   // portal item ID of the webscene
             layerNames: {
-                pt: "Public Transport",
+                pt: "Public Transport (Ver 1)",
                 traffic: "Traffic",
                 air: "Air Pollution",
+                traffic_pro: "Traffic_pro", 
+                streets_pro: "Streets_pro"
             },
             colors: {
                 now: "#17BEBB",
@@ -67,8 +71,8 @@ define([
                 // get settings from choice on welcome page
                 this.settings = this.getSettingsFromUser(settings);
 
-                if (this.settings.version == "Version1") {
-                    this.settings.layerNames.pt = "Public Transport (Ver 1)";
+                if (this.settings.version == "2D") {
+                    this.settings.webscene = "10a40aea47a04c2484cf4baa9aab4dee";
                 }
 
                 // set portal url
@@ -77,16 +81,35 @@ define([
                 // fix CORS issues by adding portal url to cors enabled servers list
                 esriConfig.request.corsEnabledServers.push("https://egregis.maps.arcgis.com");
 
-                // load scene with portal ID
-                this.scene = new WebScene({
-                    portalItem: {
-                        id: this.settings.webscene
-                    },
-                    basemap: ""
-                });
+                if (this.settings.version == "2D") {
+                    // load scene with portal ID
+                    this.scene = new WebMap({
+                        portalItem: {
+                            id: this.settings.webscene
+                        },
+                    });
 
-                // create a view
-                this.view = new SceneView({
+                    // create a view
+                    this.view = new MapView({
+                        container: "viewDiv",
+                        map: this.scene,
+                        highlightOptions: {
+                            color: this.settings.colors.highlight,
+                            fillOpacity: 0.2,
+                          },
+                    });
+                }
+                else {
+                    // load scene with portal ID
+                    this.scene = new WebScene({
+                        portalItem: {
+                            id: this.settings.webscene
+                        },
+                        basemap: ""
+                    }); 
+
+                    // create a view
+                    this.view = new SceneView({
                     container: "viewDiv",
                     map: this.scene,
                     qualityProfile: "high",
@@ -94,13 +117,17 @@ define([
                         color: this.settings.colors.highlight,
                         fillOpacity: 0.2,
                       },
-                });
+                    });
+                }
+                
+                
             
 
                     // environment settings for better visuals (shadows)
-                    this.view.environment.lighting.ambientOcclusionEnabled = true;
-                    this.view.environment.lighting.directShadowsEnabled = true;
-
+                    if (this.settings.version == "3D") {
+                        this.view.environment.lighting.ambientOcclusionEnabled = true;
+                        this.view.environment.lighting.directShadowsEnabled = true;
+                    }
                     // create header with title according to choice on welcome page
                     var header = domCtr.create("div", { id: "header" }, win.body());
                     domCtr.create("img", { id: "Logo2", src: "images/Logo.png"}, header);
@@ -250,10 +277,27 @@ define([
 
                     modeManager.setSettings(this.scene, this.view, this.settings);
 
+                    if (this.settings.version == "3D") {
+                    // Change color of callouts
                     var rendererCallouts = modeManager.getLayer("Public Transport Stops").renderer.clone();
                     rendererCallouts.getSymbol().callout.color = this.settings.colors.project;
                     modeManager.getLayer("Public Transport Stops").renderer  = rendererCallouts;
 
+                    
+                    
+                    this.scene.ground.opacity = 0.4;
+                }
+                if (!modeManager.getLayer(this.settings.layerNames.pt).layers) {
+                    // Change color of Public Transport
+                    var rendererPt = modeManager.getLayer(this.settings.layerNames.pt).renderer.clone();
+                    rendererPt.visualVariables[0].stops[0].color = {r:23, g:190, b:187, a:0.2};
+                    rendererPt.visualVariables[0].stops[1].color = {r:23, g:190, b:187, a:0.3};
+                    rendererPt.visualVariables[0].stops[2].color = {r:23, g:190, b:187, a:0.5};
+                    rendererPt.visualVariables[0].stops[3].color = {r:23, g:190, b:187, a:0.7};
+                    rendererPt.visualVariables[0].stops[4].color = {r:23, g:190, b:187, a:1.0};
+                    modeManager.getLayer(this.settings.layerNames.pt).renderer  = rendererPt;
+                }
+               
 
                     this.vizChanger = new vizChanger(this.scene, this.view, this.settings);
                     
@@ -287,7 +331,7 @@ define([
             },
 
             getSettingsFromUser: function (settings) {
-                if (settings === "Version1" || settings === "Version2"){
+                if (settings === "2D" || settings === "3D"){
                     settings_demo.version = settings;
                     return settings_demo;
                 }

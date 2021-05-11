@@ -40,7 +40,7 @@ define([
                                     that.highlight.remove();
                                   }
                                 that.highlight = layerView.highlight([result.graphic.getObjectId()]);
-                                result.graphic.visible = false;
+                               
                                 that.processGraphic(result.graphic, result.graphic.layer.title, function(data) {
                                     that.currentData = data;
                                     that.graphMaker.render(data.all);
@@ -109,14 +109,14 @@ define([
                     }
                     // query for the average population in all features
                     var statQuery = [{
-                        onStatisticField: modeManager.viewSettings.prefix + modeManager.viewSettings.attribute,  // service field for 2015 population
+                        onStatisticField: modeManager.viewSettings.prefix + modeManager.viewSettings.attribute,  
                         outStatisticFieldName: "all",
                         statisticType: "avg"
                     }];
 
                     for (var i = 4; i < 29; i++) {
                         statQuery.push({
-                            onStatisticField: modeManager.viewSettings.prefix + "h_" + i.toString(),  // service field for 2015 population
+                            onStatisticField: modeManager.viewSettings.prefix + "h_" + i.toString(),  
                             outStatisticFieldName: modeManager.viewSettings.prefix + "h_" + i.toString(),
                             statisticType: "avg"
                         });
@@ -146,8 +146,53 @@ define([
                         console.error(err);
                     });
                 }
+                else if (layer.title == this.settings.layerNames.traffic) {
+                    // query for the average population in all features
+                    var statQuery = [{
+                        onStatisticField: modeManager.viewSettings.prefix + "all_x",  
+                        outStatisticFieldName: "all_x",
+                        statisticType: "avg"
+                    },
+                    {
+                    onStatisticField: modeManager.viewSettings.prefix + "all_y",  
+                    outStatisticFieldName: "all_y",
+                    statisticType: "avg"
+                    }];
 
-                
+                    for (var i = 0; i < 24; i++) {
+                        statQuery.push({
+                            onStatisticField: modeManager.viewSettings.prefix + "h_" + i.toString() + "_x",  
+                            outStatisticFieldName: modeManager.viewSettings.prefix + "h_" + i.toString() + "_x",
+                            statisticType: "avg"
+                        });
+                        statQuery.push({
+                            onStatisticField: modeManager.viewSettings.prefix + "h_" + i.toString() + "_y",  
+                            outStatisticFieldName: modeManager.viewSettings.prefix + "h_" + i.toString() + "_y",
+                            statisticType: "avg"
+                        });
+                    }
+
+
+                    var query = layer.createQuery();
+
+                    query.returnGeometry = false;
+                    query.outStatistics = statQuery;
+                    query.outFields = ["*"];
+
+                    layer.queryFeatures(query).then(function (results) {
+                        this.allData = {};
+                        this.allData.hourData = this.parseTrafficData(results);
+                        this.allData.all_x = results.features[0].attributes["all_x"];
+                        this.allData.all_y = results.features[0].attributes["all_y"];
+                        this.allData.text = "<b>Traffic Measurements</b> <br><br> Whole Project Area";
+                        this.currentData = this.allData;
+                        
+
+                    }.bind(this)).catch(function (err) {
+                        console.error(err);
+                    });
+
+                }
             }, 
 
 
@@ -168,15 +213,33 @@ define([
                 return data;
             },
 
+            parseTrafficData: function(results) {
+                var data = []
+                for (var i = 0; i < 24; i++) {
+                    var value_x = results.features[0].attributes[modeManager.viewSettings.prefix + "h_" + i.toString() + "_x"];
+                    var value_y = results.features[0].attributes[modeManager.viewSettings.prefix + "h_" + i.toString() + "_y"];
+
+                    value_x == null ? value_x = 0 : null;
+                    value_y == null ? value_y = 0 : null;
+                    
+                    data.push({time: (i).toString() + ":00", percentage: value_x, "value_y": value_y});
+                }
+                return data;
+            },
+
             renderDiagrams: function(init) {
                 if (init) {
                     this.graphMaker.initPTDiagramm()
                     this.graphMaker.updatePTDiagramm(this.currentData.hourData, true);
-                    this.graphMaker.updateDonutChart(this.currentData.all);
+                    if (modeManager.viewSettings.theme == "pt") {
+                        this.graphMaker.updateDonutChart(this.currentData.all);
+                    }
 
                 }
                      this.graphMaker.updatePTDiagramm(this.currentData.hourData);     // Second time bc forsome reason the tooltip did not work the first time
-                     this.graphMaker.render(this.currentData.all);
+                     if (modeManager.viewSettings.theme == "pt") {
+                        this.graphMaker.render(this.currentData.all);
+                     }
 
                 dom.byId("dashboard-text").innerHTML = this.currentData.text;
 

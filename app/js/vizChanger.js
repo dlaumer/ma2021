@@ -25,22 +25,25 @@ define([
 
             changeVisualization: function() {
                 
+                var mode = modeManager.viewSettings.mode;
+                var theme = modeManager.viewSettings.theme;
+                var layer = modeManager.viewSettings.layer;
                 // Change the theme
                 if (modeManager.viewSettings.theme_prev != "none") {
                     modeManager.getLayer(this.settings.layerNames[modeManager.viewSettings.theme_prev]).visible = false;
 
                 }
-                if (modeManager.viewSettings.theme != "none") {
+
+                if (theme != "none") {
                     modeManager.viewSettings.layer.visible = true;
                 }
 
 
                 // Change the mode
-                if (modeManager.viewSettings.theme != "none") {
-                    var mode = modeManager.viewSettings.mode;
-                    var layer = modeManager.viewSettings.layer;
+                if (theme != "none") {
+                   
 
-                    if (modeManager.viewSettings.theme == "pt" || modeManager.viewSettings.theme == "traffic") {
+                    if (theme == "pt" || theme == "traffic") {
                         renderer = layer.renderer.clone();
                         const sizeVariable = renderer.visualVariables[0];
                         sizeVariable.field =  modeManager.viewSettings.prefix + modeManager.viewSettings.attribute;
@@ -48,18 +51,51 @@ define([
                         renderer.visualVariables = [sizeVariable];
                         layer.renderer = renderer;
                     }
-                    else if (modeManager.viewSettings.theme == "air") {
+                    else if (theme == "air") {
                         renderer = layer.renderer.clone();
                         //renderer.field=  modeManager.viewSettings.prefix + modeManager.viewSettings.attribute;
                         renderer.field = modeManager.viewSettings.attribute;
                         const sizeVariable = renderer.visualVariables[0];
-                        //sizeVariable.field =  modeManager.viewSettings.prefix + modeManager.viewSettings.attribute;
-                        sizeVariable.field =  modeManager.viewSettings.attribute;
+                        sizeVariable.field =  modeManager.viewSettings.prefix + modeManager.viewSettings.attribute;
+                        //sizeVariable.field =  modeManager.viewSettings.attribute;
                         renderer.visualVariables = [sizeVariable];
                         layer.renderer = renderer;
 
                     }
+
+                    // TODO: Just hack, also needs to be done in 2D at one point!
+                    if (this.settings.version == "3D") {
+
+                        // Filter the layer
+                        this.view.whenLayerView(modeManager.viewSettings.layer).then(function(layerView) {
+                            if (modeManager.viewSettings.mode == "project") {
+                                layerView.filter = null;
+                            } else {
+                                layerView.filter = {
+                                    where:"project = 0"
+                                };
+                            }
+                        });
+                    }
+                 }
+                
+                 if (mode == "project" && theme == "traffic") {
+                    modeManager.getLayer(this.settings.layerNames.traffic_pro).visible = true;
                 }
+                else {
+                    modeManager.getLayer(this.settings.layerNames.traffic_pro).visible = false;
+                }
+
+                if (mode == "project") {
+                    modeManager.getLayer(this.settings.layerNames.streets_pro).visible = true;
+                }
+                else {
+                    modeManager.getLayer(this.settings.layerNames.streets_pro).visible = false;
+                }
+
+
+               
+
             },
         })
 
