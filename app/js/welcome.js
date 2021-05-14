@@ -63,7 +63,7 @@ define([
 
             urlParser: function () {
                 var urlParams = Object.keys(getJsonFromUrl());
-                if (urlParams.length >= 1 && (urlParams[0] === "2D" || urlParams[0] === "3D")) {
+                if (urlParams.length >= 1 && (urlParams[0] === "2D" || urlParams[0] === "3D" || urlParams[0] === "noMap")) {
                     var app = new App();
                     app.init(urlParams[0]);
                 }

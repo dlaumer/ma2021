@@ -21,6 +21,7 @@ define([
 
     "esri/widgets/Search",
 
+    "urbanmobility/userStudy",
     "urbanmobility/dataDrill",
     "urbanmobility/graphMaker",    
     "urbanmobility/modeManager",
@@ -32,7 +33,7 @@ define([
     Accessor, esriConfig,
     WebScene,WebMap, SceneView, MapView, SceneLayer, Basemap, Legend, LayerList,
     dom, on, domCtr, win, domStyle,
-    Search, dataDrill, graphMaker, modeManager, vizChanger) {
+    Search, userStudy, dataDrill, graphMaker, modeManager, vizChanger) {
 
         // application settings
         var settings_demo = {
@@ -66,7 +67,10 @@ define([
                 // destroy welcome page when app is started
                 domCtr.destroy("background");
                 
-                domCtr.create("div", { id: "viewDiv", style: "width: 100%; height: 100%" }, win.body())
+                this.userStudy = new userStudy(this.scene, this.view, this.settings);
+                this.userStudyDiv = this.userStudy.init();
+
+                domCtr.create("div", { id: "viewDiv"}, win.body())
 
                 // get settings from choice on welcome page
                 this.settings = this.getSettingsFromUser(settings);
@@ -99,7 +103,7 @@ define([
                           },
                     });
                 }
-                else {
+                else if (this.settings.version == "3D") {
                     // load scene with portal ID
                     this.scene = new WebScene({
                         portalItem: {
@@ -117,6 +121,18 @@ define([
                         color: this.settings.colors.highlight,
                         fillOpacity: 0.2,
                       },
+                    });
+                }
+                
+                else if (this.settings.version == "noMap") {
+                    // load scene with portal ID
+                    this.scene = new WebScene({
+                        basemap: ""
+                    }); 
+
+                    // create a view
+                    this.view = new SceneView({
+                    container: "viewDiv"
                     });
                 }
                 
@@ -160,9 +176,9 @@ define([
                     var traffic = domCtr.create("div", { id: "traffic",className: "layer" }, layerlistContainer);
                     domCtr.create("img", { id:"traffic_image", src:"images/traffic.png", style:'height: 80%; width: auto; object-fit: contain'}, traffic);
                     traffic.innerHTML = traffic.innerHTML + "   Traffic";
-                    var air = domCtr.create("div", { id: "air",className: "layer" }, layerlistContainer);
-                    domCtr.create("img", { id:"air_image", src:"images/air.png", style:'height: 80%; width: auto; object-fit: contain'}, air);
-                    air.innerHTML = air.innerHTML + "   Air Pollution";
+                    //var air = domCtr.create("div", { id: "air",className: "layer" }, layerlistContainer);
+                    //domCtr.create("img", { id:"air_image", src:"images/air.png", style:'height: 80%; width: auto; object-fit: contain'}, air);
+                    //air.innerHTML = air.innerHTML + "   Air Pollution";
 
                     /*
                     var layerlist = new LayerList({
@@ -175,6 +191,12 @@ define([
 
                     // Add widget to the bottom right corner of the view
 
+                    /*
+                    this.view.ui.add(this.userStudyDiv,  {
+                        position: "top-left",
+                        index: 0
+                    }); // Add it to the map
+                    */
                     this.view.ui.add(header, "top-right"); // Add it to the map
                     this.view.ui.add(modeContainer,"top-right");
                     this.view.ui.add(layerlistContainer,"top-right");
@@ -251,6 +273,7 @@ define([
 
 
                     });
+                    /*
                     on(air, "click", function () {
                         if (modeManager.viewSettings.theme != "none") {
                             dom.byId(modeManager.viewSettings.theme).style.backgroundColor = "white";
@@ -269,6 +292,7 @@ define([
 
 
                     });
+                    */
 
 
                 this.view.when(function () {
@@ -331,7 +355,7 @@ define([
             },
 
             getSettingsFromUser: function (settings) {
-                if (settings === "2D" || settings === "3D"){
+                if (settings === "2D" || settings === "3D" || settings === "noMap"){
                     settings_demo.version = settings;
                     return settings_demo;
                 }

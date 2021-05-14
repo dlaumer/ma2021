@@ -14,6 +14,11 @@
 body, html {
   width:100%;
   height:100%;
+  display: flex;
+  align-content: stretch;
+  flex-direction: column;
+  align-items: stretch;
+
 }
 
 #background {
@@ -62,7 +67,7 @@ body, html {
   border: 1px solid grey;
   margin: 2%;
   padding: 10px;
-  font-size: 20pt;
+  font-size: 1.3vw;
 }
 
 #containerLinks {
@@ -91,6 +96,60 @@ body, html {
 .link:hover{
   background: grey;
   color: white;
+}
+#overlay {
+  height:100%;
+  width:100%;
+  z-index: 10;
+  position: absolute;;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+
+  align-items: center;
+  flex-direction: column;
+
+
+}
+
+#startButton {
+  background: var(--project);	
+
+}
+
+#userStudy {
+  background: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
+  align-items: center;
+
+
+  padding: 0;
+  margin: 0;
+
+  height:10%;
+  width: 100%;
+}
+
+#question {
+ font-size: 1.3vw;
+ flex-grow: 4;
+}
+
+#inResult {
+  font-size: 1.3vw;
+  border-radius: 10px;
+}
+
+#done {
+  
+}
+
+#viewDiv {
+  flex:1;
+  width:100%;
 }
 
 .description {
@@ -139,7 +198,7 @@ body, html {
   border-radius: 20px;
   z-index:100;
   cursor: pointer;
-  font-size: 1.2vw;
+  font-size: 1.3vw;
 }
 
 #mode_selection {
@@ -153,7 +212,7 @@ body, html {
 #layerlist{
   background: white;
   width: 25vw;
-  height: 26vh;
+  height: 20vh;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -161,7 +220,7 @@ body, html {
 }
 
 .layer {
-  height: 30%;
+  height: 40%;
   width: 90%;
   box-shadow: 3px 3px 4px rgb(182, 182, 182);
   display: flex;
@@ -174,14 +233,10 @@ body, html {
   background-color: #e0ca3c85;
 }
 
-.esri-layer-list__item-title {
-  font-size: 12px;
-}
-
 #legend {
   background: white;
   width: 25vw;
-  height: 45vh;
+  height: 40vh;
 }
 
 #dashboard {
@@ -214,7 +269,7 @@ body, html {
 
 .button{ 
   border-radius: 10px;
-  font-size: 16px;
+  font-size: 1.3vw;
   padding: 2px;
   padding-left: 4px;
   padding-right: 4px;
@@ -285,7 +340,7 @@ div.tooltip {
   border: 1px solid grey;
   margin: 2%;
   padding: 10px;
-  font-size: 12;
+  font-size: 1.3vw;
   cursor: pointer;
   width: 20vw;
 
@@ -298,6 +353,6 @@ div.tooltip {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 12;
+  font-size: 1.3vw;
 
 }
