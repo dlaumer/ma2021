@@ -35,25 +35,6 @@ define([
     dom, on, domCtr, win, domStyle,
     Search, userStudy, dataDrill, graphMaker, modeManager, vizChanger) {
 
-        // application settings
-        var settings_demo = {
-            name: "Demo",
-            url: "https://egregis.maps.arcgis.com",           // portal URL for config
-            webscene: "03c3431c5e984f4ab52144950552e6c6",   // portal item ID of the webscene
-            layerNames: {
-                pt: "Public Transport (Ver 1)",
-                traffic: "Traffic",
-                air: "Air Pollution",
-                traffic_pro: "Traffic_pro", 
-                streets_pro: "Streets_pro"
-            },
-            colors: {
-                now: "#17BEBB",
-                no_project: "#0E7C7B",
-                project: "#F3511B",
-                highlight: "#E0CA3C",
-            }
-        };
 
         return Accessor.createSubclass({
             declaredClass: "urbanmobility.app",
@@ -61,21 +42,28 @@ define([
             constructor: function () {
             },
 
-            init: function (settings) {
-
+            init: function (settings, info, userStudy) {
 
                 // destroy welcome page when app is started
                 domCtr.destroy("background");
+
+                // get settings from choice on welcome page
+                this.settings = settings;
                 
-                this.userStudy = new userStudy(this.scene, this.view, this.settings);
-                this.userStudyDiv = this.userStudy.init();
+                if (userStudy) {
+                    this.userStudy = userStudy;
+                    this.userStudy.init();
+                    this.settings.dimension = this.userStudy.getDimension();
+                }
+                else {
+                    this.settings.dimension = info;
+
+                }
 
                 domCtr.create("div", { id: "viewDiv"}, win.body())
 
-                // get settings from choice on welcome page
-                this.settings = this.getSettingsFromUser(settings);
 
-                if (this.settings.version == "2D") {
+                if (this.settings.dimension == "2D") {
                     this.settings.webscene = "10a40aea47a04c2484cf4baa9aab4dee";
                 }
 
@@ -85,7 +73,7 @@ define([
                 // fix CORS issues by adding portal url to cors enabled servers list
                 esriConfig.request.corsEnabledServers.push("https://egregis.maps.arcgis.com");
 
-                if (this.settings.version == "2D") {
+                if (this.settings.dimension == "2D") {
                     // load scene with portal ID
                     this.scene = new WebMap({
                         portalItem: {
@@ -103,7 +91,7 @@ define([
                           },
                     });
                 }
-                else if (this.settings.version == "3D") {
+                else if (this.settings.dimension == "3D") {
                     // load scene with portal ID
                     this.scene = new WebScene({
                         portalItem: {
@@ -124,7 +112,7 @@ define([
                     });
                 }
                 
-                else if (this.settings.version == "noMap") {
+                else if (this.settings.dimension == "noMap") {
                     // load scene with portal ID
                     this.scene = new WebScene({
                         basemap: ""
@@ -136,18 +124,15 @@ define([
                     });
                 }
                 
-                
-            
-
                     // environment settings for better visuals (shadows)
-                    if (this.settings.version == "3D") {
+                    if (this.settings.dimension == "3D") {
                         this.view.environment.lighting.ambientOcclusionEnabled = true;
                         this.view.environment.lighting.directShadowsEnabled = true;
                     }
                     // create header with title according to choice on welcome page
                     var header = domCtr.create("div", { id: "header" }, win.body());
                     domCtr.create("img", { id: "Logo2", src: "images/Logo.png"}, header);
-                    domCtr.create("div", { id: "headerTitle", innerHTML: settings}, header);
+                    //domCtr.create("div", { id: "headerTitle", innerHTML: settings}, header);
 
                     var modeContainer = domCtr.create("div", { id: "modeContainer" }, win.body());
                     var now = domCtr.create("div", { id: "mode_now", className: "mode", innerHTML: "Now"}, modeContainer);
@@ -300,16 +285,19 @@ define([
                     //layerlist.viewModel.operationalItems.getItemAt(4).layer.listMode = "hide"
 
                     modeManager.setSettings(this.scene, this.view, this.settings);
+                    if (this.userStudy) {
+                        this.userStudy.setSceneInfo(this.scene, this.view, this.settings);
+                    }
 
-                    if (this.settings.version == "3D") {
+                    if (this.settings.dimension == "3D") {
                     // Change color of callouts
                     var rendererCallouts = modeManager.getLayer("Public Transport Stops").renderer.clone();
                     rendererCallouts.getSymbol().callout.color = this.settings.colors.project;
                     modeManager.getLayer("Public Transport Stops").renderer  = rendererCallouts;
 
-                    
-                    
                     this.scene.ground.opacity = 0.4;
+
+                   
                 }
                 if (!modeManager.getLayer(this.settings.layerNames.pt).layers) {
                     // Change color of Public Transport
@@ -354,15 +342,10 @@ define([
 
             },
 
-            getSettingsFromUser: function (settings) {
-                if (settings === "2D" || settings === "3D" || settings === "noMap"){
-                    settings_demo.version = settings;
-                    return settings_demo;
-                }
-            }
         });
     });
 
+   
 
 
 

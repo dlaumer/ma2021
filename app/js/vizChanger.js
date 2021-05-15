@@ -64,7 +64,7 @@ define([
                     }
 
                     // TODO: Just hack, also needs to be done in 2D at one point!
-                    if (this.settings.version == "3D") {
+                    if (this.settings.dimension == "3D") {
 
                         // Filter the layer
                         this.view.whenLayerView(modeManager.viewSettings.layer).then(function(layerView) {

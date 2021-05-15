@@ -4,6 +4,7 @@
    box-sizing: border-box; 
 }
 
+
 :root {
   --now: #17bebb;
   --no_project: #0E7C7B;
@@ -18,6 +19,21 @@ body, html {
   align-content: stretch;
   flex-direction: column;
   align-items: stretch;
+
+}
+
+h3 {
+	font-size: 1.3vw;
+  font-weight: 700;
+  margin-bottom: 0;
+  margin-top: 10px;
+
+
+}
+
+p {
+  font-size: 1.3vw;
+  margin-bottom: 0;
 
 }
 
@@ -86,10 +102,10 @@ body, html {
   border-radius: 10px;
   border: 1px solid grey;
   margin: 2%;
-  padding: 10px;
+  padding: 10px 30px;
   font-size: 20pt;
   cursor: pointer;
-  width: 10%;
+  width: auto;
 
 }
 
@@ -102,18 +118,18 @@ body, html {
   width:100%;
   z-index: 10;
   position: absolute;;
-  background: rgba(255, 255, 255, 0.8);
+  background: white;
+  opacity: 0.8;
   display: flex;
   justify-content: center;
 
   align-items: center;
   flex-direction: column;
-
+  transition: opacity 1s, visibility 1s;
 
 }
 
 #startButton {
-  background: var(--project);	
 
 }
 
@@ -133,7 +149,7 @@ body, html {
   width: 100%;
 }
 
-#question {
+#questionDiv {
  font-size: 1.3vw;
  flex-grow: 4;
 }
@@ -287,7 +303,7 @@ div.tooltip {
   color: white;
   border: 0px;		
   border-radius: 8px;			
-  pointer-events: none;			
+  pointer-events: none;		
 }
 
 
@@ -297,7 +313,13 @@ div.tooltip {
 
   padding: 0;
   margin: 0;
+  
+  display: flex;
+  align-content: stretch;
+  flex-direction: column;
+  align-items: stretch;
 }
+
 #header_home {
   display: flex;
   flex-direction: row;
@@ -314,8 +336,47 @@ div.tooltip {
   height: 10vh;
 }
 
+#containerHome {
+  width: 100%;
+  flex:1;
+
+  padding: 0;
+  margin: 0;
+  
+  display: flex;
+  align-content: stretch;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+#containerTasks {
+  width: 40%;
+  height: 100%;
+}
+
+.questionnaire {
+  flex:1;
+  height:100%;
+  display: flex;
+  flex-direction: column;
+
+  text-align: center;
+  align-items: center;
+  align-content: center;
+
+  justify-content: center;
+
+
+}
+
+#containerNasa {
+  width:100%
+}
+
+
 #loggedIn {
   height:100%;
+  padding: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -346,7 +407,7 @@ div.tooltip {
 
 }
 .task_button:hover{
-  background: grey;
+  background: var(--project);
   color: white;
 }
 .task_desc {
@@ -355,4 +416,70 @@ div.tooltip {
   align-items: center;
   font-size: 1.3vw;
 
+}
+
+/* Sliders */
+.slider {
+  -webkit-appearance: none;
+	margin: auto;
+	width: 80%;
+  height: 10px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--project);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #04AA6D;
+  cursor: pointer;
+
+}
+
+.slider::before,
+.slider::after {
+	color: #888;
+	line-height: .6;
+	position: absolute;
+	width: 5em;
+}
+
+.slider::before {
+	content: "Low";
+	margin-left: -6em;
+	text-align: right;
+}
+
+.slider::after {
+	content: "High";
+	margin-right: 6em;
+	right: -6em;
+}
+
+.slider.performance::before {
+	content: "Excellent";
+}
+
+.slider.performance::after {
+	content: "Poor";
+}
+
+#finishButton {
+  width: 30%;
 }

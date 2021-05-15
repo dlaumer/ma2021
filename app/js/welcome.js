@@ -10,10 +10,33 @@ define([
     "dojo/mouse",
 
     "urbanmobility/App",
+    "urbanmobility/Home",
+
 
 ], function (
     Accessor,
-    domCtr, win, dom, domStyle, on, mouse, App) {
+    domCtr, win, dom, domStyle, on, mouse, App, Home) {
+
+        // application settings
+        var settings= {
+            name: "Demo",
+            url: "https://egregis.maps.arcgis.com",           // portal URL for config
+            webscene: "03c3431c5e984f4ab52144950552e6c6",   // portal item ID of the webscene
+            layerNames: {
+                pt: "Public Transport (Ver 1)",
+                traffic: "Traffic",
+                air: "Air Pollution",
+                traffic_pro: "Traffic_pro", 
+                streets_pro: "Streets_pro"
+            },
+            colors: {
+                now: "#17BEBB",
+                no_project: "#0E7C7B",
+                project: "#F3511B",
+                highlight: "#E0CA3C",
+            }
+        };
+
 
         return Accessor.createSubclass({
             declaredClass: "urbanmobility.welcome",
@@ -24,6 +47,7 @@ define([
 
             init: function () {
 
+                this.settings = settings;
                 this.createUI();
                 this.clickHandler();
                 this.urlParser();
@@ -40,6 +64,7 @@ define([
 
                 this.version1 = domCtr.create("div", { id: "version1", className: "link", innerHTML: "2D" }, containerLinks);
                 this.version2 = domCtr.create("div", { id: "version2", className: "link", innerHTML: "3D" }, containerLinks);
+                this.userStudyButton = domCtr.create("div", { id: "userStudyButton", className: "link", innerHTML: "User Study" }, container);
 
                 domCtr.create("hr", { id: "welcomeLine"}, container);
                 
@@ -59,13 +84,21 @@ define([
                     window.location.href = window.location.href + "?3D";
                 }.bind(this));
 
+                on(this.userStudyButton, "click", function (evt) {
+                    window.location.href = window.location.href + "?userStudy";
+                }.bind(this));
+
             },
 
             urlParser: function () {
                 var urlParams = Object.keys(getJsonFromUrl());
-                if (urlParams.length >= 1 && (urlParams[0] === "2D" || urlParams[0] === "3D" || urlParams[0] === "noMap")) {
+                if (urlParams.length >= 1 && (urlParams[0] === "2D" || urlParams[0] === "3D")) {
                     var app = new App();
-                    app.init(urlParams[0]);
+                    app.init(this.settings, urlParams[0], null);
+                }
+                if (urlParams.length >= 1 && (urlParams[0] === "userStudy")) {
+                    var home = new Home();
+                    home.init(this.settings);
                 }
             }
         });

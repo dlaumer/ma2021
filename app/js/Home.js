@@ -10,33 +10,34 @@ define([
     "dojo/mouse",
 
     "urbanmobility/App",
-    "urbanmobility/welcome_us",
+    "urbanmobility/welcome",
+    "urbanmobility/userStudy",
+    "urbanmobility/Nasa",
 
 ], function (
     Accessor,
-    domCtr, win, dom, domStyle, on, mouse, App, welcome) {
+    domCtr, win, dom, domStyle, on, mouse, App, welcome, userStudy, Nasa) {
+            
 
         return Accessor.createSubclass({
             declaredClass: "urbanmobility.Home",
 
-            email: null,
-
             constructor: function () {
-                
+                this.userId = 1;
             },
 
-            init: function (urlJson) {
+            init: function (settings) {
+                this.settings = settings;
 
                 // destroy welcome page when app is started
                 domCtr.destroy("background");
+                this.status = {};
 
-                this.email = urlJson.Login;
-
-                this.storeUserInfo()
+                this.userStudy = new userStudy(this);
+                //this.storeUserInfo()
                 this.createUI();
                 this.clickHandler();
                 this.urlParser();
-
 
             },
 
@@ -45,45 +46,73 @@ define([
                 var background_home = domCtr.create("div", { id: "background_home"}, win.body());
                 var header_home = domCtr.create("div", { id: "header_home"},  background_home);
 
-                this.logout = domCtr.create("div", { id: "logout", className: "link", innerHTML: "Logout" }, header_home);
-                domCtr.create("div", { id: "loggedIn", innerHTML: "Logged in as: " +  "<span style='color: #F3511B'>"+this.email+"</span>"}, header_home);
+                domCtr.create("div", { id: "loggedIn", innerHTML: "Your user ID is: " +  "<span style='color: #F3511B'>"+this.userId+"</span>"}, header_home);
                 domCtr.create("img", { id: "logo_home", src: "images/Logo.png" }, header_home);
 
+                this.containerHome = domCtr.create("div", { id: "containerHome"}, background_home);
+                this.containerTasks = domCtr.create("div", { id: "containerTasks"}, containerHome);
 
-                var container1 = domCtr.create("div", { id: "container1", className: "containerType"}, background_home);
-                this.task1 = domCtr.create("div", { id: "Task1", className: "task_button", innerHTML: "Task 1" }, container1);
+                var container1 = domCtr.create("div", { id: "container1", className: "containerType"}, containerTasks);
+                this.task1 = domCtr.create("div", { id: "task1", className: "task_button", innerHTML: "Task 1" }, container1);
                 this.task1_desc = domCtr.create("div", { id: "task1_desc", className: "task_desc", innerHTML: "Enter your information" }, container1);
+                this.status.task1 = {done: 1, container: container1}
 
-                var container2 = domCtr.create("div", { id: "container2", className: "containerType"}, background_home);
-                this.task2 = domCtr.create("div", { id: "Task2", className: "task_button", innerHTML: "Task 2" }, container2);
-                this.task2_desc = domCtr.create("div", { id: "task2_desc", className: "task_desc", innerHTML: "Read about the thesis and the project" }, container2);
+                var container2 = domCtr.create("div", { id: "container2", className: "containerType"}, containerTasks);
+                this.task2 = domCtr.create("div", { id: "task2", className: "task_button", innerHTML: "Task 2" }, container2);
+                this.task2_desc = domCtr.create("div", { id: "task2_desc", className: "task_desc", innerHTML: "Information about project" }, container2);
+                this.status.task2 = {done: 1, container: container2}
 
-                var container3 = domCtr.create("div", { id: "container3", className: "containerType"}, background_home);
-                this.task3 = domCtr.create("div", { id: "Task3", className: "task_button", innerHTML: "Task 3" }, container3);
-                this.task3_desc = domCtr.create("div", { id: "task3_desc", className: "task_desc", innerHTML: "Answer first question" }, container3);
+                var container3 = domCtr.create("div", { id: "container3", className: "containerType"}, containerTasks);
+                this.task3 = domCtr.create("div", { id: "task3", className: "task_button", innerHTML: "Task 3" }, container3);
+                this.task3_desc = domCtr.create("div", { id: "task3_desc", className: "task_desc", innerHTML: "Tasks Round 1" }, container3);
+                this.status.task3 = {done: -1, container: container3}
 
-                var container4 = domCtr.create("div", { id: "container4", className: "containerType"}, background_home);
-                this.task4 = domCtr.create("div", { id: "Task4", className: "task_button", innerHTML: "Task 4" }, container4);
-                this.task4_desc = domCtr.create("div", { id: "task4_desc", className: "task_desc", innerHTML: "Answer second question" }, container4);
+                var container4 = domCtr.create("div", { id: "container4", className: "containerType"}, containerTasks);
+                this.task4 = domCtr.create("div", { id: "task4", className: "task_button", innerHTML: "Task 4" }, container4);
+                this.task4_desc = domCtr.create("div", { id: "task4_desc", className: "task_desc", innerHTML: "Questionnaire" }, container4);
+                this.status.task4 = {done: 0, container: container4}
 
-                var container5 = domCtr.create("div", { id: "container5", className: "containerType"}, background_home);
-                this.task5 = domCtr.create("div", { id: "Task5", className: "task_button", innerHTML: "Task 5" }, container5);
-                this.task5_desc = domCtr.create("div", { id: "task5_desc", className: "task_desc", innerHTML: "Answer third question" }, container5);
+                var container5 = domCtr.create("div", { id: "container5", className: "containerType"}, containerTasks);
+                this.task5 = domCtr.create("div", { id: "task5", className: "task_button", innerHTML: "Task 5" }, container5);
+                this.task5_desc = domCtr.create("div", { id: "task5_desc", className: "task_desc", innerHTML: "Tasks Round 2" }, container5);
+                this.status.task5 = {done: 0, container: container5}
 
-                var container6 = domCtr.create("div", { id: "container6", className: "containerType"}, background_home);
-                this.task6 = domCtr.create("div", { id: "Task6", className: "task_button", innerHTML: "Task 6" }, container6);
-                this.task6_desc = domCtr.create("div", { id: "task6_desc", className: "task_desc", innerHTML: "Fill in the questionnaire" }, container6);
-
-               
+                var container6 = domCtr.create("div", { id: "container6", className: "containerType"}, containerTasks);
+                this.task6 = domCtr.create("div", { id: "task6", className: "task_button", innerHTML: "Task 6" }, container6);
+                this.task6_desc = domCtr.create("div", { id: "task6_desc", className: "task_desc", innerHTML: "Questionnaire" }, container6);
+                this.status.task6 = {done: 0, container: container6}
+                this.updateUI();
 
             },
 
             clickHandler: function () {
 
-                on(this.logout, "click", function (evt) {
-                    window.location.href = window.location.href.split("?")[0];
+
+                on(this.task1, "click", function (evt) {
+                    
                 }.bind(this));
 
+                on(this.task2, "click", function (evt) {
+                    
+                }.bind(this));
+
+
+                on(this.task3, "click", function (evt) {
+                    var app = new App();
+                    app.init(this.settings, "userStudy", this.userStudy);
+                }.bind(this));
+
+                on(this.task4, "click", function (evt) {
+                    this.status.task4.done = 1;
+                    this.updateUI();
+                    var nasa = new Nasa(this.settings, this.containerHome);
+                    nasa.init();
+                }.bind(this));
+
+                on(this.task5, "click", function (evt) {
+                    var app2 = new App();
+                    app2.init(this.settings, "userStudy", this.userStudy);
+                }.bind(this));
                
 
             },
@@ -114,8 +143,47 @@ define([
             
                 document.body.removeChild(saveLink);
             
+            }, 
+            returnToHome: function(round) {
+                if (round == 1) {
+                    this.status.task3.done = 1;
+                    this.status.task4.done = -1;
+                }
+                else {
+                    this.status.task5.done = 1;
+                    this.status.task6.done = -1;
+                }
+                this.updateUI();
 
-            }
+                domCtr.destroy("viewDiv");
+                domCtr.destroy("userStudy");
+                domCtr.destroy("overlay");
+                dom.byId("background_home").style.display = "block";
+
+            }, 
+
+            updateUI() {
+                for (let [key, value] of Object.entries(this.status)) {
+                    if (value.done == 0) {
+                        value.container.style.visibility = "hidden"
+                    }
+                    else if (value.done == -1) {
+                        value.container.style.visibility = "visible"
+
+                        value.container.children[key].style.pointerEvents = 'auto';
+                        value.container.children[key].style.borderColor = this.settings.colors.project;	
+
+                    }
+                    else if (value.done = 1) {
+                        value.container.style.visibility = "visible"
+                        value.container.children[key].style.pointerEvents = 'none';
+                        value.container.children[key].style.borderColor = "grey";	
+
+                        value.container.style.opacity = 0.5
+                    }
+
+                  }
+            },
 
 
            
