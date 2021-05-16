@@ -8,9 +8,12 @@ define([
     "dojo/_base/window",
     "dojo/dom-style",
 
+    "urbanmobility/Ueq",
+
+
 ], function (
     Accessor,
-    dom, on, domCtr, win, domStyle) {
+    dom, on, domCtr, win, domStyle, Ueq) {
 
 
     return Accessor.createSubclass({
@@ -18,7 +21,10 @@ define([
 
         constructor: function (settings, containerHome) {
             this.settings = settings;
-            this.containerQuest = domCtr.create("div", { id: "containerQuest", className : "questionnaire"}, containerHome);
+            this.containerHome = containerHome;
+            domCtr.destroy("containerQuest");
+
+            this.containerQuest = domCtr.create("div", { id: "containerQuest", className : "questionnaire"}, this.containerHome);
             this.containerNasa = domCtr.create("div", { id: "containerNasa"}, containerQuest);
 
             this.results = {};
@@ -27,32 +33,32 @@ define([
         init: function() {
             var row = domCtr.toDom(
                 `
-                <section>
+                <section class="nasaSection">
 					<h3>Mental demand</h3>
 					<p>How mentally demanding was the task?</p>
                         <input type="range" min="0" max="100" value="50" step="5" class="slider" id="md">
 				</section>
-				<section>
+				<section class="nasaSection">
 					<h3>Physical demand</h3>
 					<p>How physically demanding was the task?</p>
                         <input type="range" min="0" max="100" value="50" step="5" class="slider" id="pd">
 				</section>
-				<section>
+				<section class="nasaSection">
 					<h3>Temporal demand</h3>
 					<p>How hurried or rushed was the pace of the task?</p>
                         <input type="range" min="0" max="100" value="50" step="5" class="slider" id="td">
 				</section>
-				<section>
+				<section class="nasaSection">
 					<h3>Performance</h3>
 					<p>How successful were you in accomplishing what you were asked to do?</p>
                         <input type="range" min="0" max="100" value="50" step="5" class="slider performance" id="pe">
 				</section>
-				<section>
+				<section class="nasaSection">
 					<h3>Effort</h3>
 					<p>How hard did you have to work to accomplish your level of performance?</p>
                         <input type="range" min="0" max="100" value="50" step="5" class="slider" id="ef">
 				</section>
-				<section>
+				<section class="nasaSection">
 					<h3>Frustration</h3>
 					<p>How insecure, discouraged, irritated, stressed, and annoyed were you?</p>
                         <input type="range" min="0" max="100" value="50" step="5" class="slider" id="fr">
@@ -62,7 +68,7 @@ define([
             domCtr.place(row, this.containerNasa);
 
             this.finishButton = domCtr.create("div", { id: "finishButton", className: "task_button", innerHTML: "Done" },  this.containerQuest);
-            this.finishButton.style.pointerEvents = 'none';
+            //this.finishButton.style.pointerEvents = 'none';
 
             this.clickHandler();
         }, 
@@ -112,7 +118,8 @@ define([
             }.bind(this));
 
             on(this.finishButton, "click", function (evt) {
-                
+                var ueq = new Ueq(this.settings, this.containerHome);
+                ueq.init();
             }.bind(this));
            
         },

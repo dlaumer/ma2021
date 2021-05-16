@@ -13,10 +13,12 @@ define([
     "urbanmobility/welcome",
     "urbanmobility/userStudy",
     "urbanmobility/Nasa",
+    "urbanmobility/Ueq",
+
 
 ], function (
     Accessor,
-    domCtr, win, dom, domStyle, on, mouse, App, welcome, userStudy, Nasa) {
+    domCtr, win, dom, domStyle, on, mouse, App, welcome, userStudy, Nasa, Ueq) {
             
 
         return Accessor.createSubclass({
@@ -28,12 +30,13 @@ define([
 
             init: function (settings) {
                 this.settings = settings;
+                this.settings.home = this;
 
                 // destroy welcome page when app is started
                 domCtr.destroy("background");
                 this.status = {};
 
-                this.userStudy = new userStudy(this);
+                this.userStudy = new userStudy(this.settings);
                 //this.storeUserInfo()
                 this.createUI();
                 this.clickHandler();
@@ -65,12 +68,12 @@ define([
                 var container3 = domCtr.create("div", { id: "container3", className: "containerType"}, containerTasks);
                 this.task3 = domCtr.create("div", { id: "task3", className: "task_button", innerHTML: "Task 3" }, container3);
                 this.task3_desc = domCtr.create("div", { id: "task3_desc", className: "task_desc", innerHTML: "Tasks Round 1" }, container3);
-                this.status.task3 = {done: -1, container: container3}
+                this.status.task3 = {done: 1, container: container3}
 
                 var container4 = domCtr.create("div", { id: "container4", className: "containerType"}, containerTasks);
                 this.task4 = domCtr.create("div", { id: "task4", className: "task_button", innerHTML: "Task 4" }, container4);
                 this.task4_desc = domCtr.create("div", { id: "task4_desc", className: "task_desc", innerHTML: "Questionnaire" }, container4);
-                this.status.task4 = {done: 0, container: container4}
+                this.status.task4 = {done: -1, container: container4}
 
                 var container5 = domCtr.create("div", { id: "container5", className: "containerType"}, containerTasks);
                 this.task5 = domCtr.create("div", { id: "task5", className: "task_button", innerHTML: "Task 5" }, container5);
@@ -144,23 +147,37 @@ define([
                 document.body.removeChild(saveLink);
             
             }, 
-            returnToHome: function(round) {
-                if (round == 1) {
+            returnToHome: function() {
+                if (this.status.task4.done == 1) {
+                    this.status.task5.done = -1;
+                    domCtr.destroy("containerQuest");
+                }
+
+                else if (this.status.task6.done == 1) {
+                    // TODO: Final page!
+                    domCtr.destroy("containerQuest");
+                }
+                else if (this.status.task3.done == -1) {
                     this.status.task3.done = 1;
                     this.status.task4.done = -1;
+                    domCtr.destroy("viewDiv");
+                    domCtr.destroy("userStudy");
+                    domCtr.destroy("overlay");
+                    dom.byId("background_home").style.display = "block";
                 }
-                else {
+                else if (this.status.task5.done == -1) {
                     this.status.task5.done = 1;
                     this.status.task6.done = -1;
+                    domCtr.destroy("viewDiv");
+                    domCtr.destroy("userStudy");
+                    domCtr.destroy("overlay");
+                    dom.byId("background_home").style.display = "block";
                 }
                 this.updateUI();
-
-                domCtr.destroy("viewDiv");
-                domCtr.destroy("userStudy");
-                domCtr.destroy("overlay");
-                dom.byId("background_home").style.display = "block";
+                
 
             }, 
+            
 
             updateUI() {
                 for (let [key, value] of Object.entries(this.status)) {

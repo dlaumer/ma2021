@@ -49,9 +49,9 @@ define([
         return Accessor.createSubclass({
             declaredClass: "urbanmobility.userStudy",
 
-            constructor: function (home) {
+            constructor: function (settings) {
                
-                this.home = home;
+                this.settings = settings;
                 this.questions = questions;
                 this.order = orders[Math.floor(Math.random()*4)];
                 this.i = 0;
@@ -134,7 +134,7 @@ define([
                     else {
                         this.round = 1;
                         this.i = 0;
-                        this.home.returnToHome(this.round);
+                        this.settings.home.returnToHome(this.round);
                     }
             }, 
 

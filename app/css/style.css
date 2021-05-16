@@ -337,6 +337,7 @@ div.tooltip {
 }
 
 #containerHome {
+  height:90vh;
   width: 100%;
   flex:1;
 
@@ -352,11 +353,17 @@ div.tooltip {
 #containerTasks {
   width: 40%;
   height: 100%;
+
+  padding: 0;
+  margin: 0;
 }
 
 .questionnaire {
   flex:1;
   height:100%;
+
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
 
@@ -366,13 +373,23 @@ div.tooltip {
 
   justify-content: center;
 
-
 }
 
 #containerNasa {
-  width:100%
+  width:100%;
+  height: 90%;
 }
 
+#containerUeq {
+  width:100%;
+  height: 90%;
+  overflow: auto;
+
+}
+
+.nasaSection {
+  height: 13%;
+}
 
 #loggedIn {
   height:100%;
@@ -482,4 +499,38 @@ div.tooltip {
 
 #finishButton {
   width: 30%;
+}
+
+
+.containerItem {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.radioButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  align-items: center;
+  flex-wrap: nowrap;
+  margin: 0 20px;
+  width: 30%;
+}
+
+.textLeft {
+  width: 30%;
+  text-align: right
+}
+
+.textRight {
+  width: 30%;
+  text-align: left;
+}
+
+label.radio-inline {
+  margin: 10px 0;
+  padding: 0;
 }
