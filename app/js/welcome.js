@@ -27,7 +27,10 @@ define([
                 traffic: "Traffic",
                 air: "Air Pollution",
                 traffic_pro: "Traffic_pro", 
-                streets_pro: "Streets_pro"
+                streets_pro: "Streets_pro",
+                pt_stops: "Public Transport Stops", 
+                pt_lines: "Public Transport Lines"
+
             },
             colors: {
                 now: "#17BEBB",

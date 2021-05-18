@@ -19,47 +19,44 @@ define([
     return Accessor.createSubclass({
         declaredClass: "urbanmobility.dataDrill",
 
-        constructor: function (scene, view, settings) {
+        constructor: function (scene, view, settings, infoText) {
             this.scene = scene;
             this.view = view;
             this.settings = settings;
             this.graphMaker = new graphMaker(scene, view, settings)
             this.currentData = null;
+            this.infoText = infoText
         },
 
         clickHandler: function () {
             var view = this.view;
-
             view.on("click", function (event) {
+                //view.popup.collapsed = true;
+
                 view.hitTest(event.screenPoint).then(function (response) {
-                    var result = response.results[0];
-                    if (result && (result.graphic.layer.title == this.settings.layerNames.pt || result.graphic.layer.title == this.settings.layerNames.traffic || result.graphic.layer.title == this.settings.layerNames.air)){
+                    this.result = response.results[0];
+                    if (this.result && (this.result.graphic.layer.title == this.settings.layerNames.pt ||  this.result.graphic.layer.title == this.settings.layerNames.traffic ||  this.result.graphic.layer.title == this.settings.layerNames.traffic_pro)){
                         var that = this;
-                        that.view.whenLayerView(result.graphic.layer).then((layerView) => {
+                        that.view.whenLayerView(this.result.graphic.layer).then((layerView) => {
                             if (that.highlight) {
                                 that.highlight.remove();
                                 }
-                            that.highlight = layerView.highlight([result.graphic.getObjectId()]);
+                            that.highlight = layerView.highlight([this.result.graphic.getObjectId()]);
                             
-                            that.processGraphic(result.graphic, result.graphic.layer.title, function(data) {
+                            that.processGraphic(this.result.graphic, this.result.graphic.layer.title, function(data) {
                                 that.currentData = data;
-                                that.graphMaker.render(data.all);
-                                dom.byId("dashboard-text").innerHTML = data.text;
-                                that.graphMaker.updatePTDiagramm(data.hourData);
+                                that.renderDiagrams(false);
                             });
                         });
                     }
                     else {
                         if (this.highlight) {
                             this.highlight.remove();
+                            this.result = null;
                         }
                         this.currentData = this.allData;
-                        this.graphMaker.updatePTDiagramm(this.allData.hourData);
-                        this.graphMaker.render(this.allData.all);
-                        dom.byId("dashboard-text").innerHTML = this.allData.text;
+                        this.renderDiagrams(false);
                     }
-
-                    
 
                 }.bind(this)).catch(function (err) {
                     console.error(err);
@@ -87,7 +84,13 @@ define([
                     var data = {}
                     data.hourData = this.parsePTData(results);
                     data.all = results.features[0].attributes[modeManager.viewSettings.prefix + modeManager.viewSettings.attribute];
-                    data.text =  "<b>Occupancy</b> <br><br> From: " + results.features[0].attributes["Fr_name"] + "<br>To: " + results.features[0].attributes["To_name"];
+                    data.text =  "<b>Occupancy</b> <br> <span style='font-size: smaller'>Percentage of occupied spaces </span> <br><br> From: " + results.features[0].attributes["Fr_name"] + "<br>To:    " + results.features[0].attributes["To_name"];
+                }
+                if (layerName == this.settings.layerNames.traffic || layerName == this.settings.layerNames.traffic_pro) {
+                    var data = {}
+                    data.hourData = this.parseTrafficData(results);
+                    data.all_avg = (results.features[0].attributes[modeManager.viewSettings.prefix + "all_x"] + results.features[0].attributes[modeManager.viewSettings.prefix + "all_y"])/ 2;
+                    data.text =  "<b>Number of cars</b><br> <span style='font-size: smaller'>Average per day </span> <br><br> From: " + results.features[0].attributes["Fr_name"] + "<br>To:    " + results.features[0].attributes["To_name"];
                 }
                 results.features[0].visible = false;
                 callback(data);
@@ -98,11 +101,14 @@ define([
         }, 
 
         processAllData: function(layer) {
-            if (layer == "none" || layer.title == this.settings.layerNames.traffic || layer.title == this.settings.layerNames.air) {
-                dom.byId("dashboard-text").innerHTML = "<b>Dashboard</b>";
+            if (layer == "none" || layer.title == this.settings.layerNames.air) {
+                dom.byId("dashboard-text").innerHTML = this.infoText;
+                dom.byId("dashboard-text").style.width = "100%";
+
                 this.graphMaker.removeDiagrams();
             }
             else if (layer.title == this.settings.layerNames.pt) {
+
                 if (layer.layers && (layer.layers.length == 2)) {
                     layer = layer.layers.getItemAt(0);
 
@@ -133,20 +139,40 @@ define([
                     this.allData = {};
                     this.allData.hourData = this.parsePTData(results);
                     this.allData.all = results.features[0].attributes["all"];
-                    this.allData.text = "<b>Occupancy</b> <br><br> Whole Project Area";
-                    this.currentData = this.allData;
-                    if (dom.byId("svgDonut")) {
-                        this.renderDiagrams(false);
+                    this.allData.text = "<b>Occupancy</b> <br> <span style='font-size: smaller'>Percentage of occupied spaces </span><br><br> Whole Project Area";
+                    var that = this;
+                    dom.byId("dashboard-text").style.width = "25%";
+
+                    if (that.result) {
+                        that.processGraphic(that.result.graphic, that.result.graphic.layer.title, function(data) {
+                            that.currentData = data;
+                            if (dom.byId("svgDonut")) {
+                                that.renderDiagrams(false);
+                            }
+                            else {
+                                that.renderDiagrams(true);
+                            };
+                        })
+                        
                     }
                     else {
-                        this.renderDiagrams(true);
+                        that.currentData = that.allData;
+                        if (dom.byId("svgDonut")) {
+                            that.renderDiagrams(false);
+                        }
+                        else {
+                            that.renderDiagrams(true);
+                        }
                     }
+                    
+                   
 
                 }.bind(this)).catch(function (err) {
                     console.error(err);
                 });
             }
             else if (layer.title == this.settings.layerNames.traffic) {
+
                 // query for the average population in all features
                 var statQuery = [{
                     onStatisticField: modeManager.viewSettings.prefix + "all_x",  
@@ -184,10 +210,32 @@ define([
                     this.allData.hourData = this.parseTrafficData(results);
                     this.allData.all_x = results.features[0].attributes["all_x"];
                     this.allData.all_y = results.features[0].attributes["all_y"];
-                    this.allData.text = "<b>Traffic Measurements</b> <br><br> Whole Project Area";
-                    this.currentData = this.allData;
-                    
+                    this.allData.all_avg = (this.allData.all_x + this.allData.all_y) / 2;
+                    this.allData.text = "<b>Number of cars</b><br> <span style='font-size: smaller'>Average per day </span>  <br><br> Whole Project Area";
+                    var that = this;
+                    dom.byId("dashboard-text").style.width = "25%";
 
+                    if (this.result) {
+                        that.processGraphic(that.result.graphic, that.result.graphic.layer.title, function(data) {
+
+                            that.currentData = data;
+                            if (dom.byId("svgTimeline")) {
+                                that.renderDiagrams(false);
+                            }
+                            else {
+                                that.renderDiagrams(true);
+                            };
+                        })
+                    }
+                    else {
+                        that.currentData = that.allData;
+                        if (dom.byId("svgTimeline")) {
+                            that.renderDiagrams(false);
+                        }
+                        else {
+                            that.renderDiagrams(true);
+                        }
+                    }
                 }.bind(this)).catch(function (err) {
                     console.error(err);
                 });
@@ -222,26 +270,35 @@ define([
                 value_x == null ? value_x = 0 : null;
                 value_y == null ? value_y = 0 : null;
                 
-                data.push({time: (i).toString() + ":00", percentage: value_x, "value_y": value_y});
+                data.push({time: (i).toString() + ":00", "value_avg":(value_x + value_y)/2, "value_x": value_x, "value_y": value_y});
             }
             return data;
         },
 
         renderDiagrams: function(init) {
             // Init means it is rendering the first time ever
-            if (modeManager.viewSettings.theme != "none") {
+            if (modeManager.viewSettings.theme == "pt") {
                 if (init) {
-                    this.graphMaker.initPTDiagramm()
+                    this.graphMaker.initDiagramm()
                     this.graphMaker.updatePTDiagramm(this.currentData.hourData, true);
-                    if (modeManager.viewSettings.theme == "pt") {
-                        this.graphMaker.updateDonutChart(this.currentData.all);
-                    }
+                    this.graphMaker.initDonutChart(this.currentData.all);
 
                 }
                 this.graphMaker.updatePTDiagramm(this.currentData.hourData);     // Second time bc forsome reason the tooltip did not work the first time
-                if (modeManager.viewSettings.theme == "pt") {
-                    this.graphMaker.render(this.currentData.all);
+                this.graphMaker.updateDonutChart(this.currentData.all);
+
+                dom.byId("dashboard-text").innerHTML = this.currentData.text;
+            }
+
+            else if (modeManager.viewSettings.theme == "traffic") {
+                if (init) {
+                    this.graphMaker.initDiagramm()
+                    this.graphMaker.updateTrafficDiagramm(this.currentData.hourData, true);
+                    this.graphMaker.initDonutChart(this.currentData.all_avg);
+
                 }
+                this.graphMaker.updateTrafficDiagramm(this.currentData.hourData);     // Second time bc forsome reason the tooltip did not work the first time
+                this.graphMaker.updateTrafficChart(this.currentData.all_avg);
 
                 dom.byId("dashboard-text").innerHTML = this.currentData.text;
             }

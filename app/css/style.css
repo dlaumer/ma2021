@@ -7,7 +7,7 @@
 
 :root {
   --now: #17bebb;
-  --no_project: #0E7C7B;
+  --no_project: #bebebe;
   --project: #F3511B;
   --highlight: #E0CA3C;
 }
@@ -129,8 +129,33 @@ p {
 
 }
 
-#startButton {
+#overlayItems {
+  height:100%;
+  width:100%;
+  z-index: 100;
+  position: absolute;;
+  display: flex;
+  justify-content: center;
+  opacity: 1;
+  align-items: center;
+  flex-direction: column;
+  transition: opacity 1s, visibility 1s;
 
+}
+
+#questionStart {
+
+  background: rgb(255, 255, 255);
+  opacity: 1;
+  font-size: 1.3vw;
+  text-align: center;
+  padding: 30px;
+  border-radius: 20px;
+
+}
+
+#startButton {
+  opacity: 1;
 }
 
 #userStudy {
@@ -152,6 +177,7 @@ p {
 #questionDiv {
  font-size: 1.3vw;
  flex-grow: 4;
+ padding: 0 20px;
 }
 
 #inResult {
@@ -176,6 +202,7 @@ p {
   width: 25vw;
   padding-left: 0;
   padding-right: 0;
+  padding-bottom: 10px;
   background: white;
   cursor: pointer;
   display: flex;
@@ -268,7 +295,7 @@ p {
 }
 
 #dashboard-text {
-  width: 25%;
+  width: 100%;
   margin: 0 5px
 }
 
@@ -387,6 +414,12 @@ div.tooltip {
 
 }
 
+#containerPreQuest {
+  width:100%;
+  height: 90%;
+  overflow: auto;
+}
+
 .nasaSection {
   height: 13%;
 }
@@ -411,6 +444,14 @@ div.tooltip {
   width:100%;
 }
 
+.containerTypeQuest {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  width:100%;
+}
+
 .task_button {
   text-align: center;
 
@@ -427,6 +468,17 @@ div.tooltip {
   background: var(--project);
   color: white;
 }
+
+.quest_input {
+  border-radius: 10px;
+  border: 1px solid grey;
+  margin: 2%;
+  padding: 10px;
+  font-size: 1.3vw;
+  width: 20vw;
+}
+
+
 .task_desc {
   display: flex;
   justify-content: center;

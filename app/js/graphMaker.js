@@ -20,7 +20,7 @@ define([
                 this.settings = settings;
             },
 
-            initPTDiagramm: function() {
+            initDiagramm: function() {
                 this.margin = { top: 10, right: 10, bottom: 40, left: 50 };
 
                 this.widthTimeline = d3
@@ -73,8 +73,18 @@ define([
                 .attr("class", "tooltip")				
                 .style("opacity", 0);
 
+                this.svgTimeline.append("text")
+                .attr("font-size", "10px")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 0 - this.margin.left *3 / 4)
+                .attr("x", 0 - (this.heightTimeline / 2))
+                .style("text-anchor", "middle")
+                .attr("class", "text")
+                .text("");
+
 
             },
+
 
             removeDiagrams: function() {
                 if(dom.byId("svgTimeline")) {
@@ -85,8 +95,7 @@ define([
                 }
             },
 
-            updateDonutChart: function(percentage) {
-
+            initDonutChart: function(percentage) {
                 var marg = 0;
 
                 var width = d3
@@ -124,10 +133,34 @@ define([
                     .style("font-size", this.radius/2.5+"px")
                     .attr("fill", this.settings.colors.now);
                 
-                this.render(percentage);
+                    // create svg element:
+                this.svg
+                    .append('circle')
+                    .attr('r', 0)
+                    //.attr('stroke', this.settings.colors.now)
+                    .attr('fill', '#17BEBB40')  
             },
 
-            render: function(percentage) {
+
+            updateTrafficChart: function(value) {
+
+
+                var percentage =value / 25000;
+                
+                this.svg.selectAll("circle")
+                    .transition()
+                    .duration(1000)
+                    .attr("r", this.radius * percentage)
+            
+                this.svg.select("text.text-tooltip")
+                    //.attr("x", 0 )
+                    //.attr("y", 0 + this.radius )
+                    .text(value.toFixed(0)).transition().duration(1000);
+
+            
+            },
+
+            updateDonutChart: function(percentage) {
 
                 var color = [this.settings.colors.now, "#17BEBB40"]
 
@@ -180,12 +213,7 @@ define([
                 // Parse the Data
                 // X axis
                 // Text label for the y axis
-                that.svgTimeline.append("text")
-                .attr("font-size", "10px")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 0 - this.margin.left / 2)
-                .attr("x", 0 - (this.heightTimeline / 2))
-                .style("text-anchor", "middle")
+                that.svgTimeline.select(".text")
                 .text("Occupancy [%]");
 
                 
@@ -278,7 +306,76 @@ define([
                         .style("opacity", 0);	
                 });
               
-              }
+            },
+
+            updateTrafficDiagramm: function(hourData, firstTime=false) {
+                d3.selection.prototype.conditionalTransition =
+                    function(cond) {
+                        return cond ? this: this.transition().duration(1000);
+                    };
+                // Update the barcharts according to what is clicked
+                var that = this;
+                // Parse the Data
+                // X axis
+                // Text label for the y axis
+                that.svgTimeline.select(".text")
+                .text("Number of cars");
+
+                
+                that.xScale.domain(hourData.map(function (d) { return d.time; }))
+                that.xAxis.conditionalTransition(firstTime).call(d3.axisBottom(that.xScale).tickFormat(function (d) {
+                  return d
+                }
+                ))
+                  .selectAll("text")
+                  .style("text-anchor", "end")
+                  .attr("dx", "-.8em")
+                  .attr("dy", ".15em")
+                  .attr("transform", "rotate(-65)")
+              
+                // Add Y axis
+                //that.yScale.domain([0, d3.max(hourData, d => d.value_avg)]);
+                that.yScale.domain([0, 1800]);
+                that.yAxis.conditionalTransition(firstTime).call(d3.axisLeft(that.yScale).ticks(3));
+              
+                // variable u: map data to existing bars
+                var u = that.svgTimeline.selectAll(".bars")
+                  .data(hourData)
+              
+                // Update bars
+                u
+                  .enter()
+                  .append("rect")
+                  .merge(u)
+                  .conditionalTransition(firstTime)
+                  .attr("x", function (d) { 
+                      return that.xScale(d.time); })
+                  .attr("y", function (d) { 
+                      return that.yScale(d.value_avg); })
+                  .attr("width", that.xScale.bandwidth())
+                  .attr("height", function (d) { 
+                      return that.heightTimeline - that.yScale(d.value_avg); })
+                  .attr("fill", that.settings.colors.now)
+                  .attr("class", "bars")
+                  
+                  
+                u.on("mouseover", function(d) {		
+                    that.tooltip.transition()		
+                        .duration(200)		
+                        .style("opacity", .9);		
+                    that.tooltip	
+                        .html(d.value_avg.toFixed())	
+                        .style("left", (d3.event.pageX) + "px")		
+                        .style("top", (d3.event.pageY - 28) + "px");	
+                    })					
+                .on("mouseout", function(d) {		
+                        that.tooltip.transition()		
+                            .duration(500)		
+                            .style("opacity", 0);	
+                    });
+                   // Update bars
+                
+            },
 
         });
     }

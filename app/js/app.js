@@ -9,6 +9,7 @@ define([
     "esri/views/MapView",
     "esri/layers/SceneLayer",
     "esri/Basemap",
+    "esri/support/popupUtils",
 
     "esri/widgets/Legend",
     "esri/widgets/LayerList",
@@ -31,7 +32,7 @@ define([
 
 ], function (
     Accessor, esriConfig,
-    WebScene,WebMap, SceneView, MapView, SceneLayer, Basemap, Legend, LayerList,
+    WebScene,WebMap, SceneView, MapView, SceneLayer, Basemap, popupUtils, Legend, LayerList,
     dom, on, domCtr, win, domStyle,
     Search, userStudy, dataDrill, graphMaker, modeManager, vizChanger) {
 
@@ -40,6 +41,13 @@ define([
             declaredClass: "urbanmobility.app",
 
             constructor: function () {
+
+                this.infoText = 
+                `<b>Rosengarten Project</b> <br><br> 
+                This project was developed between 2010 and 2020 in order to relieve 
+                the traffic on the Rosengartenstrasse. It involves a semi- circular 
+                tunnel and two new tram lines.
+                `;
             },
 
             init: function (settings, info, userStudy) {
@@ -64,8 +72,13 @@ define([
 
 
                 if (this.settings.dimension == "2D") {
-                    this.settings.webscene = "10a40aea47a04c2484cf4baa9aab4dee";
+                    this.settings.webscene = "df003844f48443c89c36b4e335700b58";
                 }
+                else if (this.settings.dimension == "3D") {
+                    this.settings.webscene = "03c3431c5e984f4ab52144950552e6c6";
+                }
+
+                
 
                 // set portal url
                 esriConfig.portalUrl = this.settings.url;
@@ -87,9 +100,13 @@ define([
                         map: this.scene,
                         highlightOptions: {
                             color: this.settings.colors.highlight,
+                            haloColor: this.settings.colors.highlight,
+                            haloOpacity: 1,
                             fillOpacity: 0.2,
+
                           },
                     });
+
                 }
                 else if (this.settings.dimension == "3D") {
                     // load scene with portal ID
@@ -107,7 +124,9 @@ define([
                     qualityProfile: "high",
                     highlightOptions: {
                         color: this.settings.colors.highlight,
-                        fillOpacity: 0.2,
+                        haloColor: this.settings.colors.highlight,
+                        haloOpacity: 0.3,
+                        fillOpacity: 1,
                       },
                     });
                 }
@@ -142,7 +161,7 @@ define([
 
 
                     var dashboard = domCtr.create("div", { id: "dashboard" }, win.body());
-                    domCtr.create("div", { id: "dashboard-text" , innerHTML: "<b>Dashboard</b>"}, dashboard);
+                    domCtr.create("div", { id: "dashboard-text" , innerHTML: this.infoText}, dashboard);
                     domCtr.create("div", { id: "dashboard-info" }, dashboard);
                     var dashboard_chart = domCtr.create("div", { id: "dashboard-chart" }, dashboard);
                     domCtr.create("svg", { id: "svgTimeline" }, dashboard_chart);
@@ -198,7 +217,7 @@ define([
 
                     on(now, "click", function () {
                         selection.style.marginLeft = "0";
-                        selection.style.background = settings_demo.colors.now;
+                        selection.style.background = that.settings.colors.now;
                         modeManager.changeMode("mode", "now");
                         that.vizChanger.changeVisualization();
                         that.dataDrill.processAllData(modeManager.viewSettings.layer);
@@ -206,7 +225,7 @@ define([
                     });
                     on(no_project, "click", function () {
                         selection.style.marginLeft = "35%";
-                        selection.style.background = settings_demo.colors.no_project;
+                        selection.style.background = that.settings.colors.no_project;
                         modeManager.changeMode("mode", "no_project");
                         that.vizChanger.changeVisualization();
                         that.dataDrill.processAllData(modeManager.viewSettings.layer);
@@ -214,7 +233,7 @@ define([
                     });
                     on(project, "click", function () {
                         selection.style.marginLeft = "70%";
-                        selection.style.background = settings_demo.colors.project;
+                        selection.style.background = that.settings.colors.project;
                         modeManager.changeMode("mode", "project");
                         that.vizChanger.changeVisualization();
                         that.dataDrill.processAllData(modeManager.viewSettings.layer);
@@ -235,7 +254,11 @@ define([
                             pt.style.backgroundColor = that.settings.colors.highlight;
                             modeManager.changeMode("theme", "pt");
                             }
-                        
+                        that.dataDrill.graphMaker.removeDiagrams();
+                        if (that.dataDrill.highlight) {
+                            that.dataDrill.highlight.remove();
+                            that.dataDrill.result = null;
+                        }
                         that.vizChanger.changeVisualization();
                         that.dataDrill.processAllData(modeManager.viewSettings.layer);
 
@@ -252,6 +275,11 @@ define([
                         else {
                             traffic.style.backgroundColor = that.settings.colors.highlight;
                             modeManager.changeMode("theme", "traffic");
+                        }
+                        that.dataDrill.graphMaker.removeDiagrams();
+                        if (that.dataDrill.highlight) {
+                            that.dataDrill.highlight.remove();
+                            that.dataDrill.result = null;
                         }
                         that.vizChanger.changeVisualization();
                         that.dataDrill.processAllData(modeManager.viewSettings.layer);
@@ -312,10 +340,74 @@ define([
                
 
                     this.vizChanger = new vizChanger(this.scene, this.view, this.settings);
-                    
-                    this.dataDrill = new dataDrill(this.scene, this.view, this.settings);
+                    that.vizChanger.changeVisualization();
+
+                    this.dataDrill = new dataDrill(this.scene, this.view, this.settings, this.infoText);
                     for (var i = 0;  i < this.scene.layers.length; i++) {
-                        this.scene.layers.getItemAt(i).popupEnabled = false;
+
+                        if (this.scene.layers.getItemAt(i).title == this.settings.layerNames.pt_lines) {
+                            const template = {
+                                // autocasts as new PopupTemplate()
+                                title: "Line number: {route_short_name}",
+                                /*
+                                content: [
+                                  {
+                                    type: "fields",
+                                    fieldInfos: [
+                                      {
+                                        fieldName: "route_type_text",
+                                        label: "Type of vehicle"
+                                      }
+                                    ]
+                                  }
+                                ]
+                                */
+                              };
+                              
+                              this.scene.layers.getItemAt(i).popupTemplate = template;
+                              this.scene.layers.getItemAt(i).popupEnabled = true;
+
+                        }
+
+                        else if (this.scene.layers.getItemAt(i).title == this.settings.layerNames.pt_stops) {
+                            const template = {
+                                // autocasts as new PopupTemplate()
+                                title: "Stop name: {CHSTNAME}",
+                                /*
+                                content: [
+                                  {
+                                    type: "fields",
+                                    fieldInfos: [
+                                      {
+                                        fieldName: "LINIEN",
+                                        label: "Lines"
+                                      }
+                                    ]
+                                  }
+                                ]
+                                */
+                              };
+                              
+                              this.scene.layers.getItemAt(i).popupTemplate = template;
+                              this.scene.layers.getItemAt(i).popupEnabled = true;
+
+                        }
+
+                        else if (this.scene.layers.getItemAt(i).title == this.settings.layerNames.streets_pro) {
+                            const template = {
+                                // autocasts as new PopupTemplate()
+                                title: "Rosengartentunnel, ca. 2.4 km long",
+                              };
+                              
+                              this.scene.layers.getItemAt(i).popupTemplate = template;
+                              this.scene.layers.getItemAt(i).popupEnabled = true;
+
+                        }
+
+                        else {
+                            this.scene.layers.getItemAt(i).popupEnabled = false;
+
+                        }
                         //this.dataDrill.processAllData(this.scene.layers.getItemAt(i));
                     }
 

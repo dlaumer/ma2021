@@ -43,12 +43,34 @@ define([
                 if (theme != "none") {
                    
 
-                    if (theme == "pt" || theme == "traffic") {
+                    if (theme == "pt") {
                         renderer = layer.renderer.clone();
                         const sizeVariable = renderer.visualVariables[0];
                         sizeVariable.field =  modeManager.viewSettings.prefix + modeManager.viewSettings.attribute;
-                        //sizeVariable.field =  modeManager.viewSettings.attribute;
+                        sizeVariable.legendOptions = {
+                            title: "Occupancy [%]", 
+                            showLegend: true
+                          };
+                          
                         renderer.visualVariables = [sizeVariable];
+
+                        
+                        layer.renderer = renderer;
+                    }
+
+                    if ( theme == "traffic") {
+                        renderer = layer.renderer.clone();
+                        const sizeVariable = renderer.visualVariables[0];
+                        sizeVariable.field =  modeManager.viewSettings.prefix + modeManager.viewSettings.attribute;
+                        sizeVariable.field =  modeManager.viewSettings.attribute;
+                        
+                        //sizeVariable.legendOptions = {
+                        //    title: "% population in poverty by county", 
+                        //    showLegend: true
+                        //  };
+                        renderer.visualVariables = [sizeVariable];
+
+                        
                         layer.renderer = renderer;
                     }
                     else if (theme == "air") {
@@ -63,23 +85,21 @@ define([
 
                     }
 
-                    // TODO: Just hack, also needs to be done in 2D at one point!
-                    if (this.settings.dimension == "3D") {
+                    
+                }
 
-                        // Filter the layer
-                        this.view.whenLayerView(modeManager.viewSettings.layer).then(function(layerView) {
-                            if (modeManager.viewSettings.mode == "project") {
-                                layerView.filter = null;
-                            } else {
-                                layerView.filter = {
-                                    where:"project = 0"
-                                };
-                            }
-                        });
-                    }
-                 }
+                    // Filter the layer
+                    this.view.whenLayerView(modeManager.getLayer(this.settings.layerNames.pt_lines)).then(function(layerView) {
+                        if (modeManager.viewSettings.mode == "project") {
+                            layerView.filter = null;
+                        } else {
+                            layerView.filter = {
+                                where:"project = 0"
+                            };
+                        }
+                    });
                 
-                 if (mode == "project" && theme == "traffic") {
+                if (mode == "project" && theme == "traffic") {
                     modeManager.getLayer(this.settings.layerNames.traffic_pro).visible = true;
                 }
                 else {

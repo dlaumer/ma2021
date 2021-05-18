@@ -68,24 +68,32 @@ define([
                 dom.byId("background_home").style.display = "none";
 
                 this.overlay = domCtr.create("div", { id: "overlay"}, win.body())
-                this.questionStart = domCtr.create("div", { id: "questionStart", innerHTML: "Here would be the question"}, this.overlay);
+                
+                this.overlayItems = domCtr.create("div", { id: "overlayItems"}, win.body())
 
-                this.startButton = domCtr.create("div", { id: "startButton", className: "link", innerHTML: "Loading..." },  this.overlay);
-                this.startButton.style.pointerEvents = 'none';
+                this.questionStart = domCtr.create("div", { id: "questionStart", innerHTML: "Here would be the question"}, this.overlayItems);
+                this.startButton = domCtr.create("div", { id: "startButton", className: "link", innerHTML: "Loading..." },  this.overlayItems);
+                //this.startButton.style.pointerEvents = 'none';
 
                 this.userStudy = domCtr.create("div", { id: "userStudy"}, win.body())
 
                 this.questionDiv = domCtr.create("div", { id: "questionDiv"}, this.userStudy);
                 this.inResult = domCtr.create("input", { id: "inResult", name:"inResult",  placeholder:"Enter Result here" }, this.userStudy);
                 this.done = domCtr.create("div", { id: "done", className: "link", innerHTML: "Done" }, this.userStudy);
+                //this.done.style.pointerEvents = 'none';
 
                 domCtr.create("hr");
 
                 this.questions = shuffle(this.questions);
 
-                this.questionStart.innerHTML = this.questions[this.i].question[this.order[this.round].version-1];
+                this.questionStart.innerHTML = "Please answer this question: <br>" + this.questions[this.i].question[this.order[this.round].version-1];
                 
                 var that = this;
+
+                on(this.inResult, "input", function () {
+                    that.done.style.pointerEvents = 'auto';
+                    that.done.style.background = that.settings.colors.project;
+                });
 
                 on(this.done, "click", function () {
                     that.endQuestion()
@@ -125,11 +133,18 @@ define([
                 this.inResult.value = ""
                     this.i++;
                     if (this.i < this.questions.length) {
+
+                        //this.done.style.pointerEvents = 'none';
+                        this.done.style.background = null;
+
                         this.questionDiv.innerHTML = ""
     
                         this.overlay.style.visibility = "visible";
+                        this.overlayItems.style.visibility = "visible";
+                        this.overlayItems.style.opacity = 1;
+
                         this.overlay.style.opacity = 0.8;
-                        this.questionStart.innerHTML = this.questions[this.i].question[this.order[this.round].version-1];
+                        this.questionStart.innerHTML = "Please answer this question: <br>" + this.questions[this.i].question[this.order[this.round].version-1];
                     }
                     else {
                         this.round = 1;
@@ -140,6 +155,8 @@ define([
 
             startQuestion: function() {
                 dom.byId("overlay").style.visibility = 'hidden'
+                this.overlayItems.style.visibility = "hidden";
+                this.overlayItems.style.opacity = 0;
                 this.overlay.style.opacity = 0;
 
                 this.questionDiv.innerHTML = this.questions[this.i].question[this.order[this.round].version-1];
@@ -148,21 +165,16 @@ define([
             }, 
 
             endQuestion: function() {
-                if (this.inResult.value == "") {
-                    alert("Please enter the result first!");
-                }
-                else {
-                    var endTime = new Date();
-                    var timeDiff = (endTime - this.startTime)/1000; //in ms
-                    this.userResults[this.questions[this.i].id] = {
-                        time: timeDiff,
-                        results: this.inResult.value,
-                        clicks: this.counter,
-                    };
-                    console.log( this.userResults);
-                    this.newQuestion()
+               
+                var endTime = new Date();
+                var timeDiff = (endTime - this.startTime)/1000; //in ms
+                this.userResults[this.questions[this.i].id] = {
+                    time: timeDiff,
+                    results: this.inResult.value,
+                    clicks: this.counter,
+                };
+                this.newQuestion()
 
-                }
             },
 
             isReady: function() {
