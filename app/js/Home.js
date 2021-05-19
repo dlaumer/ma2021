@@ -17,23 +17,27 @@ define([
     "urbanmobility/PreQuest",
     "urbanmobility/PostQuest",
     "urbanmobility/InfoProject",
+    "urbanmobility/UserResults",
+
 
 
 
 ], function (
     Accessor,
-    domCtr, win, dom, domStyle, on, mouse, App, welcome, userStudy, Nasa, Ueq, PreQuest, PostQuest, InfoProject) {
+    domCtr, win, dom, domStyle, on, mouse, App, welcome, userStudy, Nasa, Ueq, PreQuest, PostQuest, InfoProject, UserResults) {
             
 
         return Accessor.createSubclass({
             declaredClass: "urbanmobility.Home",
 
             constructor: function () {
-                this.userId = 1;
             },
 
             init: function (settings) {
+                this.urlParser();
+
                 this.settings = settings;
+                this.settings.userId = this.urlParams.userId;
                 this.settings.home = this;
 
                 // destroy welcome page when app is started
@@ -41,10 +45,11 @@ define([
                 this.status = {};
 
                 this.userStudy = new userStudy(this.settings);
+                this.userResultsOnline = new UserResults(this.settings);
+                this.userResultsOnline.init();
                 //this.storeUserInfo()
                 this.createUI();
                 this.clickHandler();
-                this.urlParser();
 
             },
 
@@ -53,7 +58,7 @@ define([
                 var background_home = domCtr.create("div", { id: "background_home"}, win.body());
                 var header_home = domCtr.create("div", { id: "header_home"},  background_home);
 
-                domCtr.create("div", { id: "loggedIn", innerHTML: "Your user ID is: " +  "<span style='color: #F3511B'>"+this.userId+"</span>"}, header_home);
+                domCtr.create("div", { id: "loggedIn", innerHTML: "Your user ID is: " +  "<span style='color: #F3511B'>"+this.settings.userId+"</span>"}, header_home);
                 domCtr.create("img", { id: "logo_home", src: "images/Logo.png" }, header_home);
 
                 this.containerHome = domCtr.create("div", { id: "containerHome"}, background_home);
@@ -62,17 +67,17 @@ define([
                 var container1 = domCtr.create("div", { id: "container1", className: "containerType"}, containerTasks);
                 this.task1 = domCtr.create("div", { id: "task1", className: "task_button", innerHTML: "Task 1" }, container1);
                 this.task1_desc = domCtr.create("div", { id: "task1_desc", className: "task_desc", innerHTML: "Enter your information" }, container1);
-                this.status.task1 = {done: -1, container: container1}
+                this.status.task1 = {done: 1, container: container1}
 
                 var container2 = domCtr.create("div", { id: "container2", className: "containerType"}, containerTasks);
                 this.task2 = domCtr.create("div", { id: "task2", className: "task_button", innerHTML: "Task 2" }, container2);
                 this.task2_desc = domCtr.create("div", { id: "task2_desc", className: "task_desc", innerHTML: "Information about project" }, container2);
-                this.status.task2 = {done: 0, container: container2}
+                this.status.task2 = {done: 1, container: container2}
 
                 var container3 = domCtr.create("div", { id: "container3", className: "containerType"}, containerTasks);
                 this.task3 = domCtr.create("div", { id: "task3", className: "task_button", innerHTML: "Task 3" }, container3);
                 this.task3_desc = domCtr.create("div", { id: "task3_desc", className: "task_desc", innerHTML: "Tasks Round 1" }, container3);
-                this.status.task3 = {done: 0, container: container3}
+                this.status.task3 = {done: -1, container: container3}
 
                 var container4 = domCtr.create("div", { id: "container4", className: "containerType"}, containerTasks);
                 this.task4 = domCtr.create("div", { id: "task4", className: "task_button", innerHTML: "Task 4" }, container4);
@@ -149,8 +154,8 @@ define([
             },
 
             urlParser: function () {
-                var urlParams = Object.keys(getJsonFromUrl());
-                if (urlParams.length == 0) {
+                this.urlParams = getJsonFromUrl();
+                if (Object.keys(this.urlParams).length == 0) {
                     var welcome = new Welcome();
                     welcome.init();    
                 }
@@ -175,19 +180,20 @@ define([
                 document.body.removeChild(saveLink);
             
             }, 
-            returnToHome: function() {
+            returnToHome: function(userResult) {
 
                 if (this.status.task7.done == 1) {
-                    alert("Finished!");
+                    this.uploadResults(7, userResult);
+
                     domCtr.destroy("containerQuest");
                 }
                 else if (this.status.task6.done == 1) {
-                    this.status.task7.done = -1;
+                    this.uploadResults(6, userResult);
                     domCtr.destroy("containerQuest");
                 }
                 else if (this.status.task5.done == -1) {
-                    this.status.task5.done = 1;
-                    this.status.task6.done = -1;
+                    this.uploadResults(5, userResult);
+
                     domCtr.destroy("viewDiv");
                     domCtr.destroy("userStudy");
                     domCtr.destroy("overlay");
@@ -196,13 +202,12 @@ define([
                     dom.byId("background_home").style.display = "block";
                 }
                 else if (this.status.task4.done == 1) {
-                    this.status.task5.done = -1;
+                    this.uploadResults(4, userResult);
                     domCtr.destroy("containerQuest");
                 }
 
                 else if (this.status.task3.done == -1) {
-                    this.status.task3.done = 1;
-                    this.status.task4.done = -1;
+                    this.uploadResults(3, userResult);
                     domCtr.destroy("viewDiv");
                     domCtr.destroy("userStudy");
                     domCtr.destroy("overlay");
@@ -210,18 +215,37 @@ define([
                     dom.byId("background_home").style.display = "block";
                 }
                 else if (this.status.task2.done == 1) {
-                    this.status.task3.done = -1;
+                    this.uploadResults(2, userResult);
                     domCtr.destroy("containerQuest");
                 }
                 else if (this.status.task1.done == 1) {
-                    this.status.task2.done = -1;
                     domCtr.destroy("containerQuest");
+                    this.uploadResults(1, userResult);
                 }
-                this.updateUI();
                 
 
             }, 
             
+            uploadResults: function(taskNumber, userResult) {
+                var that = this;
+                var data = {"Status": that.status}
+                data["Task" + taskNumber.toString()] = userResult;
+                that.userResultsOnline.updateFeature(that.settings.userId, data, function(result){
+                    if (result) {
+                        that.status["task" + taskNumber.toString()].done = 1;
+                        if (taskNumber == 7) {
+                            alert("Finished!");
+                        }
+                        else {
+                            that.status["task" + (taskNumber + 1).toString()].done = -1;
+                        }
+                    }
+                    else {
+                        that.status["task" + taskNumber.toString()].done = -1;
+                    }
+                    that.updateUI();
+                })
+            },
 
             updateUI() {
                 for (let [key, value] of Object.entries(this.status)) {

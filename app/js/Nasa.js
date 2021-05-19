@@ -119,7 +119,7 @@ define([
 
             on(this.finishButton, "click", function (evt) {
                 var ueq = new Ueq(this.settings, this.containerHome);
-                ueq.init();
+                ueq.init(this.results);
             }.bind(this));
            
         },

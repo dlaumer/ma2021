@@ -35,7 +35,7 @@ define([
             //this.task2 = domCtr.create("input", { id: "task2", className: "quest_input", name:"name",  placeholder:"Your Gender"}, container2);
             var row = domCtr.toDom(
             `<select name="gender" id="gender" class="quest_input">
-                <option value="" disabled selected>Select your option</option>
+                <option value="" disabled selected>Select your gender</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="other">Other</option>
@@ -51,7 +51,7 @@ define([
             //this.task2 = domCtr.create("input", { id: "task2", className: "quest_input", name:"name",  placeholder:"Your Gender"}, container2);
             var row = domCtr.toDom(
             `<select name="education" id="education" class="quest_input">
-                <option value="" disabled selected>Select your option</option>
+                <option value="" disabled selected>Select your education</option>
                 <option value="highschool">Highschool (Sekundarstufe)</option>
                 <option value="gymnasium">Higher School (Gymnasium)</option>
                 <option value="apprenticeship">Apprenticeship (Lehre)</option>
@@ -67,7 +67,7 @@ define([
             //this.task2 = domCtr.create("input", { id: "task2", className: "quest_input", name:"name",  placeholder:"Your Gender"}, container2);
             var row = domCtr.toDom(
             `<select name="experience" id="experience" class="quest_input">
-                <option value="" disabled selected>Select your option</option>
+                <option value="" disabled selected>Select your experience</option>
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
@@ -83,7 +83,7 @@ define([
             //this.task2 = domCtr.create("input", { id: "task2", className: "quest_input", name:"name",  placeholder:"Your Gender"}, container2);
             var row = domCtr.toDom(
             `<select name="knowledge" id="knowledge" class="quest_input">
-                <option value="" disabled selected>Select your option</option>
+                <option value="" disabled selected>Select your knowledge</option>
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
@@ -154,7 +154,7 @@ define([
 
 
             on(this.finishButton, "click", function (evt) {
-                this.settings.home.returnToHome();
+                this.settings.home.returnToHome(this.results);
             }.bind(this));
            
         },

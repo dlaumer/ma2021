@@ -36,7 +36,7 @@ define([
         clickHandler: function () {
 
             on(this.finishButton, "click", function (evt) {
-                this.settings.home.returnToHome();
+                this.settings.home.returnToHome({read: "yes"});
             }.bind(this));
            
         },

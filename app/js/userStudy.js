@@ -149,7 +149,7 @@ define([
                     else {
                         this.round = 1;
                         this.i = 0;
-                        this.settings.home.returnToHome(this.round);
+                        this.settings.home.returnToHome(this.userResults);
                     }
             }, 
 

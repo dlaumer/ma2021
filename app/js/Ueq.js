@@ -51,15 +51,16 @@ define([
             this.containerQuest = domCtr.create("div", { id: "containerQuest", className : "questionnaire"}, containerHome);
             this.containerUeq = domCtr.create("div", { id: "containerUeq"}, containerQuest);
 
-            this.results = new Array(this.categories.length).fill(null);
         },
 
-        init: function() {
+        init: function(results) {
             
             this.finishButton = domCtr.create("div", { id: "finishButton", className: "task_button", innerHTML: "Done" },  this.containerQuest);
             //this.finishButton.style.pointerEvents = 'none';
 
-            
+            this.results = results;
+            this.results.ueq = new Array(this.categories.length).fill(null);
+
             for (i = 0; i < this.categories.length; i++) {
                 domCtr.place(this.makeItem(i), this.containerUeq);
             }
@@ -79,20 +80,20 @@ define([
 
                     function f()
                     {
-                        that.results[this.name] = parseInt(this.value);
+                        that.results.ueq[this.name] = parseInt(this.value);
                         that.checkFinished();
                     }
                 }
             }
 
             on(this.finishButton, "click", function (evt) {
-                this.settings.home.returnToHome();
+                this.settings.home.returnToHome(this.results);
             }.bind(this));
            
         },
 
         checkFinished: function() {
-            if (this.results.every(function(i) { return i !== null; })) {
+            if (this.results.ueq.every(function(i) { return i !== null; })) {
                 this.finishButton.style.pointerEvents = 'auto';
                 this.finishButton.style.background = this.settings.colors.project;
             }

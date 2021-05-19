@@ -11,11 +11,13 @@ define([
 
     "urbanmobility/App",
     "urbanmobility/Home",
+    "urbanmobility/UserResults",
+
 
 
 ], function (
     Accessor,
-    domCtr, win, dom, domStyle, on, mouse, App, Home) {
+    domCtr, win, dom, domStyle, on, mouse, App, Home, UserResults) {
 
         // application settings
         var settings= {
@@ -88,7 +90,12 @@ define([
                 }.bind(this));
 
                 on(this.userStudyButton, "click", function (evt) {
-                    window.location.href = window.location.href + "?userStudy";
+                    this.userStudyButton.innerHTML = "Loading...";
+                    var userResults = new UserResults();
+                    userResults.init(this.settings)
+                    userResults.addFeature(function(objectId) {
+                        window.location.href = window.location.href + "?userStudy&userId=" + objectId;
+                    });
                 }.bind(this));
 
             },
