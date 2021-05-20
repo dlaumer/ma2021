@@ -182,6 +182,7 @@ p {
 
 #inResult {
   font-size: 1.3vw;
+  height: 60%;
   border-radius: 10px;
 }
 
@@ -402,26 +403,23 @@ div.tooltip {
 
 }
 
-#containerNasa {
-  width:100%;
-  height: 90%;
-}
-
-#containerUeq {
+.questionnaire2 {
   width:100%;
   height: 90%;
   overflow: auto;
-
 }
 
-#containerPreQuest {
-  width:100%;
-  height: 90%;
-  overflow: auto;
+#containerInfoProject{ 
+  padding: 30px;
+  text-align: justify;
 }
 
 .nasaSection {
   height: 13%;
+}
+
+#rosengartenImg {
+  width: 100%;
 }
 
 #loggedIn {

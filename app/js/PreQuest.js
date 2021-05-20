@@ -19,7 +19,7 @@ define([
             this.settings = settings;
             domCtr.destroy("containerQuest");
             this.containerQuest = domCtr.create("div", { id: "containerQuest", className : "questionnaire"}, containerHome);
-            this.containerPreQuest = domCtr.create("div", { id: "containerPreQuest"}, containerQuest);
+            this.containerPreQuest = domCtr.create("div", { id: "containerPreQuest",  className : "questionnaire2"}, containerQuest);
 
             this.results ={};
         },
@@ -91,7 +91,7 @@ define([
             this.task7 = domCtr.place(row, container7);
 
             var container8 = domCtr.create("div", { id: "container8", className: "containerTypeQuest"}, this.containerPreQuest);
-            this.task8_desc = domCtr.create("div", { id: "task8_desc", className: "task_desc", innerHTML: "Have you heard of the Rosengartentunnel / -tram <br> project before?" }, container8);
+            this.task8_desc = domCtr.create("div", { id: "task8_desc", className: "task_desc", innerHTML: "Have you heard of the Rosengartentunnel / -tram project before?" }, container8);
             //this.task2 = domCtr.create("input", { id: "task2", className: "quest_input", name:"name",  placeholder:"Your Gender"}, container2);
             var row = domCtr.toDom(
             `<select name="rosengarten" id="rosengarten" class="quest_input">

@@ -1,3 +1,5 @@
+// Cookies oder local storage
+
 
 define([
     "esri/core/Accessor",
@@ -37,19 +39,59 @@ define([
                 this.urlParser();
 
                 this.settings = settings;
-                this.settings.userId = this.urlParams.userId;
+                
+                if (this.urlParams.userId) {
+                    this.settings.userId = this.urlParams.userId;
+                }
+                else {
+                    if (document.cookie) {
+                        this.settings.userId = document.cookie;
+                    }
+                    else {
+                        window.location.href = window.location.href.split("?")[0];
+                        this.urlParser();
+                    }
+                }
+                
                 this.settings.home = this;
 
                 // destroy welcome page when app is started
                 domCtr.destroy("background");
-                this.status = {};
+                this.status = {
+                    "1": 0,
+                    "2": 0,
+                    "3": 0,
+                    "4": 0,
+                    "5": 0,
+                    "6": 0,
+                    "7": 0,
+                };
 
                 this.userStudy = new userStudy(this.settings);
                 this.userResultsOnline = new UserResults(this.settings);
                 this.userResultsOnline.init();
+                
                 //this.storeUserInfo()
                 this.createUI();
                 this.clickHandler();
+                var that = this;
+                that.userResultsOnline.readFeature(this.settings.userId, function (feature) {
+                    if (feature.attributes.Status != null) {
+                        that.userStudy.order = feature.attributes.Orders;
+                        that.status = JSON.parse(feature.attributes.Status);
+                        for (let [key, value] of Object.entries(that.status)) {
+                            if (value != 1) {
+                                that.status[key] = -1;
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        that.status["1"] = -1;
+                        that.userResultsOnline.updateFeature(that.settings.userId, {"Orders":that.userStudy.order}, function() {})
+                    }
+                    that.updateUI();
+                })
 
             },
 
@@ -58,7 +100,7 @@ define([
                 var background_home = domCtr.create("div", { id: "background_home"}, win.body());
                 var header_home = domCtr.create("div", { id: "header_home"},  background_home);
 
-                domCtr.create("div", { id: "loggedIn", innerHTML: "Your user ID is: " +  "<span style='color: #F3511B'>"+this.settings.userId+"</span>"}, header_home);
+                domCtr.create("div", { id: "loggedIn", innerHTML: "Your user ID is: &emsp;" +  "<span style='color: #F3511B'>"+this.settings.userId+"</span>"}, header_home);
                 domCtr.create("img", { id: "logo_home", src: "images/Logo.png" }, header_home);
 
                 this.containerHome = domCtr.create("div", { id: "containerHome"}, background_home);
@@ -67,37 +109,30 @@ define([
                 var container1 = domCtr.create("div", { id: "container1", className: "containerType"}, containerTasks);
                 this.task1 = domCtr.create("div", { id: "task1", className: "task_button", innerHTML: "Task 1" }, container1);
                 this.task1_desc = domCtr.create("div", { id: "task1_desc", className: "task_desc", innerHTML: "Enter your information" }, container1);
-                this.status.task1 = {done: 1, container: container1}
 
                 var container2 = domCtr.create("div", { id: "container2", className: "containerType"}, containerTasks);
                 this.task2 = domCtr.create("div", { id: "task2", className: "task_button", innerHTML: "Task 2" }, container2);
                 this.task2_desc = domCtr.create("div", { id: "task2_desc", className: "task_desc", innerHTML: "Information about project" }, container2);
-                this.status.task2 = {done: 1, container: container2}
 
                 var container3 = domCtr.create("div", { id: "container3", className: "containerType"}, containerTasks);
                 this.task3 = domCtr.create("div", { id: "task3", className: "task_button", innerHTML: "Task 3" }, container3);
                 this.task3_desc = domCtr.create("div", { id: "task3_desc", className: "task_desc", innerHTML: "Tasks Round 1" }, container3);
-                this.status.task3 = {done: -1, container: container3}
 
                 var container4 = domCtr.create("div", { id: "container4", className: "containerType"}, containerTasks);
                 this.task4 = domCtr.create("div", { id: "task4", className: "task_button", innerHTML: "Task 4" }, container4);
                 this.task4_desc = domCtr.create("div", { id: "task4_desc", className: "task_desc", innerHTML: "Questionnaire" }, container4);
-                this.status.task4 = {done: 0, container: container4}
 
                 var container5 = domCtr.create("div", { id: "container5", className: "containerType"}, containerTasks);
                 this.task5 = domCtr.create("div", { id: "task5", className: "task_button", innerHTML: "Task 5" }, container5);
                 this.task5_desc = domCtr.create("div", { id: "task5_desc", className: "task_desc", innerHTML: "Tasks Round 2" }, container5);
-                this.status.task5 = {done: 0, container: container5}
 
                 var container6 = domCtr.create("div", { id: "container6", className: "containerType"}, containerTasks);
                 this.task6 = domCtr.create("div", { id: "task6", className: "task_button", innerHTML: "Task 6" }, container6);
                 this.task6_desc = domCtr.create("div", { id: "task6_desc", className: "task_desc", innerHTML: "Questionnaire" }, container6);
-                this.status.task6 = {done: 0, container: container6}
                 
                 var container7 = domCtr.create("div", { id: "container7", className: "containerType"}, containerTasks);
                 this.task7 = domCtr.create("div", { id: "task7", className: "task_button", innerHTML: "Task 7" }, container7);
                 this.task7_desc = domCtr.create("div", { id: "task7_desc", className: "task_desc", innerHTML: "Final questions" }, container7);
-                this.status.task7 = {done: 0, container: container7}
 
                 this.updateUI();
 
@@ -107,14 +142,14 @@ define([
 
 
                 on(this.task1, "click", function (evt) {
-                    this.status.task1.done = 1;
+                    this.status["1"] = 1;
                     this.updateUI();
                     var preQuest = new PreQuest(this.settings, this.containerHome);
                     preQuest.init();
                 }.bind(this));
 
                 on(this.task2, "click", function (evt) {
-                    this.status.task2.done = 1;
+                    this.status["2"] = 1;
                     this.updateUI();
                     var infoProject = new InfoProject(this.settings, this.containerHome);
                     infoProject.init();
@@ -126,7 +161,7 @@ define([
                 }.bind(this));
 
                 on(this.task4, "click", function (evt) {
-                    this.status.task4.done = 1;
+                    this.status["4"] = 1;
                     this.updateUI();
                     var nasa = new Nasa(this.settings, this.containerHome);
                     nasa.init();
@@ -138,14 +173,14 @@ define([
                 }.bind(this));
                
                 on(this.task6, "click", function (evt) {
-                    this.status.task6.done = 1;
+                    this.status["6"] = 1;
                     this.updateUI();
                     var nasa2 = new Nasa(this.settings, this.containerHome);
                     nasa2.init();
                 }.bind(this));
 
                 on(this.task7, "click", function (evt) {
-                    this.status.task7.done = 1;
+                    this.status["7"] = 1;
                     this.updateUI();
                     var postQuest = new PostQuest(this.settings, this.containerHome);
                     postQuest.init();
@@ -182,16 +217,16 @@ define([
             }, 
             returnToHome: function(userResult) {
 
-                if (this.status.task7.done == 1) {
+                if (this.status["7"]== 1) {
                     this.uploadResults(7, userResult);
 
                     domCtr.destroy("containerQuest");
                 }
-                else if (this.status.task6.done == 1) {
+                else if (this.status["6"] == 1) {
                     this.uploadResults(6, userResult);
                     domCtr.destroy("containerQuest");
                 }
-                else if (this.status.task5.done == -1) {
+                else if (this.status["5"] == -1) {
                     this.uploadResults(5, userResult);
 
                     domCtr.destroy("viewDiv");
@@ -201,12 +236,12 @@ define([
 
                     dom.byId("background_home").style.display = "block";
                 }
-                else if (this.status.task4.done == 1) {
+                else if (this.status["4"] == 1) {
                     this.uploadResults(4, userResult);
                     domCtr.destroy("containerQuest");
                 }
 
-                else if (this.status.task3.done == -1) {
+                else if (this.status["3"] == -1) {
                     this.uploadResults(3, userResult);
                     domCtr.destroy("viewDiv");
                     domCtr.destroy("userStudy");
@@ -214,11 +249,11 @@ define([
                     domCtr.destroy("overlayItems");
                     dom.byId("background_home").style.display = "block";
                 }
-                else if (this.status.task2.done == 1) {
+                else if (this.status["2"] == 1) {
                     this.uploadResults(2, userResult);
                     domCtr.destroy("containerQuest");
                 }
-                else if (this.status.task1.done == 1) {
+                else if (this.status["1"] == 1) {
                     domCtr.destroy("containerQuest");
                     this.uploadResults(1, userResult);
                 }
@@ -228,43 +263,48 @@ define([
             
             uploadResults: function(taskNumber, userResult) {
                 var that = this;
+                that["task" + taskNumber.toString()].innerHTML = "Saving..."
                 var data = {"Status": that.status}
+
                 data["Task" + taskNumber.toString()] = userResult;
+
                 that.userResultsOnline.updateFeature(that.settings.userId, data, function(result){
                     if (result) {
-                        that.status["task" + taskNumber.toString()].done = 1;
+                        that.status[taskNumber.toString()] = 1;
                         if (taskNumber == 7) {
                             alert("Finished!");
                         }
                         else {
-                            that.status["task" + (taskNumber + 1).toString()].done = -1;
+                            that.status[(taskNumber + 1).toString()] = -1;
                         }
                     }
                     else {
-                        that.status["task" + taskNumber.toString()].done = -1;
+                        that.status[taskNumber.toString()] = -1;
                     }
                     that.updateUI();
+                    that["task" + taskNumber.toString()].innerHTML = "Task" + taskNumber.toString()
+
                 })
             },
 
             updateUI() {
                 for (let [key, value] of Object.entries(this.status)) {
-                    if (value.done == 0) {
-                        value.container.style.visibility = "hidden"
+                    if (value == 0) {
+                        dom.byId("container" + key).style.visibility = "hidden"
                     }
-                    else if (value.done == -1) {
-                        value.container.style.visibility = "visible"
+                    else if (value == -1) {
+                        dom.byId("container" + key).style.visibility = "visible"
 
-                        value.container.children[key].style.pointerEvents = 'auto';
-                        value.container.children[key].style.borderColor = this.settings.colors.project;	
+                        dom.byId("container" + key).children["task" + key].style.pointerEvents = 'auto';
+                        dom.byId("container" + key).children["task" + key].style.borderColor = this.settings.colors.project;	
 
                     }
-                    else if (value.done = 1) {
-                        value.container.style.visibility = "visible"
-                        value.container.children[key].style.pointerEvents = 'none';
-                        value.container.children[key].style.borderColor = "grey";	
+                    else if (value = 1) {
+                        dom.byId("container" + key).style.visibility = "visible"
+                        dom.byId("container" + key).children["task" + key].style.pointerEvents = 'none';
+                        dom.byId("container" + key).children["task" + key].style.borderColor = "grey";	
 
-                        value.container.style.opacity = 0.5
+                        dom.byId("container" + key).style.opacity = 0.5
                     }
 
                   }

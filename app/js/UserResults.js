@@ -34,7 +34,7 @@ define([
             init: function() {
                 this.table = new FeatureLayer({
                     portalItem: {
-                      id: "d6079b2d361841d4ad61d4e4fe15bb8f"
+                      id: "e5666190b9d14ef09315effbdcff0f5b"
                     },
                 });
                 var that = this;

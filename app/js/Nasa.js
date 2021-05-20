@@ -25,7 +25,7 @@ define([
             domCtr.destroy("containerQuest");
 
             this.containerQuest = domCtr.create("div", { id: "containerQuest", className : "questionnaire"}, this.containerHome);
-            this.containerNasa = domCtr.create("div", { id: "containerNasa"}, containerQuest);
+            this.containerNasa = domCtr.create("div", { id: "containerNasa",  className : "questionnaire2"}, containerQuest);
 
             this.results = {};
         },

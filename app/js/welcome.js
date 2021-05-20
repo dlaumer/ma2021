@@ -94,7 +94,13 @@ define([
                     var userResults = new UserResults();
                     userResults.init(this.settings)
                     userResults.addFeature(function(objectId) {
-                        window.location.href = window.location.href + "?userStudy&userId=" + objectId;
+                        document.cookie = "userId=" + objectId.toString();
+                        if (document.cookie == "") {
+                            window.location.href = window.location.href + "?userStudy&userId=" + objectId;
+                        }
+                        else {
+                            window.location.href = window.location.href + "?userStudy";
+                        }
                     });
                 }.bind(this));
 

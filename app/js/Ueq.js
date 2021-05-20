@@ -49,7 +49,7 @@ define([
             this.settings = settings;
             domCtr.destroy("containerQuest");
             this.containerQuest = domCtr.create("div", { id: "containerQuest", className : "questionnaire"}, containerHome);
-            this.containerUeq = domCtr.create("div", { id: "containerUeq"}, containerQuest);
+            this.containerUeq = domCtr.create("div", { id: "containerUeq",  className : "questionnaire2"}, containerQuest);
 
         },
 
