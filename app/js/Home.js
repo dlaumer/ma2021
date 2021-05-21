@@ -79,7 +79,7 @@ define([
                 var that = this;
                 that.userResultsOnline.readFeature(this.settings.userId, function (feature) {
                     if (feature.attributes.Status != null) {
-                        that.userStudy.order = feature.attributes.Orders;
+                        that.userStudy.order = JSON.parse(feature.attributes.Orders);
                         that.status = JSON.parse(feature.attributes.Status);
                         for (let [key, value] of Object.entries(that.status)) {
                             if (value != 1) {
@@ -218,7 +218,7 @@ define([
             }, 
             returnToHome: function(userResult) {
 
-                if (this.status["7"]== 1) {
+                if (this.status["7"]== -1) {
                     this.uploadResults(7, userResult);
 
                     domCtr.destroy("containerQuest");
