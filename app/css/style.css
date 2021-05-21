@@ -584,3 +584,8 @@ label.radio-inline {
   margin: 10px 0;
   padding: 0;
 }
+
+#thanks {
+  padding: 50px;
+  font-size: 2vw;
+}

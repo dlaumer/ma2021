@@ -43,7 +43,7 @@ define([
             },
 
             addFeature: function(callback) {
-                const attributes = {};
+                const attributes = {"DateStarted" : Date.now()};
             
                 const addFeature =  new Graphic({
                   geometry: null,
@@ -86,6 +86,9 @@ define([
                         editFeature = results.features[0];
                         for (const item in data) {
                             editFeature.attributes[item] = JSON.stringify(data[item])
+                            if (item == "Task7") {
+                                editFeature.attributes["DateEnded"] = Date.now();
+                            }
                         }
 
                         this.table.applyEdits({

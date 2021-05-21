@@ -20,13 +20,15 @@ define([
     "urbanmobility/PostQuest",
     "urbanmobility/InfoProject",
     "urbanmobility/UserResults",
+    "urbanmobility/Outro",
+
 
 
 
 
 ], function (
     Accessor,
-    domCtr, win, dom, domStyle, on, mouse, App, welcome, userStudy, Nasa, Ueq, PreQuest, PostQuest, InfoProject, UserResults) {
+    domCtr, win, dom, domStyle, on, mouse, App, welcome, userStudy, Nasa, Ueq, PreQuest, PostQuest, InfoProject, UserResults, Outro) {
             
 
         return Accessor.createSubclass({
@@ -45,7 +47,7 @@ define([
                 }
                 else {
                     if (document.cookie) {
-                        this.settings.userId = document.cookie;
+                        this.settings.userId = document.cookie.split(";")[0].split("=")[1];
                     }
                     else {
                         window.location.href = window.location.href.split("?")[0];
@@ -180,7 +182,6 @@ define([
                 }.bind(this));
 
                 on(this.task7, "click", function (evt) {
-                    this.status["7"] = 1;
                     this.updateUI();
                     var postQuest = new PostQuest(this.settings, this.containerHome);
                     postQuest.init();
@@ -265,25 +266,20 @@ define([
                 var that = this;
                 that["task" + taskNumber.toString()].innerHTML = "Saving..."
                 var data = {"Status": that.status}
-
                 data["Task" + taskNumber.toString()] = userResult;
-
                 that.userResultsOnline.updateFeature(that.settings.userId, data, function(result){
                     if (result) {
                         that.status[taskNumber.toString()] = 1;
-                        if (taskNumber == 7) {
-                            alert("Finished!");
-                        }
-                        else {
+                        if (taskNumber != 7) {
                             that.status[(taskNumber + 1).toString()] = -1;
                         }
                     }
                     else {
                         that.status[taskNumber.toString()] = -1;
                     }
+                    that["task" + taskNumber.toString()].innerHTML = "Task" + taskNumber.toString()    
                     that.updateUI();
-                    that["task" + taskNumber.toString()].innerHTML = "Task" + taskNumber.toString()
-
+ 
                 })
             },
 
@@ -307,10 +303,13 @@ define([
                         dom.byId("container" + key).style.opacity = 0.5
                     }
 
-                  }
+                    if ((key == "7") && (value == 1)) {
+                        var outro = new Outro()
+                        outro.init(this.settings);
+                        //alert("Finished!");
+                    }
+                }
             },
-
-
            
         });
     });

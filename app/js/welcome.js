@@ -67,9 +67,9 @@ define([
                 domCtr.create("img", { id: "Logo", src: "images/Logo.png" }, container);
                 var containerLinks = domCtr.create("div", { id: "containerLinks"}, container);
 
-                this.version1 = domCtr.create("div", { id: "version1", className: "link", innerHTML: "2D" }, containerLinks);
-                this.version2 = domCtr.create("div", { id: "version2", className: "link", innerHTML: "3D" }, containerLinks);
-                this.userStudyButton = domCtr.create("div", { id: "userStudyButton", className: "link", innerHTML: "User Study" }, container);
+                //this.version1 = domCtr.create("div", { id: "version1", className: "link", innerHTML: "2D" }, containerLinks);
+                //this.version2 = domCtr.create("div", { id: "version2", className: "link", innerHTML: "3D" }, containerLinks);
+                this.userStudyButton = domCtr.create("div", { id: "userStudyButton", className: "link", innerHTML: "Start User Study" }, container);
 
                 domCtr.create("hr", { id: "welcomeLine"}, container);
                 
@@ -81,6 +81,7 @@ define([
 
             clickHandler: function () {
 
+                /*
                 on(this.version1, "click", function (evt) {
                     window.location.href = window.location.href + "?2D";
                 }.bind(this));
@@ -88,7 +89,7 @@ define([
                 on(this.version2, "click", function (evt) {
                     window.location.href = window.location.href + "?3D";
                 }.bind(this));
-
+*/
                 on(this.userStudyButton, "click", function (evt) {
                     this.userStudyButton.innerHTML = "Loading...";
                     var userResults = new UserResults();
