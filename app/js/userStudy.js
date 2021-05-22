@@ -26,13 +26,13 @@ define([
         var questions = [
             {id: 1,
             question: [
-                "What is the average occupancy between Albisriederplatz and Letzigrund after the project is built?",
-                "What is the average occupancy between Bucheggplatz and Milchbuck after the project is built?"],
+                "What is the average occupancy of public transport between Albisriederplatz and Letzigrund after the project is built?",
+                "What is the average occupancy of public transport between Bucheggplatz and Milchbuck after the project is built?"],
             result: "This is the result"},
             {id: 2,
                 question: [
-                    "Without the project, would the occupancy between Bucheggplatz and Rosengarten turn critical? (critical = over 50%)",
-                    "Without the project, would the occupancy between Rosengarten and Escher-Wyss-Platz turn critical ? (critical = over 50%)"],
+                    "Without the project, would the occupancy of public transport between Bucheggplatz and Rosengarten turn critical? (critical = over 50%)",
+                    "Without the project, would the occupancy of public transport between Rosengarten and Escher-Wyss-Platz turn critical ? (critical = over 50%)"],
             result: "This is the result"},
             {id: 3,
                 question: [
@@ -42,7 +42,7 @@ define([
             {id: 4,
                 question: [
                     "With the project, how many cars would still use the Rosengartenstrasse per day?",
-                    "With the project, how many cars would use the new tunnel per day?"],
+                    "With the project, how many cars would use the new Rosengarten tunnel per day?"],
             result: "This is the result"},
         ];
 
@@ -57,11 +57,10 @@ define([
                 this.i = 0;
                 this.userResults = {};
                 this.userResults["order"] = this.order;
-                this.userResults["screen"] = {
-                    width: window.screen.width,
-                    height: window.screen.height,
-                };
                 this.round = 0;
+                this.clickPositions = [];
+                this.counter = 0;
+
             },
 
             init: function() {
@@ -71,40 +70,42 @@ define([
                 
                 this.overlayItems = domCtr.create("div", { id: "overlayItems"}, win.body())
 
-                this.questionStart = domCtr.create("div", { id: "questionStart", innerHTML: "Here would be the question"}, this.overlayItems);
-                this.startButton = domCtr.create("div", { id: "startButton", className: "link", innerHTML: "Loading..." },  this.overlayItems);
+                this.questionStart = domCtr.create("div", { id: "questionStart"}, this.overlayItems);
+                
+                this.questionText = domCtr.create("div", { id: "questionText", innerHTML: "Here would be the question"}, this.questionStart);
+                this.startButton = domCtr.create("div", { id: "startButton", className: "task_button", innerHTML: "Loading..." },  this.questionStart);
                 //this.startButton.style.pointerEvents = 'none';
 
                 this.userStudy = domCtr.create("div", { id: "userStudy"}, win.body())
 
                 this.questionDiv = domCtr.create("div", { id: "questionDiv"}, this.userStudy);
                 this.inResult = domCtr.create("input", { id: "inResult", name:"inResult",  placeholder:"Enter Result here" }, this.userStudy);
-                this.done = domCtr.create("div", { id: "done", className: "link", innerHTML: "Done" }, this.userStudy);
+                this.done = domCtr.create("div", { id: "done", className: "task_button", innerHTML: "Done" }, this.userStudy);
                 //this.done.style.pointerEvents = 'none';
 
                 domCtr.create("hr");
 
                 this.questions = shuffle(this.questions);
 
-                this.questionStart.innerHTML = "Please answer this question: <br>" + this.questions[this.i].question[this.order[this.round].version-1];
+                this.questionText.innerHTML = "Please answer this question: <br>" + this.questions[this.i].question[this.order[this.round].version-1];
                 
                 var that = this;
 
                 on(this.inResult, "input", function () {
                     that.done.style.pointerEvents = 'auto';
-                    that.done.style.background = that.settings.colors.project;
+                    that.done.className = "task_button active"
                 });
 
                 on(this.done, "click", function () {
-                    that.endQuestion()
+                    that.endQuestion(that)
                 });
                 on(this.startButton, "click", function () {
                     that.startQuestion()
                 });
-                this.counter = 0;
 
                 document.addEventListener('click', function(event){
                     that.counter++;
+                    that.clickPositions.push([event.clientX, event.clientY]);
                   }); 
                 return this.userStudy;
             },
@@ -135,8 +136,7 @@ define([
                     if (this.i < this.questions.length) {
 
                         //this.done.style.pointerEvents = 'none';
-                        this.done.style.background = null;
-
+                        this.done.className = "task_button"
                         this.questionDiv.innerHTML = ""
     
                         this.overlay.style.visibility = "visible";
@@ -144,7 +144,7 @@ define([
                         this.overlayItems.style.opacity = 1;
 
                         this.overlay.style.opacity = 0.8;
-                        this.questionStart.innerHTML = "Please answer this question: <br>" + this.questions[this.i].question[this.order[this.round].version-1];
+                        this.questionText.innerHTML = "Please answer this question: <br>" + this.questions[this.i].question[this.order[this.round].version-1];
                     }
                     else {
                         this.round = 1;
@@ -162,24 +162,30 @@ define([
                 this.questionDiv.innerHTML = this.questions[this.i].question[this.order[this.round].version-1];
                 this.startTime = new Date();
                 this.counter = 0;
+                this.clickPositions = []
+                var that = this;
+                this.timer = setTimeout(() => {alert("The timelimit was exceeded. Please answer the next question"); that.endQuestion(that)},120000);
             }, 
 
-            endQuestion: function() {
+            endQuestion: function(that) {
                
+                clearTimeout(that.timer);
                 var endTime = new Date();
-                var timeDiff = (endTime - this.startTime)/1000; //in ms
-                this.userResults[this.questions[this.i].id] = {
+                var timeDiff = (endTime - that.startTime)/1000; //in ms
+                that.userResults[that.questions[that.i].id] = {
+                    order: that.i,
                     time: timeDiff,
-                    results: this.inResult.value,
-                    clicks: this.counter,
+                    results: that.inResult.value,
+                    clicks: that.counter,
+                    clickPositions: that.clickPositions.slice(1),
                 };
-                this.newQuestion()
+                console.log(that.userResults[that.questions[that.i].id]);
+                that.newQuestion()
 
             },
 
             isReady: function() {
-                this.startButton.style.background = this.settings.colors.project;
-                this.startButton.style.opacity = 1;
+                this.startButton.className = "task_button active"
 
                 this.startButton.innerHTML = "Start";
                 this.startButton.style.pointerEvents = 'auto';

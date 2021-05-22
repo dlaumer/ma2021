@@ -110,11 +110,11 @@ define([
 
                 var container1 = domCtr.create("div", { id: "container1", className: "containerType"}, containerTasks);
                 this.task1 = domCtr.create("div", { id: "task1", className: "task_button", innerHTML: "Task 1" }, container1);
-                this.task1_desc = domCtr.create("div", { id: "task1_desc", className: "task_desc", innerHTML: "Enter your information" }, container1);
+                this.task1_desc = domCtr.create("div", { id: "task1_desc", className: "task_desc", innerHTML: "Information about project" }, container1);
 
                 var container2 = domCtr.create("div", { id: "container2", className: "containerType"}, containerTasks);
                 this.task2 = domCtr.create("div", { id: "task2", className: "task_button", innerHTML: "Task 2" }, container2);
-                this.task2_desc = domCtr.create("div", { id: "task2_desc", className: "task_desc", innerHTML: "Information about project" }, container2);
+                this.task2_desc = domCtr.create("div", { id: "task2_desc", className: "task_desc", innerHTML: "Enter your information" }, container2);
 
                 var container3 = domCtr.create("div", { id: "container3", className: "containerType"}, containerTasks);
                 this.task3 = domCtr.create("div", { id: "task3", className: "task_button", innerHTML: "Task 3" }, container3);
@@ -146,15 +146,15 @@ define([
                 on(this.task1, "click", function (evt) {
                     this.status["1"] = 1;
                     this.updateUI();
-                    var preQuest = new PreQuest(this.settings, this.containerHome);
-                    preQuest.init();
+                    var infoProject = new InfoProject(this.settings, this.containerHome);
+                    infoProject.init();
                 }.bind(this));
 
                 on(this.task2, "click", function (evt) {
                     this.status["2"] = 1;
                     this.updateUI();
-                    var infoProject = new InfoProject(this.settings, this.containerHome);
-                    infoProject.init();
+                    var preQuest = new PreQuest(this.settings, this.containerHome);
+                    preQuest.init();
                 }.bind(this));
 
                 on(this.task3, "click", function (evt) {
@@ -286,21 +286,19 @@ define([
             updateUI() {
                 for (let [key, value] of Object.entries(this.status)) {
                     if (value == 0) {
-                        dom.byId("container" + key).style.visibility = "hidden"
+                        dom.byId("container" + key).children["task" + key].className = "task_button"
+                        dom.byId("container" + key).children["task" + key].style.pointerEvents = "none";
                     }
                     else if (value == -1) {
-                        dom.byId("container" + key).style.visibility = "visible"
 
-                        dom.byId("container" + key).children["task" + key].style.pointerEvents = 'auto';
-                        dom.byId("container" + key).children["task" + key].style.borderColor = this.settings.colors.project;	
+                        dom.byId("container" + key).children["task" + key].className = "task_button active"
+                        dom.byId("container" + key).children["task" + key].style.pointerEvents = "auto";
 
                     }
-                    else if (value = 1) {
-                        dom.byId("container" + key).style.visibility = "visible"
-                        dom.byId("container" + key).children["task" + key].style.pointerEvents = 'none';
-                        dom.byId("container" + key).children["task" + key].style.borderColor = "grey";	
-
-                        dom.byId("container" + key).style.opacity = 0.5
+                    else if (value == 1) {
+                        dom.byId("container" + key).children["task" + key].className = "task_button done"
+                        dom.byId("container" + key).children["task" + key].style.pointerEvents = "none";
+                        
                     }
 
                     if ((key == "7") && (value == 1)) {

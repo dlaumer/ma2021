@@ -36,31 +36,53 @@ define([
                 <section class="nasaSection">
 					<h3>Mental demand</h3>
 					<p>How mentally demanding was the task?</p>
-                        <input type="range" min="0" max="100" value="50" step="5" class="slider" id="md">
-				</section>
+                    <div class="sliderticks">
+                        <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+                    </div>
+                        <input type="range" min="0" max="100" value="50" step="5" class="slider" id="md" list="steplist">
+                </section>
 				<section class="nasaSection">
 					<h3>Physical demand</h3>
 					<p>How physically demanding was the task?</p>
+                    <div class="sliderticks">
+                        <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+                    </div>
                         <input type="range" min="0" max="100" value="50" step="5" class="slider" id="pd">
 				</section>
 				<section class="nasaSection">
 					<h3>Temporal demand</h3>
-					<p>How hurried or rushed was the pace of the task?</p>
+                    <p>How hurried or rushed was the pace of the task?</p>
+
+                    <div class="sliderticks">
+                        <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+                    </div>
                         <input type="range" min="0" max="100" value="50" step="5" class="slider" id="td">
 				</section>
 				<section class="nasaSection">
 					<h3>Performance</h3>
-					<p>How successful were you in accomplishing what you were asked to do?</p>
+                    <p>How successful were you in accomplishing what you were asked to do?</p>
+
+                    <div class="sliderticks">
+                        <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+                    </div>
                         <input type="range" min="0" max="100" value="50" step="5" class="slider performance" id="pe">
 				</section>
 				<section class="nasaSection">
 					<h3>Effort</h3>
-					<p>How hard did you have to work to accomplish your level of performance?</p>
+                    <p>How hard did you have to work to accomplish your level of performance?</p>
+
+                    <div class="sliderticks">
+                        <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+                    </div>
                         <input type="range" min="0" max="100" value="50" step="5" class="slider" id="ef">
 				</section>
 				<section class="nasaSection">
 					<h3>Frustration</h3>
-					<p>How insecure, discouraged, irritated, stressed, and annoyed were you?</p>
+                    <p>How insecure, discouraged, irritated, stressed, and annoyed were you?</p>
+
+                    <div class="sliderticks">
+                        <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+                    </div>
                         <input type="range" min="0" max="100" value="50" step="5" class="slider" id="fr">
 				</section>		
                 `

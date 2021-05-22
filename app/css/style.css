@@ -113,6 +113,7 @@ p {
   background: grey;
   color: white;
 }
+
 #overlay {
   height:100%;
   width:100%;
@@ -136,7 +137,6 @@ p {
   position: absolute;;
   display: flex;
   justify-content: center;
-  opacity: 1;
   align-items: center;
   flex-direction: column;
   transition: opacity 1s, visibility 1s;
@@ -146,16 +146,24 @@ p {
 #questionStart {
 
   background: rgb(255, 255, 255);
-  opacity: 1;
-  font-size: 1.3vw;
-  text-align: center;
   padding: 30px;
   border-radius: 20px;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 5px 10px 18px #888888;
+
 
 }
 
+#questionText {
+  font-size: 1.3vw;
+  text-align: center;
+}
+
 #startButton {
-  opacity: 1;
+  width: 20vw;
+  margin: 20px;
 }
 
 #userStudy {
@@ -187,7 +195,7 @@ p {
 }
 
 #done {
-  
+  width: 10vw;
 }
 
 #viewDiv {
@@ -416,6 +424,10 @@ div.tooltip {
 
 .nasaSection {
   height: 13%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 15px 0;
 }
 
 #rosengartenImg {
@@ -458,20 +470,32 @@ div.tooltip {
   margin: 2%;
   padding: 10px;
   font-size: 1.3vw;
-  cursor: pointer;
   width: 20vw;
+  opacity: 0.5;
 
 }
-.task_button:hover{
+
+.done {
+  opacity: 1;
+}
+
+.active {
+  cursor: pointer;
   background: var(--project);
   color: white;
+  pointer-events: 'auto';
+  opacity: 0.7;
+}
+
+.active:hover{
+  opacity:1;
 }
 
 .quest_input {
   border-radius: 10px;
   border: 1px solid grey;
   margin: 2%;
-  padding: 10px;
+  padding: 6px 10px;
   font-size: 1.3vw;
   width: 20vw;
 }
@@ -547,8 +571,24 @@ div.tooltip {
 	content: "Poor";
 }
 
-#finishButton {
-  width: 30%;
+.sliderticks {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  width: 80%;
+}
+
+.sliderticks p {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  width: 1px;
+  background: #d3d3d3;
+  height: 5px;
+  line-height: 10px;
+  margin: 5px 0;
 }
 
 
@@ -584,6 +624,11 @@ label.radio-inline {
   margin: 10px 0;
   padding: 0;
 }
+
+#finishButton {
+  width: 30%;
+}
+
 
 #thanks {
   padding: 50px;

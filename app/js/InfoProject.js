@@ -67,7 +67,7 @@ define([
             setTimeout(function(){ 
                 if ((that.containerInfoProject.clientHeight + that.containerInfoProject.scrollTop + 20) >= that.containerInfoProject.scrollHeight) {
                     that.finishButton.style.pointerEvents = 'auto';
-                    that.finishButton.style.background = that.settings.colors.project;
+                    that.finishButton.className = "task_button active"
                 }
             }, 1000);
         },
@@ -75,7 +75,13 @@ define([
         clickHandler: function () {
 
             on(this.finishButton, "click", function (evt) {
-                this.settings.home.returnToHome({ read: "yes" });
+
+                this.results["screen"] = {
+                    width: window.screen.width,
+                    height: window.screen.height,
+                };
+                this.results["browser"] = navigator.userAgent;
+                this.settings.home.returnToHome(this.results);
             }.bind(this));
             
             var that = this;
@@ -83,7 +89,7 @@ define([
 
                 if ((that.containerInfoProject.clientHeight + that.containerInfoProject.scrollTop + 20) >= that.containerInfoProject.scrollHeight) {
                     that.finishButton.style.pointerEvents = 'auto';
-                    that.finishButton.style.background = that.settings.colors.project;
+                    that.finishButton.className = "task_button active" 
                 }
             };
 

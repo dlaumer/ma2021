@@ -161,8 +161,7 @@ define([
 
         checkFinished: function() {
             if (Object.keys(this.results).length == 8) {
-                this.finishButton.style.pointerEvents = 'auto';
-                this.finishButton.style.background = this.settings.colors.project;
+                this.finishButton.className = "task_button active";
             }
         }, 
 

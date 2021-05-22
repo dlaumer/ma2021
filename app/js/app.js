@@ -344,7 +344,7 @@ define([
 
                     this.dataDrill = new dataDrill(this.scene, this.view, this.settings, this.infoText);
                     for (var i = 0;  i < this.scene.layers.length; i++) {
-
+                        `
                         if (this.scene.layers.getItemAt(i).title == this.settings.layerNames.pt_lines) {
                             const template = {
                                 // autocasts as new PopupTemplate()
@@ -403,11 +403,11 @@ define([
                               this.scene.layers.getItemAt(i).popupEnabled = true;
 
                         }
-
-                        else {
+                        `
+                        //else {
                             this.scene.layers.getItemAt(i).popupEnabled = false;
 
-                        }
+                        //}
                         //this.dataDrill.processAllData(this.scene.layers.getItemAt(i));
                     }
 
