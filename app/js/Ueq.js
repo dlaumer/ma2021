@@ -61,6 +61,31 @@ define([
             this.results = results;
             this.results.ueq = new Array(this.categories.length).fill(null);
 
+            this.container1 = domCtr.create("div", { id: "container1", className: "containerTypeInfo" }, this.containerUeq);
+
+            this.container1.innerHTML = `Please fill in the following questionnaire. It consists of 
+            pairs of contrasting attributes that may apply to the application you just tested. <br><br>
+            
+            The circles between the attributes represent gradations between the opposites. 
+            You can express your agreement with the attributes by clicking the circle that most 
+            closely reflects your impression.<br><br>
+
+            <b>Example:</b>
+            `
+            var example = this.makeExampleItem(0);
+            example.style = "pointer-events: 'none'";
+            domCtr.place(example, this.containerUeq);
+            this.container2 = domCtr.create("div", { id: "container2", className: "containerTypeInfo" }, this.containerUeq);
+
+            this.container2.innerHTML = `This response would mean that you rate the app more annoying 
+            than enjoyable.<br><br>
+            Please decide spontaneously. Don’t think too long about your decision to make sure that 
+            you convey your original impression. Sometimes you may not be completely sure about your 
+            agreement with a particular attribute or you may find that the attribute does not apply 
+            completely to the particular product. Nevertheless, please tick a circle in every line.
+            It is your personal opinion that counts. Please remember: there is no wrong or right 
+            answer!<br><br>
+            `
             for (i = 0; i < this.categories.length; i++) {
                 domCtr.place(this.makeItem(i), this.containerUeq);
             }
@@ -72,7 +97,7 @@ define([
 
             var that = this;
             for (i = 0; i < that.categories.length; i++) {
-                dom.byId("Item" + i.toString());
+                //dom.byId("Item" + i.toString());
                 var radioButtons = document.getElementsByName(i);
    
                 for ( var j = 0; radioButtons[ j ]; j++ ) {
@@ -95,7 +120,7 @@ define([
         checkFinished: function() {
             if (this.results.ueq.every(function(i) { return i !== null; })) {
                 this.finishButton.style.pointerEvents = 'auto';
-                this.finishButton.style.background = this.settings.colors.project;
+                this.finishButton.className = "task_button active";
             }
         }, 
 
@@ -110,6 +135,22 @@ define([
             domCtr.create("input", {type:"radio", className: "radio", name:i, value:"5"}, domCtr.create("label", {className : "radio-inline"}, radioButtons));
             domCtr.create("input", {type:"radio", className: "radio", name:i, value:"6"}, domCtr.create("label", {className : "radio-inline"}, radioButtons));
             domCtr.create("input", {type:"radio", className: "radio", name:i, value:"7"}, domCtr.create("label", {className : "radio-inline"}, radioButtons));
+            domCtr.create("div", {className : "textRight", innerHTML:this.categories[i][1]}, containerItem);
+
+            return containerItem;
+        }, 
+
+        makeExampleItem: function(i) {
+            var containerItem = domCtr.create("div", {className : "containerItem"});
+            domCtr.create("div", {className : "textLeft", innerHTML:this.categories[i][0]}, containerItem);
+            var radioButtons = domCtr.create("div", {className : "radioButtonsExample"}, containerItem);
+            domCtr.create("input", {type:"radio", className: "radio", value:"1"}, domCtr.create("label", {className : "radio-inline"}, radioButtons));
+            domCtr.create("input", {type:"radio", className: "radio", value:"2"}, domCtr.create("label", {className : "radio-inline"}, radioButtons)).checked = true;
+            domCtr.create("input", {type:"radio", className: "radio", value:"3"}, domCtr.create("label", {className : "radio-inline"}, radioButtons));
+            domCtr.create("input", {type:"radio", className: "radio", value:"4"}, domCtr.create("label", {className : "radio-inline"}, radioButtons));
+            domCtr.create("input", {type:"radio", className: "radio", value:"5"}, domCtr.create("label", {className : "radio-inline"}, radioButtons));
+            domCtr.create("input", {type:"radio", className: "radio", value:"6"}, domCtr.create("label", {className : "radio-inline"}, radioButtons));
+            domCtr.create("input", {type:"radio", className: "radio", value:"7"}, domCtr.create("label", {className : "radio-inline"}, radioButtons));
             domCtr.create("div", {className : "textRight", innerHTML:this.categories[i][1]}, containerItem);
 
             return containerItem;

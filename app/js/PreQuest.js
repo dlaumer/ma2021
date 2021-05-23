@@ -44,7 +44,7 @@ define([
 
             var container3 = domCtr.create("div", { id: "container3", className: "containerTypeQuest"}, this.containerPreQuest);
             this.task3_desc = domCtr.create("div", { id: "task3_desc", className: "task_desc", innerHTML: "What is your profession?" }, container3);
-            this.task3 = domCtr.create("input", { id: "task3", className: "quest_input", name:"name",  placeholder:"Your Profession"}, container3);
+            this.task3 = domCtr.create("input", { id: "task3", className: "quest_input", name:"name",  placeholder:"e.g. Student (Civil Eng.)"}, container3);
 
             var container4 = domCtr.create("div", { id: "container4", className: "containerTypeQuest"}, this.containerPreQuest);
             this.task4_desc = domCtr.create("div", { id: "task4_desc", className: "task_desc", innerHTML: "What is your current education?" }, container4);
@@ -63,7 +63,7 @@ define([
             this.task4 = domCtr.place(row, container4);
 
             var container5 = domCtr.create("div", { id: "container5", className: "containerTypeQuest"}, this.containerPreQuest);
-            this.task5_desc = domCtr.create("div", { id: "task5_desc", className: "task_desc", innerHTML: "How would you rate your experience with webmaps?" }, container5);
+            this.task5_desc = domCtr.create("div", { id: "task5_desc", className: "task_desc", innerHTML: "How would you rate your experience with digital maps?" }, container5);
             //this.task2 = domCtr.create("input", { id: "task2", className: "quest_input", name:"name",  placeholder:"Your Gender"}, container2);
             var row = domCtr.toDom(
             `<select name="experience" id="experience" class="quest_input">
@@ -73,33 +73,45 @@ define([
                 <option value="high">High</option>
             </select>`)
             this.task5 = domCtr.place(row, container5);
-
-            var container6 = domCtr.create("div", { id: "container6", className: "containerTypeQuest"}, this.containerPreQuest);
-            this.task6_desc = domCtr.create("div", { id: "task6_desc", className: "task_desc", innerHTML: "What is your city of residence?" }, container6);
-            this.task6 = domCtr.create("input", { id: "task6", className: "quest_input", name:"name",  placeholder:"Your residence"}, container6);
-
+            
             var container7 = domCtr.create("div", { id: "container7", className: "containerTypeQuest"}, this.containerPreQuest);
-            this.task7_desc = domCtr.create("div", { id: "task7_desc", className: "task_desc", innerHTML: "How would you rate your knowledge of the area of <br> Rosengarten / Bucheggplatz?" }, container7);
+            this.task7_desc = domCtr.create("div", { id: "task7_desc", className: "task_desc", innerHTML: "I know the area of Rosengarten/ Bucheggplatz very well." }, container7);
             //this.task2 = domCtr.create("input", { id: "task2", className: "quest_input", name:"name",  placeholder:"Your Gender"}, container2);
             var row = domCtr.toDom(
             `<select name="knowledge" id="knowledge" class="quest_input">
-                <option value="" disabled selected>Select your knowledge</option>
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
+                <option value="" disabled selected>Do you agree?</option>
+                <option value="1">I strongly disagree</option>
+                <option value="2">I disagree</option>
+                <option value="3">Neither agree or disagree</option>
+                <option value="4">I agree</option>
+                <option value="5">I strongly agree</option>
             </select>`)
             this.task7 = domCtr.place(row, container7);
 
             var container8 = domCtr.create("div", { id: "container8", className: "containerTypeQuest"}, this.containerPreQuest);
-            this.task8_desc = domCtr.create("div", { id: "task8_desc", className: "task_desc", innerHTML: "Have you heard of the Rosengartentunnel / -tram project before?" }, container8);
+            this.task8_desc = domCtr.create("div", { id: "task8_desc", className: "task_desc", innerHTML: "I already know alot about the Rosengartentunnel / -tram project." }, container8);
             //this.task2 = domCtr.create("input", { id: "task2", className: "quest_input", name:"name",  placeholder:"Your Gender"}, container2);
             var row = domCtr.toDom(
             `<select name="rosengarten" id="rosengarten" class="quest_input">
-                <option value="" disabled selected>Select your option</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
+            <option value="" disabled selected>Do you agree?</option>
+            <option value="1">I strongly disagree</option>
+            <option value="2">I disagree</option>
+            <option value="3">Neither agree or disagree</option>
+            <option value="4">I agree</option>
+            <option value="5">I strongly agree</option>
             </select>`)
             this.task8 = domCtr.place(row, container8);
+
+            var container6 = domCtr.create("div", { id: "container6", className: "containerTypeQuest"}, this.containerPreQuest);
+            this.task6_desc = domCtr.create("div", { id: "task6_desc", className: "task_desc", innerHTML: "Did you vote during the vote about the Rosengartenproject one year ago?" }, container6);
+            //this.task2 = domCtr.create("input", { id: "task2", className: "quest_input", name:"name",  placeholder:"Your Gender"}, container2);
+            var row = domCtr.toDom(
+            `<select name="vote" id="vote" class="quest_input">
+                <option value="" disabled selected>Select your option</option>
+                <option value="yes">Yes, I voted</option>
+                <option value="no">No, I did not vote</option>
+            </select>`)
+            this.task6 = domCtr.place(row, container6);
 
 
             this.finishButton = domCtr.create("div", { id: "finishButton", className: "task_button", innerHTML: "Done" },  this.containerQuest);
@@ -161,6 +173,7 @@ define([
 
         checkFinished: function() {
             if (Object.keys(this.results).length == 8) {
+                this.finishButton.style.pointerEvents = 'auto';
                 this.finishButton.className = "task_button active";
             }
         }, 

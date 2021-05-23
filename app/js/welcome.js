@@ -25,11 +25,11 @@ define([
             url: "https://egregis.maps.arcgis.com",           // portal URL for config
             webscene: "03c3431c5e984f4ab52144950552e6c6",   // portal item ID of the webscene
             layerNames: {
-                pt: "Public Transport (Ver 1)",
+                pt: "Public Transport",
                 traffic: "Traffic",
                 air: "Air Pollution",
                 traffic_pro: "Traffic_pro", 
-                streets_pro: "Streets_pro",
+                streets_pro: "New Rosengarten Tunnel",
                 pt_stops: "Public Transport Stops", 
                 pt_lines: "Public Transport Lines"
 

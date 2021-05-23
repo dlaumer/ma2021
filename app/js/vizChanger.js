@@ -45,33 +45,38 @@ define([
 
                     if (theme == "pt") {
                         renderer = layer.renderer.clone();
+                        renderer.field = modeManager.viewSettings.prefix + modeManager.viewSettings.attribute;
                         const sizeVariable = renderer.visualVariables[0];
                         sizeVariable.field =  modeManager.viewSettings.prefix + modeManager.viewSettings.attribute;
                         sizeVariable.legendOptions = {
-                            title: "Occupancy [%]", 
+                            title: "Occupied spaces [%]", 
                             showLegend: true
                           };
                           
                         renderer.visualVariables = [sizeVariable];
 
-                        
                         layer.renderer = renderer;
                     }
 
                     if ( theme == "traffic") {
                         renderer = layer.renderer.clone();
+                        renderer.field = modeManager.viewSettings.prefix + modeManager.viewSettings.attribute;
                         const sizeVariable = renderer.visualVariables[0];
                         sizeVariable.field =  modeManager.viewSettings.prefix + modeManager.viewSettings.attribute;
-                        sizeVariable.field =  modeManager.viewSettings.attribute;
                         
-                        //sizeVariable.legendOptions = {
-                        //    title: "% population in poverty by county", 
-                        //    showLegend: true
-                        //  };
+                        sizeVariable.legendOptions = {
+                            customValues: [1,2,3,4,5],
+                            title: "Average number of cars per day (x10)", 
+                            showLegend: true
+                          };
                         renderer.visualVariables = [sizeVariable];
 
                         
                         layer.renderer = renderer;
+
+                        if (mode == "project") {
+                            modeManager.getLayer(this.settings.layerNames.traffic_pro).renderer = renderer;
+                        }
                     }
                     else if (theme == "air") {
                         renderer = layer.renderer.clone();
@@ -112,9 +117,6 @@ define([
                 else {
                     modeManager.getLayer(this.settings.layerNames.streets_pro).visible = false;
                 }
-
-
-               
 
             },
         })

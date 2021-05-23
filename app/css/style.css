@@ -422,6 +422,16 @@ div.tooltip {
   text-align: justify;
 }
 
+#containerUeq {
+  padding: 30px;
+  text-align: justify;
+}
+
+#containerNasa {
+  padding: 30px;
+  text-align: justify;
+}
+
 .nasaSection {
   height: 13%;
   display: flex;
@@ -458,6 +468,11 @@ div.tooltip {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+  justify-content: flex-end;
+  width:100%;
+}
+
+.containerTypeInfo {
   justify-content: flex-end;
   width:100%;
 }
@@ -533,13 +548,16 @@ div.tooltip {
   height: 20px;
   background: var(--project);
   cursor: pointer;
+  visibility: hidden;
+
 }
 
 .slider::-moz-range-thumb {
-  width: 25px;
-  height: 25px;
-  background: #04AA6D;
+  width: 20px;
+  height: 20px;
+  background: var(--project);
   cursor: pointer;
+  visibility: hidden;
 
 }
 
@@ -547,19 +565,19 @@ div.tooltip {
 .slider::after {
 	color: #888;
 	line-height: .6;
-	position: absolute;
+	position:relative;
 	width: 5em;
 }
 
 .slider::before {
 	content: "Low";
-	margin-left: -6em;
+	margin-left: -5em;
 	text-align: right;
 }
 
 .slider::after {
 	content: "High";
-	margin-right: 6em;
+	margin-right: 2em;
 	right: -6em;
 }
 
@@ -568,6 +586,67 @@ div.tooltip {
 }
 
 .slider.performance::after {
+	content: "Poor";
+}
+
+/* Sliders 2, in order to hide the handle the first time */
+.slider2 {
+  -webkit-appearance: none;
+	margin: auto;
+	width: 80%;
+  height: 10px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider2:hover {
+  opacity: 1;
+}
+
+.slider2::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--project);
+  cursor: pointer;
+}
+
+.slider2::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--project);
+  cursor: pointer;
+}
+
+.slider2::before,
+.slider2::after {
+	color: #888;
+	line-height: .6;
+	position: relative;
+	width: 5em;
+}
+
+.slider2::before {
+	content: "Low";
+	margin-left: -5em;
+	text-align: right;
+}
+
+.slider2::after {
+	content: "High";
+	margin-right: 2em;
+	right: -6em;
+}
+
+.slider2.performance::before {
+	content: "Excellent";
+}
+
+.slider2.performance::after {
 	content: "Poor";
 }
 
@@ -608,6 +687,19 @@ div.tooltip {
   flex-wrap: nowrap;
   margin: 0 20px;
   width: 30%;
+}
+
+
+.radioButtonsExample {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  align-items: center;
+  flex-wrap: nowrap;
+  margin: 0 20px;
+  width: 30%;
+  pointer-events: none;
 }
 
 .textLeft {

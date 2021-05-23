@@ -216,7 +216,10 @@ define([
                 that.svgTimeline.select(".text")
                 .text("Occupancy [%]");
 
-                
+                var colorsScale = d3.scaleQuantize()
+                    .domain([10,50])
+                    .range(["#C1FAF9", "#94DBDA", "#68BBBA","#3B9C9B", "#0E7C7B"]);
+
                 that.xScale.domain(hourData.map(function (d) { return d.time; }))
                 that.xAxis.conditionalTransition(firstTime).call(d3.axisBottom(that.xScale).tickFormat(function (d) {
                   return d
@@ -251,6 +254,7 @@ define([
                       return that.heightTimeline - that.yScale(d.percentage); })
                   .attr("fill", that.settings.colors.now)
                   .attr("class", "bars")
+                  //.attr("fill", function(d){ return colorsScale(d.percentage)})
                   
                   
                 u.on("mouseover", function(d) {		

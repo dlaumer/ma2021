@@ -177,7 +177,7 @@ define([
                     time: timeDiff,
                     results: that.inResult.value,
                     clicks: that.counter,
-                    clickPositions: that.clickPositions.slice(1),
+                    clickPositions: that.clickPositions.slice(0),
                 };
                 console.log(that.userResults[that.questions[that.i].id]);
                 that.newQuestion()

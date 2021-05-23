@@ -31,11 +31,19 @@ define([
         },
 
         init: function() {
+
+            this.container1 = domCtr.create("div", { id: "container1", className: "containerTypeInfo" }, this.containerNasa);
+
+            this.container1.innerHTML = `Please assess the tested application by clicking one position 
+            per each of the six rating scales which matches your experience. Each line has two 
+            endpoint descriptors.
+            `
+
             var row = domCtr.toDom(
                 `
                 <section class="nasaSection">
 					<h3>Mental demand</h3>
-					<p>How mentally demanding was the task?</p>
+					<p>How mentally demanding were the tasks?</p>
                     <div class="sliderticks">
                         <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
                     </div>
@@ -43,7 +51,7 @@ define([
                 </section>
 				<section class="nasaSection">
 					<h3>Physical demand</h3>
-					<p>How physically demanding was the task?</p>
+					<p>How physically demanding were the tasks?</p>
                     <div class="sliderticks">
                         <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
                     </div>
@@ -51,7 +59,7 @@ define([
 				</section>
 				<section class="nasaSection">
 					<h3>Temporal demand</h3>
-                    <p>How hurried or rushed was the pace of the task?</p>
+                    <p>How hurried or rushed was the pace of the tasks?</p>
 
                     <div class="sliderticks">
                         <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
@@ -99,41 +107,41 @@ define([
 
 
             on(dom.byId("md"), "change", function (evt) {
-                console.log(evt.srcElement.value);
+                evt.srcElement.className = "slider2";
                 this.results.md = evt.srcElement.value;
                 this.checkFinished();
             }.bind(this));
 
             on(dom.byId("pd"), "change", function (evt) {
-                console.log(evt.srcElement.value);
+                evt.srcElement.className = "slider2";
                 this.results.pd = evt.srcElement.value;
                 this.checkFinished();
 
             }.bind(this));
 
             on(dom.byId("td"), "change", function (evt) {
-                console.log(evt.srcElement.value);
+                evt.srcElement.className = "slider2";
                 this.results.td = evt.srcElement.value;
                 this.checkFinished();
 
             }.bind(this));
 
             on(dom.byId("pe"), "change", function (evt) {
-                console.log(evt.srcElement.value);
+                evt.srcElement.className = "slider2";
                 this.results.pe = evt.srcElement.value;
                 this.checkFinished();
 
             }.bind(this));
 
             on(dom.byId("ef"), "change", function (evt) {
-                console.log(evt.srcElement.value);
+                evt.srcElement.className = "slider2";
                 this.results.ef = evt.srcElement.value;
                 this.checkFinished();
 
             }.bind(this));
 
             on(dom.byId("fr"), "change", function (evt) {
-                console.log(evt.srcElement.value);
+                evt.srcElement.className = "slider2";
                 this.results.fr = evt.srcElement.value;
                 this.checkFinished();
 
@@ -149,7 +157,7 @@ define([
         checkFinished: function() {
             if (Object.keys(this.results).length == 6) {
                 this.finishButton.style.pointerEvents = 'auto';
-                this.finishButton.style.background = this.settings.colors.project;
+                this.finishButton.className = "task_button active" 
             }
         }
 

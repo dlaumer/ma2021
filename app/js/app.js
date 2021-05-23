@@ -72,10 +72,10 @@ define([
 
 
                 if (this.settings.dimension == "2D") {
-                    this.settings.webscene = "df003844f48443c89c36b4e335700b58";
+                    this.settings.webscene = "66bd9befcf064b11811f14c9a352a7fe";
                 }
                 else if (this.settings.dimension == "3D") {
-                    this.settings.webscene = "03c3431c5e984f4ab52144950552e6c6";
+                    this.settings.webscene = "2a36b4dbc88f4881aa4e7b9d897b50bc";
                 }
 
                 
@@ -330,15 +330,27 @@ define([
                 if (!modeManager.getLayer(this.settings.layerNames.pt).layers) {
                     // Change color of Public Transport
                     var rendererPt = modeManager.getLayer(this.settings.layerNames.pt).renderer.clone();
+                    /*
                     rendererPt.visualVariables[0].stops[0].color = {r:23, g:190, b:187, a:0.2};
                     rendererPt.visualVariables[0].stops[1].color = {r:23, g:190, b:187, a:0.3};
                     rendererPt.visualVariables[0].stops[2].color = {r:23, g:190, b:187, a:0.5};
                     rendererPt.visualVariables[0].stops[3].color = {r:23, g:190, b:187, a:0.7};
                     rendererPt.visualVariables[0].stops[4].color = {r:23, g:190, b:187, a:1.0};
+                    */
+                    // #005353|#007b7b|#00a4a4|#00cccc|#00ffff
+                    const colors = ["#C1FAF9", "#94DBDA", "#68BBBA","#3B9C9B", "#0E7C7B"];
+
+                    rendererPt.visualVariables[0].stops[0].color = colors[0];
+                    rendererPt.visualVariables[0].stops[1].color = colors[1];
+                    rendererPt.visualVariables[0].stops[2].color = colors[2];
+                    rendererPt.visualVariables[0].stops[3].color = colors[3];
+                    rendererPt.visualVariables[0].stops[4].color = colors[4];
+                 
                     modeManager.getLayer(this.settings.layerNames.pt).renderer  = rendererPt;
                 }
                
 
+ 
                     this.vizChanger = new vizChanger(this.scene, this.view, this.settings);
                     that.vizChanger.changeVisualization();
 
