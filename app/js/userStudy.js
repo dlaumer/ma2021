@@ -14,46 +14,39 @@ define([
 ], function (
     Accessor,
     domCtr, win, dom, domStyle, on, mouse, App) {
-
-
-        var orders = [
-            [{dimension: "2D", version: 1}, {dimension: "3D", version: 2}],
-            [{dimension: "2D", version: 2}, {dimension: "3D", version: 1}],
-            [{dimension: "3D", version: 1}, {dimension: "2D", version: 2}],
-            [{dimension: "3D", version: 2}, {dimension: "2D", version: 1}],
-        ]
+       
         
         var questions = [
             {id: 1,
             question: [
-                "What is the average occupancy of public transport between Albisriederplatz and Letzigrund after the project is built?",
-                "What is the average occupancy of public transport between Bucheggplatz and Milchbuck after the project is built?"],
+                "Public transport: What is the average occupancy between Albisriederplatz and Hardbrücke after the project is built?",
+                "Public transport : What is the average occupancy of between Bucheggplatz and Milchbuck after the project is built?"],
             result: "This is the result"},
             {id: 2,
                 question: [
-                    "Without the project, would the occupancy of public transport between Bucheggplatz and Rosengarten turn critical? (critical = over 50%)",
-                    "Without the project, would the occupancy of public transport between Rosengarten and Escher-Wyss-Platz turn critical ? (critical = over 50%)"],
+                    "Public transport: Without the project, would the occupancy between Bucheggplatz and Rosengarten turn critical? (critical = over 50%)",
+                    "Public transport: Without the project, would the occupancy between Rosengarten and Escher-Wyss-Platz turn critical ? (critical = over 50%)"],
             result: "This is the result"},
             {id: 3,
                 question: [
-                    "How many cars drive currently on average on the Hardbrücke at 8am?",
-                    "How many cars drive currently on average on the Rosengarten at 8am?"],
+                    "Traffic: How many cars drive currently (now) on average on the Hardbrücke at 8am?",
+                    "Traffic: How many cars drive currently (now) on average on the Rosengarten at 8am?"],
             result: "This is the result"},
             {id: 4,
                 question: [
-                    "With the project, how many cars would still use the Rosengartenstrasse per day?",
-                    "With the project, how many cars would use the new Rosengarten tunnel per day?"],
+                    "Traffic: With the project, how many cars would still use the Rosengartenstrasse per day?",
+                    "Traffic: With the project, how many cars would use the new Rosengarten tunnel per day?"],
             result: "This is the result"},
         ];
 
         return Accessor.createSubclass({
             declaredClass: "urbanmobility.userStudy",
 
-            constructor: function (settings) {
+            constructor: function (settings, order) {
                
                 this.settings = settings;
                 this.questions = questions;
-                this.order = orders[Math.floor(Math.random()*4)];
+                this.order = order;
                 this.i = 0;
                 this.userResults = {};
                 this.userResults["order"] = this.order;
@@ -74,14 +67,14 @@ define([
                 
                 this.questionText = domCtr.create("div", { id: "questionText", innerHTML: "Here would be the question"}, this.questionStart);
                 this.startButton = domCtr.create("div", { id: "startButton", className: "task_button", innerHTML: "Loading..." },  this.questionStart);
-                //this.startButton.style.pointerEvents = 'none';
+                this.settings.dev ? "" : this.startButton.style.pointerEvents = 'none';
 
                 this.userStudy = domCtr.create("div", { id: "userStudy"}, win.body())
 
                 this.questionDiv = domCtr.create("div", { id: "questionDiv"}, this.userStudy);
                 this.inResult = domCtr.create("input", { id: "inResult", name:"inResult",  placeholder:"Enter Result here" }, this.userStudy);
                 this.done = domCtr.create("div", { id: "done", className: "task_button", innerHTML: "Done" }, this.userStudy);
-                //this.done.style.pointerEvents = 'none';
+                this.settings.dev ? "" : this.done.style.pointerEvents = 'none';
 
                 domCtr.create("hr");
 
@@ -135,7 +128,7 @@ define([
                     this.i++;
                     if (this.i < this.questions.length) {
 
-                        //this.done.style.pointerEvents = 'none';
+                        this.settings.dev ? "" : this.done.style.pointerEvents = 'none';
                         this.done.className = "task_button"
                         this.questionDiv.innerHTML = ""
     

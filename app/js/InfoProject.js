@@ -45,7 +45,7 @@ define([
                 <li>Number of clicks</li>
                 <li>Position of the clicks</li>
             </ul>
-            So this means that you should try to answer as precise as possible, but also as fats as possible.
+            So this means that you should try to answer as precise as possible, but also as fast as possible.
             It is advised to use Chrome but other browsers should work as well.<br>
             --> estimated time: 15-20 min <br>
             
@@ -69,7 +69,7 @@ define([
             initiative combined the tunnel and the tram, which was a clever move because it 
             attracted both sides of the mobility camps. Nevertheless it faced a lot of opposition 
             from the public and the green parties. Other arguments against it were the imense costs 
-            of 1.1 Billion Swiss Francs. In my opinion, a tool which  <br><br>
+            of 1.1 Billion Swiss Francs.<br><br>
 
             <b>Imagine that time is turned back and we are now again shortly before the public vote 
             and You are trying to inform yourself about the project with the help of UrbanMobility.</b> <br><br>
@@ -87,7 +87,7 @@ define([
             `
 
             this.finishButton = domCtr.create("div", { id: "finishButton", className: "task_button", innerHTML: "Yes I read it!" }, this.containerQuest);
-            this.finishButton.style.pointerEvents = 'none';
+            this.settings.dev ? "" : this.finishButton.style.pointerEvents = 'none';
 
             
             this.clickHandler();

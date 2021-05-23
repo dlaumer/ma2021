@@ -56,7 +56,7 @@ define([
         init: function(results) {
             
             this.finishButton = domCtr.create("div", { id: "finishButton", className: "task_button", innerHTML: "Done" },  this.containerQuest);
-            //this.finishButton.style.pointerEvents = 'none';
+            this.settings.dev ? "" : this.finishButton.style.pointerEvents = 'none';
 
             this.results = results;
             this.results.ueq = new Array(this.categories.length).fill(null);
@@ -73,7 +73,7 @@ define([
             <b>Example:</b>
             `
             var example = this.makeExampleItem(0);
-            example.style = "pointer-events: 'none'";
+            example.style.pointerEvents = 'none';
             domCtr.place(example, this.containerUeq);
             this.container2 = domCtr.create("div", { id: "container2", className: "containerTypeInfo" }, this.containerUeq);
 

@@ -387,11 +387,20 @@ div.tooltip {
 }
 
 #containerTasks {
-  width: 40%;
+  width: 38%;
   height: 100%;
 
   padding: 0;
   margin: 0;
+}
+
+#footer {
+  position: fixed;
+  bottom: 0;
+  width: 38%;
+  font-size: 1vw;
+  line-height:100%;
+  margin: 20px;
 }
 
 .questionnaire {
@@ -415,6 +424,8 @@ div.tooltip {
   width:100%;
   height: 90%;
   overflow: auto;
+  padding: 0 20px;
+
 }
 
 #containerInfoProject{ 
@@ -473,8 +484,10 @@ div.tooltip {
 }
 
 .containerTypeInfo {
+  text-align: justify;
   justify-content: flex-end;
   width:100%;
+  font-size: 1.3vw;
 }
 
 .task_button {
@@ -515,6 +528,18 @@ div.tooltip {
   width: 20vw;
 }
 
+input[type='email'] {
+  border-radius: 10px;
+  border: 1px solid grey;
+  margin: 2%;
+  padding: 6px 10px;
+  font-size: 1.3vw;
+  width: 20vw;
+}
+
+#task10, #task12 {
+  height: 100px;
+}
 
 .task_desc {
   display: flex;

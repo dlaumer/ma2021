@@ -98,7 +98,7 @@ define([
             domCtr.place(row, this.containerNasa);
 
             this.finishButton = domCtr.create("div", { id: "finishButton", className: "task_button", innerHTML: "Done" },  this.containerQuest);
-            //this.finishButton.style.pointerEvents = 'none';
+            this.settings.dev ? "" : this.finishButton.style.pointerEvents = 'none';
 
             this.clickHandler();
         }, 

@@ -21,6 +21,8 @@ define([
     "urbanmobility/InfoProject",
     "urbanmobility/UserResults",
     "urbanmobility/Outro",
+    "urbanmobility/Video",
+
 
 
 
@@ -28,9 +30,8 @@ define([
 
 ], function (
     Accessor,
-    domCtr, win, dom, domStyle, on, mouse, App, welcome, userStudy, Nasa, Ueq, PreQuest, PostQuest, InfoProject, UserResults, Outro) {
+    domCtr, win, dom, domStyle, on, mouse, App, welcome, userStudy, Nasa, Ueq, PreQuest, PostQuest, InfoProject, UserResults, Outro, Video) {
             
-
         return Accessor.createSubclass({
             declaredClass: "urbanmobility.Home",
 
@@ -43,7 +44,13 @@ define([
                 this.settings = settings;
                 
                 if (this.urlParams.userId) {
-                    this.settings.userId = this.urlParams.userId;
+                    if (this.urlParams.userId == "dev") {
+                        this.settings.userId = "34";
+                        this.settings.dev = true;
+                    }
+                    else {
+                        this.settings.userId = this.urlParams.userId;
+                    }
                 }
                 else {
                     if (document.cookie) {
@@ -67,9 +74,17 @@ define([
                     "5": 0,
                     "6": 0,
                     "7": 0,
+                    "8": 0,
                 };
 
-                this.userStudy = new userStudy(this.settings);
+                var orders = [
+                    [{dimension: "2D", version: 1}, {dimension: "3D", version: 2}],
+                    [{dimension: "2D", version: 2}, {dimension: "3D", version: 1}],
+                    [{dimension: "3D", version: 1}, {dimension: "2D", version: 2}],
+                    [{dimension: "3D", version: 2}, {dimension: "2D", version: 1}],
+                ]
+                this.order = orders[parseInt(this.settings.userId) % 4];   // Evenly distribute the order of dimensions and versions
+                this.userStudy = new userStudy(this.settings, this.order);
                 this.userResultsOnline = new UserResults(this.settings);
                 this.userResultsOnline.init();
                 
@@ -79,8 +94,7 @@ define([
                 var that = this;
                 that.userResultsOnline.readFeature(this.settings.userId, function (feature) {
                     if (feature.attributes.Status != null) {
-                        that.userStudy.order = JSON.parse(feature.attributes.Orders);
-                        that.status = JSON.parse(feature.attributes.Status);
+                        that.settings.dev ? "" : that.status = JSON.parse(feature.attributes.Status);
                         for (let [key, value] of Object.entries(that.status)) {
                             if (value != 1) {
                                 that.status[key] = -1;
@@ -118,24 +132,30 @@ define([
 
                 var container3 = domCtr.create("div", { id: "container3", className: "containerType"}, containerTasks);
                 this.task3 = domCtr.create("div", { id: "task3", className: "task_button", innerHTML: "Task 3" }, container3);
-                this.task3_desc = domCtr.create("div", { id: "task3_desc", className: "task_desc", innerHTML: "Tasks Round 1" }, container3);
+                this.task3_desc = domCtr.create("div", { id: "task3_desc", className: "task_desc", innerHTML: "Watch instruction video" }, container3);
 
                 var container4 = domCtr.create("div", { id: "container4", className: "containerType"}, containerTasks);
                 this.task4 = domCtr.create("div", { id: "task4", className: "task_button", innerHTML: "Task 4" }, container4);
-                this.task4_desc = domCtr.create("div", { id: "task4_desc", className: "task_desc", innerHTML: "Questionnaire" }, container4);
+                this.task4_desc = domCtr.create("div", { id: "task4_desc", className: "task_desc", innerHTML: "Tasks Round 1" }, container4);
 
                 var container5 = domCtr.create("div", { id: "container5", className: "containerType"}, containerTasks);
                 this.task5 = domCtr.create("div", { id: "task5", className: "task_button", innerHTML: "Task 5" }, container5);
-                this.task5_desc = domCtr.create("div", { id: "task5_desc", className: "task_desc", innerHTML: "Tasks Round 2" }, container5);
+                this.task5_desc = domCtr.create("div", { id: "task5_desc", className: "task_desc", innerHTML: "Questionnaire" }, container5);
 
                 var container6 = domCtr.create("div", { id: "container6", className: "containerType"}, containerTasks);
                 this.task6 = domCtr.create("div", { id: "task6", className: "task_button", innerHTML: "Task 6" }, container6);
-                this.task6_desc = domCtr.create("div", { id: "task6_desc", className: "task_desc", innerHTML: "Questionnaire" }, container6);
-                
+                this.task6_desc = domCtr.create("div", { id: "task6_desc", className: "task_desc", innerHTML: "Tasks Round 2" }, container6);
+
                 var container7 = domCtr.create("div", { id: "container7", className: "containerType"}, containerTasks);
                 this.task7 = domCtr.create("div", { id: "task7", className: "task_button", innerHTML: "Task 7" }, container7);
-                this.task7_desc = domCtr.create("div", { id: "task7_desc", className: "task_desc", innerHTML: "Final questions" }, container7);
-
+                this.task7_desc = domCtr.create("div", { id: "task7_desc", className: "task_desc", innerHTML: "Questionnaire" }, container7);
+                
+                var container8 = domCtr.create("div", { id: "container8", className: "containerType"}, containerTasks);
+                this.task8 = domCtr.create("div", { id: "task8", className: "task_button", innerHTML: "Task 8" }, container8);
+                this.task8_desc = domCtr.create("div", { id: "task8_desc", className: "task_desc", innerHTML: "Final questions" }, container8);
+                
+                var footer = domCtr.create("div", { id: "footer", className: "containerType", innerHTML: "Experiencing technical problems? <br>Please let me know at daniel.laumer@gmail.com"}, containerTasks);
+ 
                 this.updateUI();
 
             },
@@ -158,30 +178,37 @@ define([
                 }.bind(this));
 
                 on(this.task3, "click", function (evt) {
+                    this.status["3"] = 1;
+                    this.updateUI();
+                    var video = new Video(this.settings, this.containerHome);
+                    video.init();
+                }.bind(this));
+
+                on(this.task4, "click", function (evt) {
                     var app = new App();
                     app.init(this.settings, "userStudy", this.userStudy);
                 }.bind(this));
 
-                on(this.task4, "click", function (evt) {
-                    this.status["4"] = 1;
+                on(this.task5, "click", function (evt) {
+                    this.status["5"] = 1;
                     this.updateUI();
                     var nasa = new Nasa(this.settings, this.containerHome);
                     nasa.init();
                 }.bind(this));
 
-                on(this.task5, "click", function (evt) {
+                on(this.task6, "click", function (evt) {
                     var app2 = new App();
                     app2.init(this.settings, "userStudy", this.userStudy);
                 }.bind(this));
                
-                on(this.task6, "click", function (evt) {
-                    this.status["6"] = 1;
+                on(this.task7, "click", function (evt) {
+                    this.status["7"] = 1;
                     this.updateUI();
                     var nasa2 = new Nasa(this.settings, this.containerHome);
                     nasa2.init();
                 }.bind(this));
 
-                on(this.task7, "click", function (evt) {
+                on(this.task8, "click", function (evt) {
                     this.updateUI();
                     var postQuest = new PostQuest(this.settings, this.containerHome);
                     postQuest.init();
@@ -218,37 +245,41 @@ define([
             }, 
             returnToHome: function(userResult) {
 
-                if (this.status["7"]== -1) {
+                if (this.status["8"]== -1) {
+                    this.uploadResults(8, userResult);
+
+                    domCtr.destroy("containerQuest");
+                }
+                else if (this.status["7"] == 1) {
                     this.uploadResults(7, userResult);
-
                     domCtr.destroy("containerQuest");
                 }
-                else if (this.status["6"] == 1) {
+                else if (this.status["6"] == -1) {
                     this.uploadResults(6, userResult);
-                    domCtr.destroy("containerQuest");
+
+                    domCtr.destroy("viewDiv");
+                    domCtr.destroy("userStudy");
+                    domCtr.destroy("overlay");
+                    domCtr.destroy("overlayItems");
+
+                    dom.byId("background_home").style.display = "block";
                 }
-                else if (this.status["5"] == -1) {
+                else if (this.status["5"] == 1) {
                     this.uploadResults(5, userResult);
-
-                    domCtr.destroy("viewDiv");
-                    domCtr.destroy("userStudy");
-                    domCtr.destroy("overlay");
-                    domCtr.destroy("overlayItems");
-
-                    dom.byId("background_home").style.display = "block";
-                }
-                else if (this.status["4"] == 1) {
-                    this.uploadResults(4, userResult);
                     domCtr.destroy("containerQuest");
                 }
 
-                else if (this.status["3"] == -1) {
-                    this.uploadResults(3, userResult);
+                else if (this.status["4"] == -1) {
+                    this.uploadResults(4, userResult);
                     domCtr.destroy("viewDiv");
                     domCtr.destroy("userStudy");
                     domCtr.destroy("overlay");
                     domCtr.destroy("overlayItems");
                     dom.byId("background_home").style.display = "block";
+                }
+                else if (this.status["3"] == 1) {
+                    this.uploadResults(3, userResult);
+                    domCtr.destroy("containerQuest");
                 }
                 else if (this.status["2"] == 1) {
                     this.uploadResults(2, userResult);
@@ -287,7 +318,7 @@ define([
                 for (let [key, value] of Object.entries(this.status)) {
                     if (value == 0) {
                         dom.byId("container" + key).children["task" + key].className = "task_button"
-                        dom.byId("container" + key).children["task" + key].style.pointerEvents = "none";
+                        this.settings.dev ? "" : dom.byId("container" + key).children["task" + key].style.pointerEvents = "none";
                     }
                     else if (value == -1) {
 
@@ -297,7 +328,7 @@ define([
                     }
                     else if (value == 1) {
                         dom.byId("container" + key).children["task" + key].className = "task_button done"
-                        dom.byId("container" + key).children["task" + key].style.pointerEvents = "none";
+                        this.settings.dev ? "" : dom.byId("container" + key).children["task" + key].style.pointerEvents = "none";
                         
                     }
 
