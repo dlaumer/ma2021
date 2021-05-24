@@ -93,19 +93,25 @@ define([
                     
                 }
 
-                    // Filter the layer
-                    this.view.whenLayerView(modeManager.getLayer(this.settings.layerNames.pt_lines)).then(function(layerView) {
-                        if (modeManager.viewSettings.mode == "project") {
-                            layerView.filter = null;
-                        } else {
-                            layerView.filter = {
-                                where:"project = 0"
-                            };
-                        }
-                    });
+                // Filter the layer
+                this.view.whenLayerView(modeManager.getLayer(this.settings.layerNames.pt_lines)).then(function(layerView) {
+                    if (modeManager.viewSettings.mode == "project") {
+                        layerView.filter = null;
+                    } else {
+                        layerView.filter = {
+                            where:"project = 0"
+                        };
+                    }
+                });
+
+               
                 
                 if (mode == "project" && theme == "traffic") {
                     modeManager.getLayer(this.settings.layerNames.traffic_pro).visible = true;
+                     // Filter the layer
+                    this.view.whenLayerView(modeManager.getLayer(this.settings.layerNames.traffic_pro)).then(function(layerView) {
+                        layerView.refresh()
+                    });
                 }
                 else {
                     modeManager.getLayer(this.settings.layerNames.traffic_pro).visible = false;
@@ -117,6 +123,17 @@ define([
                 else {
                     modeManager.getLayer(this.settings.layerNames.streets_pro).visible = false;
                 }
+
+                 // Filter the layer
+                 this.view.whenLayerView(modeManager.getLayer(this.settings.layerNames.traffic)).then(function(layerView) {
+                    layerView.refresh()
+                });
+
+                 // Filter the layer
+                 this.view.whenLayerView(modeManager.getLayer(this.settings.layerNames.pt)).then(function(layerView) {
+                    layerView.refresh()
+                });
+                
 
             },
         })

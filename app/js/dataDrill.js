@@ -34,8 +34,9 @@ define([
                 //view.popup.collapsed = true;
 
                 view.hitTest(event.screenPoint).then(function (response) {
-                    this.result = response.results[0];
-                    if (this.result && (this.result.graphic.layer.title == this.settings.layerNames.pt ||  this.result.graphic.layer.title == this.settings.layerNames.traffic ||  this.result.graphic.layer.title == this.settings.layerNames.traffic_pro)){
+                    var res = response.results[0];
+                    if (res && (res.graphic.layer.title == this.settings.layerNames.pt ||  res.graphic.layer.title == this.settings.layerNames.traffic ||  res.graphic.layer.title == this.settings.layerNames.traffic_pro)){
+                        this.result = res;
                         var that = this;
                         that.view.whenLayerView(this.result.graphic.layer).then((layerView) => {
                             if (that.highlight) {
@@ -84,7 +85,7 @@ define([
                     var data = {}
                     data.hourData = this.parsePTData(results);
                     data.all = results.features[0].attributes[modeManager.viewSettings.prefix + modeManager.viewSettings.attribute];
-                    data.text =  "<b>Occupancy</b> <br> <span style='font-size: smaller'>Percentage of occupied spaces </span> <br><br> From: " + results.features[0].attributes["Fr_name"] + "<br>To:    " + results.features[0].attributes["To_name"];
+                    data.text =  "<b>Occupancy</b> <br> <span style='font-size: smaller'>Average of occupied spaces </span> <br><br> From: " + results.features[0].attributes["Fr_name"] + "<br>To:    " + results.features[0].attributes["To_name"];
                 }
                 if (layerName == this.settings.layerNames.traffic || layerName == this.settings.layerNames.traffic_pro) {
                     var data = {}
@@ -139,7 +140,7 @@ define([
                     this.allData = {};
                     this.allData.hourData = this.parsePTData(results);
                     this.allData.all = results.features[0].attributes["all"];
-                    this.allData.text = "<b>Occupancy</b> <br> <span style='font-size: smaller'>Percentage of occupied spaces </span><br><br> Whole Project Area";
+                    this.allData.text = "<b>Occupancy</b> <br> <span style='font-size: smaller'>Average of occupied spaces </span><br><br> Whole Project Area";
                     var that = this;
                     dom.byId("dashboard-text").style.width = "25%";
 

@@ -31,15 +31,15 @@ define([
             this.container1.innerHTML = `
             <h3>User personas</h3>
             To help the development process, I created three fictional user personas before starting to design the product.
-            They are how I imagine some potential future users of such a product. Those persona helped me to identify the needs, 
+            They are how I imagine some potential future users of such a product. Those personas helped me to identify the needs, 
             motivations and prepositions of the users. <br><br>
             
             Please quickly read the description of those fictional people and decide which 
             person you identify with most. Of course never one person will fit perfectly, but nevertheless try to decide for one persona. 
             `
-            domCtr.create("img", { id: "user_persona_1", src: "images/user_persona_1.png"}, this.containerPostQuest);
-            domCtr.create("img", { id: "user_persona_2", src: "images/user_persona_2.png"}, this.containerPostQuest);
-            domCtr.create("img", { id: "user_persona_3", src: "images/user_persona_3.png"}, this.containerPostQuest);
+            domCtr.create("img", { id: "user_persona_1", src: "images/user_persona_4.png"}, this.containerPostQuest);
+            domCtr.create("img", { id: "user_persona_2", src: "images/user_persona_5.png"}, this.containerPostQuest);
+            domCtr.create("img", { id: "user_persona_3", src: "images/user_persona_6.png"}, this.containerPostQuest);
 
             
             var container4 = domCtr.create("div", { id: "container4", className: "containerTypeQuest"}, this.containerPostQuest);
@@ -70,6 +70,16 @@ define([
             var container10 = domCtr.create("div", { id: "container10", className: "containerTypeQuest"}, this.containerPostQuest);
             this.task10_desc = domCtr.create("div", { id: "task10_desc", className: "task_desc", innerHTML: "If you answered yes before, why?" }, container10);
             this.task10 = domCtr.create("textarea", { id: "task10", className: "quest_input", name:"name", tabindex:"3", placeholder:"Why?"}, container10);
+
+            var container13 = domCtr.create("div", { id: "container13", className: "containerTypeQuest"}, this.containerPostQuest);
+            this.task13_desc = domCtr.create("div", { id: "task13_desc", className: "task_desc", innerHTML: "Do you think such an application could help to change the opinion of the public for votes like this?" }, container13);
+            var row = domCtr.toDom(
+            `<select name="change_vote2" id="change_vote2" tabindex:"2" class="quest_input">
+                <option value="" disabled selected>Select your option</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>`)
+            this.task13 = domCtr.place(row, container13);
 
             this.container11 = domCtr.create("div", { id: "container11", className: "containerTypeInfo" ,innerHTML: "<h3>General questions</h3>"}, this.containerPostQuest);
 
@@ -111,6 +121,12 @@ define([
                 this.checkFinished();
             }.bind(this));
 
+            on(this.task13, "input", function (evt) {
+                this.results.change_vote2= evt.target.value;
+                this.checkFinished();
+            }.bind(this));
+
+
             on(this.task10, "input", function (evt) {
                 this.results.why = evt.target.value;
                 this.checkFinished();
@@ -148,7 +164,7 @@ define([
 
         checkFinished: function() {
             keys = Object.keys(this.results);
-            if (keys.includes("user_persona") && keys.includes("user_persona") && keys.includes("more_info")) {
+            if (keys.includes("user_persona") && keys.includes("change_vote") && keys.includes("change_vote2") && keys.includes("more_info")) {
                 if (this.results.more_info == "yes" && !keys.includes("email") ) {
                     this.settings.dev ? "" : this.finishButton.style.pointerEvents = 'none';
                     this.finishButton.className = "task_button";

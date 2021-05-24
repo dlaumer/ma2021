@@ -73,6 +73,21 @@ define([
 
             },
 
+            readFeatures: function(callback) {
+                this.table
+                .queryFeatures({
+                  outFields: ["*"],
+                  returnGeometry: false
+                })
+                .then((results) => {
+                  if (results.features.length > 0) {
+                    editFeature = results.features[0];
+                    callback(editFeature);
+                    }
+                 });
+
+            },
+
             updateFeature: function(objectid, data, callback) {
 
                 this.table
@@ -85,15 +100,20 @@ define([
                     if (results.features.length > 0) {
                         editFeature = results.features[0];
                         for (const item in data) {
-                            editFeature.attributes[item] = JSON.stringify(data[item])
-                            if (item == "Task7") {
+                            if (item == "ID") {
+                                editFeature.attributes[item] = parseInt(data[item]);
+                            }
+                            else {
+                                editFeature.attributes[item] = JSON.stringify(data[item]);
+                            }
+                            if (item == "Task8") {
                                 editFeature.attributes["DateEnded"] = Date.now();
                             }
                         }
 
                         this.table.applyEdits({
                             updateFeatures: [editFeature]
-                        }).then((value) => {callback(true)}).catch((reason) => {callback(false)});                   
+                        }).then((value) => {callback(value)}).catch((reason) => {callback(reason)});                   
                     }
                  });
               

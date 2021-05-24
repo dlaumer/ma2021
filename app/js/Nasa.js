@@ -36,7 +36,7 @@ define([
 
             this.container1.innerHTML = `Please assess the tested application by clicking one position 
             per each of the six rating scales which matches your experience. Each line has two 
-            endpoint descriptors.
+            endpoint descriptors (for example 'Low' and 'High').
             `
 
             var row = domCtr.toDom(
@@ -47,7 +47,10 @@ define([
                     <div class="sliderticks">
                         <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
                     </div>
+                    <div class="sliderContainer">Low
                         <input type="range" min="0" max="100" value="50" step="5" class="slider" id="md" list="steplist">
+                        High
+                    </div>
                 </section>
 				<section class="nasaSection">
 					<h3>Physical demand</h3>
@@ -55,7 +58,10 @@ define([
                     <div class="sliderticks">
                         <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
                     </div>
+                    <div class="sliderContainer">Low
                         <input type="range" min="0" max="100" value="50" step="5" class="slider" id="pd">
+                        High
+                    </div>
 				</section>
 				<section class="nasaSection">
 					<h3>Temporal demand</h3>
@@ -64,7 +70,10 @@ define([
                     <div class="sliderticks">
                         <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
                     </div>
+                    <div class="sliderContainer">Low
                         <input type="range" min="0" max="100" value="50" step="5" class="slider" id="td">
+                        High
+                    </div>
 				</section>
 				<section class="nasaSection">
 					<h3>Performance</h3>
@@ -73,7 +82,10 @@ define([
                     <div class="sliderticks">
                         <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
                     </div>
+                    <div class="sliderContainer">Excellent
                         <input type="range" min="0" max="100" value="50" step="5" class="slider performance" id="pe">
+                        Poor
+                    </div>
 				</section>
 				<section class="nasaSection">
 					<h3>Effort</h3>
@@ -82,7 +94,10 @@ define([
                     <div class="sliderticks">
                         <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
                     </div>
+                    <div class="sliderContainer">Low
                         <input type="range" min="0" max="100" value="50" step="5" class="slider" id="ef">
+                        High
+                    </div>
 				</section>
 				<section class="nasaSection">
 					<h3>Frustration</h3>
@@ -91,7 +106,10 @@ define([
                     <div class="sliderticks">
                         <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
                     </div>
+                    <div class="sliderContainer">Low
                         <input type="range" min="0" max="100" value="50" step="5" class="slider" id="fr">
+                        High
+                    </div>
 				</section>		
                 `
             )

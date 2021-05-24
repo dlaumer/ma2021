@@ -46,8 +46,9 @@ define([
                 <li>Position of the clicks</li>
             </ul>
             So this means that you should try to answer as precise as possible, but also as fast as possible.
-            It is advised to use Chrome but other browsers should work as well.<br>
-            --> estimated time: 15-20 min <br>
+            It is advised to use Chrome but other browsers should work as well. Also please use a desktop computer, 
+            it does not work well on a mobile device!<br>
+            --> estimated time: 20-30 min <br>
             
             <h3>Data Protection</h3>
             The obtained data will be stored safely and reported in an anonymous form. Only the responsible 
@@ -77,7 +78,7 @@ define([
             (Please note that some of the data is produced syntethically, so it does not always reflect the reality!)<br><br>
 
             <h3>Contact information</h3>
-            Author: Daniel Laumer, daniel.laumer@ethz.ch, laumerd@esri.com<br>
+            Author: Daniel Laumer, laumerd@ethz.ch, laumerd@esri.com<br>
             Professorship: Prof. Dr. Martin Raubal, mraubal@ethz.ch<br>
             ETH Zurich, Institute for Cartography and Geoinformation <br>
             Collaboration with Esri R&D, Zurich.<br><br>

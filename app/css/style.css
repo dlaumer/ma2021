@@ -2,6 +2,8 @@
   -moz-box-sizing: border-box; 
   -webkit-box-sizing: border-box; 
    box-sizing: border-box; 
+   line-height: 150%;
+
 }
 
 
@@ -269,6 +271,8 @@ p {
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
+  z-index: 1;
+  cursor: pointer;
 }
 
 .layer {
@@ -424,7 +428,7 @@ div.tooltip {
   width:100%;
   height: 90%;
   overflow: auto;
-  padding: 0 20px;
+  padding: 0 0 0 100px;
 
 }
 
@@ -479,7 +483,7 @@ div.tooltip {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  justify-content: flex-end;
+  justify-content: space-between;
   width:100%;
 }
 
@@ -487,6 +491,10 @@ div.tooltip {
   text-align: justify;
   justify-content: flex-end;
   width:100%;
+  font-size: 1.3vw;
+}
+
+ul {
   font-size: 1.3vw;
 }
 
@@ -513,7 +521,7 @@ div.tooltip {
   margin: 2%;
   padding: 10px;
   font-size: 1.3vw;
-  width: 20vw;
+  min-width: 20vw;
   opacity: 0.5;
 
 }
@@ -538,9 +546,10 @@ div.tooltip {
   border-radius: 10px;
   border: 1px solid grey;
   margin: 2%;
-  padding: 6px 10px;
+  padding: 0px 10px;
   font-size: 1.3vw;
-  width: 20vw;
+  min-width: 20vw;
+  max-width: 20vw;
 }
 
 input[type='email'] {
@@ -549,7 +558,7 @@ input[type='email'] {
   margin: 2%;
   padding: 6px 10px;
   font-size: 1.3vw;
-  width: 20vw;
+  min-width: 20vw;
 }
 
 #task10, #task12 {
@@ -558,9 +567,20 @@ input[type='email'] {
 
 .task_desc {
   display: flex;
-  justify-content: center;
   align-items: center;
+  text-align: left;
   font-size: 1.3vw;
+
+}
+
+.sliderContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width:100%;
+  color: #888;
+	line-height: .6;
+  font-size: 0.8vw;
 
 }
 
@@ -601,33 +621,6 @@ input[type='email'] {
 
 }
 
-.slider::before,
-.slider::after {
-	color: #888;
-	line-height: .6;
-	position:relative;
-	width: 5em;
-}
-
-.slider::before {
-	content: "Low";
-	margin-left: -5em;
-	text-align: right;
-}
-
-.slider::after {
-	content: "High";
-	margin-right: 2em;
-	right: -6em;
-}
-
-.slider.performance::before {
-	content: "Excellent";
-}
-
-.slider.performance::after {
-	content: "Poor";
-}
 
 /* Sliders 2, in order to hide the handle the first time */
 .slider2 {
@@ -660,34 +653,6 @@ input[type='email'] {
   height: 20px;
   background: var(--project);
   cursor: pointer;
-}
-
-.slider2::before,
-.slider2::after {
-	color: #888;
-	line-height: .6;
-	position: relative;
-	width: 5em;
-}
-
-.slider2::before {
-	content: "Low";
-	margin-left: -5em;
-	text-align: right;
-}
-
-.slider2::after {
-	content: "High";
-	margin-right: 2em;
-	right: -6em;
-}
-
-.slider2.performance::before {
-	content: "Excellent";
-}
-
-.slider2.performance::after {
-	content: "Poor";
 }
 
 .sliderticks {

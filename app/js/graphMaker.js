@@ -263,8 +263,8 @@ define([
                         .style("opacity", .9);		
                     that.tooltip	
                         .html(d.percentage.toFixed() + "%")	
-                        .style("left", (d3.event.pageX) + "px")		
-                        .style("top", (d3.event.pageY - 28) + "px");	
+                        .style("left", (d3.event.fromElement.parentElement.getBoundingClientRect().x + d3.event.srcElement.x.animVal.value + d3.event.srcElement.width.animVal.value/2 + 25) + "px")		
+                        .style("top", (d3.event.fromElement.parentElement.getBoundingClientRect().y + d3.event.srcElement.y.animVal.value - 20) + "px");	
                     })					
                 .on("mouseout", function(d) {		
                         that.tooltip.transition()		
@@ -301,8 +301,8 @@ define([
                     .style("opacity", .9);		
                 that.tooltip	
                     .html(d.percentage.toFixed() + "%")	
-                    .style("left", (d3.event.pageX) + "px")		
-                    .style("top", (d3.event.pageY - 28) + "px");	
+                    .style("left", (d3.event.fromElement.parentElement.getBoundingClientRect().x + d3.event.srcElement.x.animVal.value  + d3.event.srcElement.width.animVal.value/2 + 25) + "px")		
+                    .style("top", (d3.event.fromElement.parentElement.getBoundingClientRect().y + d3.event.srcElement.y.animVal.value + d3.event.srcElement.height.animVal.value - 20) + "px");		
                 })					
             .on("mouseout", function(d) {		
                     that.tooltip.transition()		
@@ -369,8 +369,8 @@ define([
                         .style("opacity", .9);		
                     that.tooltip	
                         .html(d.value_avg.toFixed())	
-                        .style("left", (d3.event.pageX) + "px")		
-                        .style("top", (d3.event.pageY - 28) + "px");	
+                        .style("left", (d3.event.fromElement.parentElement.getBoundingClientRect().x + d3.event.srcElement.x.animVal.value + d3.event.srcElement.width.animVal.value/2 + 25) + "px")		
+                        .style("top", (d3.event.fromElement.parentElement.getBoundingClientRect().y + d3.event.srcElement.y.animVal.value - 20) + "px");	
                     })					
                 .on("mouseout", function(d) {		
                         that.tooltip.transition()		

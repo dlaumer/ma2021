@@ -19,24 +19,24 @@ define([
         var questions = [
             {id: 1,
             question: [
-                "Public transport: What is the average occupancy between Albisriederplatz and Hardbrücke after the project is built?",
-                "Public transport : What is the average occupancy of between Bucheggplatz and Milchbuck after the project is built?"],
-            result: "This is the result"},
+                "Public transport: What is the average occupancy at Hardbrücke after the project is built?",
+                "Public transport : What is the average occupancy between Bucheggplatz and Milchbuck after the project is built?"],
+            result: [29,19]},
             {id: 2,
                 question: [
-                    "Public transport: Without the project, would the occupancy between Bucheggplatz and Rosengarten turn critical? (critical = over 50%)",
-                    "Public transport: Without the project, would the occupancy between Rosengarten and Escher-Wyss-Platz turn critical ? (critical = over 50%)"],
-            result: "This is the result"},
+                    "Public transport: Without the project, what will be the average occupancy between Bucheggplatz and Rosengarten at 12:00?",
+                    "Public transport: Without the project, what will be the average occupancy between Rosengarten and Escher-Wyss-Platz at 12:00?"],
+            result: [32, 26]},
             {id: 3,
                 question: [
-                    "Traffic: How many cars drive currently (now) on average on the Hardbrücke at 8am?",
-                    "Traffic: How many cars drive currently (now) on average on the Rosengarten at 8am?"],
-            result: "This is the result"},
+                    "Traffic: How many cars drive currently (now) on average on the Hardbrücke at 8:00?",
+                    "Traffic: How many cars drive currently (now) on average on the Rosengarten at 8:00?"],
+            result: [455, 1175]},
             {id: 4,
                 question: [
-                    "Traffic: With the project, how many cars would still use the Rosengartenstrasse per day?",
-                    "Traffic: With the project, how many cars would use the new Rosengarten tunnel per day?"],
-            result: "This is the result"},
+                    "Traffic: With the project, how many cars would still use the section between Rosengartenstrasse and Bucheggplatz on average per day?",
+                    "Traffic: With the project, how many cars would use the new Rosengarten tunnel on average per day?"],
+            result: [2302, 22320]},
         ];
 
         return Accessor.createSubclass({
@@ -140,7 +140,6 @@ define([
                         this.questionText.innerHTML = "Please answer this question: <br>" + this.questions[this.i].question[this.order[this.round].version-1];
                     }
                     else {
-                        this.round = 1;
                         this.i = 0;
                         this.settings.home.returnToHome(this.userResults);
                     }
@@ -157,7 +156,7 @@ define([
                 this.counter = 0;
                 this.clickPositions = []
                 var that = this;
-                this.timer = setTimeout(() => {alert("The timelimit was exceeded. Please answer the next question"); that.endQuestion(that)},120000);
+                this.timer = setTimeout(() => {alert("The timelimit was exceeded. Please answer the next question"); that.endQuestion(that)},300000);
             }, 
 
             endQuestion: function(that) {
@@ -174,7 +173,6 @@ define([
                 };
                 console.log(that.userResults[that.questions[that.i].id]);
                 that.newQuestion()
-
             },
 
             isReady: function() {

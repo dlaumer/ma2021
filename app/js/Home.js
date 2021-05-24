@@ -45,7 +45,7 @@ define([
                 
                 if (this.urlParams.userId) {
                     if (this.urlParams.userId == "dev") {
-                        this.settings.userId = "34";
+                        this.settings.userId = "40";
                         this.settings.dev = true;
                     }
                     else {
@@ -104,7 +104,7 @@ define([
                     }
                     else {
                         that.status["1"] = -1;
-                        that.userResultsOnline.updateFeature(that.settings.userId, {"Orders":that.userStudy.order}, function() {})
+                        that.userResultsOnline.updateFeature(that.settings.userId, {"Orders":that.userStudy.order, "ID": that.settings.userId}, function(info) {console.log(info)})
                     }
                     that.updateUI();
                 })
@@ -154,7 +154,7 @@ define([
                 this.task8 = domCtr.create("div", { id: "task8", className: "task_button", innerHTML: "Task 8" }, container8);
                 this.task8_desc = domCtr.create("div", { id: "task8_desc", className: "task_desc", innerHTML: "Final questions" }, container8);
                 
-                var footer = domCtr.create("div", { id: "footer", className: "containerType", innerHTML: "Experiencing technical problems? <br>Please let me know at daniel.laumer@gmail.com"}, containerTasks);
+                var footer = domCtr.create("div", { id: "footer", className: "containerType", innerHTML: "Experiencing technical problems? <br>Please let me know at laumerd@ethz.ch"}, containerTasks);
  
                 this.updateUI();
 
@@ -185,6 +185,7 @@ define([
                 }.bind(this));
 
                 on(this.task4, "click", function (evt) {
+                    this.userStudy.round = 0;
                     var app = new App();
                     app.init(this.settings, "userStudy", this.userStudy);
                 }.bind(this));
@@ -197,6 +198,7 @@ define([
                 }.bind(this));
 
                 on(this.task6, "click", function (evt) {
+                    this.userStudy.round = 1;
                     var app2 = new App();
                     app2.init(this.settings, "userStudy", this.userStudy);
                 }.bind(this));
@@ -296,14 +298,18 @@ define([
             uploadResults: function(taskNumber, userResult) {
                 var that = this;
                 that["task" + taskNumber.toString()].innerHTML = "Saving..."
-                var data = {"Status": that.status}
+                data = {};
                 data["Task" + taskNumber.toString()] = userResult;
                 that.userResultsOnline.updateFeature(that.settings.userId, data, function(result){
                     if (result) {
                         that.status[taskNumber.toString()] = 1;
-                        if (taskNumber != 7) {
+                        if (taskNumber != 8) {
                             that.status[(taskNumber + 1).toString()] = -1;
                         }
+                        that.userResultsOnline.updateFeature(that.settings.userId, {"Status": that.status}, function(result){
+                            console.log(result);
+                        });
+
                     }
                     else {
                         that.status[taskNumber.toString()] = -1;
@@ -332,7 +338,7 @@ define([
                         
                     }
 
-                    if ((key == "7") && (value == 1)) {
+                    if ((key == "8") && (value == 1)) {
                         var outro = new Outro()
                         outro.init(this.settings);
                         //alert("Finished!");
