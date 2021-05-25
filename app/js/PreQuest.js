@@ -44,7 +44,7 @@ define([
 
             var container3 = domCtr.create("div", { id: "container3", className: "containerTypeQuest"}, this.containerPreQuest);
             this.task3_desc = domCtr.create("div", { id: "task3_desc", className: "task_desc", innerHTML: "What is your profession?" }, container3);
-            this.task3 = domCtr.create("input", { id: "task3", className: "quest_input", name:"name", tabindex:"3", placeholder:"e.g. Student (Civil Eng.)"}, container3);
+            this.task3 = domCtr.create("input", { id: "task3", className: "quest_input", name:"name", tabindex:"3", placeholder:"e.g. Civil Eng. Student"}, container3);
 
             var container4 = domCtr.create("div", { id: "container4", className: "containerTypeQuest"}, this.containerPreQuest);
             this.task4_desc = domCtr.create("div", { id: "task4_desc", className: "task_desc", innerHTML: "What is your current education?" }, container4);
@@ -67,7 +67,7 @@ define([
             //this.task2 = domCtr.create("input", { id: "task2", className: "quest_input", name:"name",  placeholder:"Your Gender"}, container2);
             var row = domCtr.toDom(
                 `<select name="knowledge" id="knowledge" tabindex="5" class="quest_input">
-                    <option value="" disabled selected>Do you agree?</option>
+                    <option value="" disabled selected></option>    
                     <option value="1">I strongly disagree</option>
                     <option value="2">I disagree</option>
                     <option value="3">Neither agree or disagree</option>
@@ -81,7 +81,7 @@ define([
             //this.task2 = domCtr.create("input", { id: "task2", className: "quest_input", name:"name",  placeholder:"Your Gender"}, container2);
             var row = domCtr.toDom(
             `<select name="knowledge" id="knowledge" tabindex="6" class="quest_input">
-                <option value="" disabled selected>Do you agree?</option>
+                <option value="" disabled selected></option>    
                 <option value="1">I strongly disagree</option>
                 <option value="2">I disagree</option>
                 <option value="3">Neither agree or disagree</option>
@@ -95,7 +95,7 @@ define([
             //this.task2 = domCtr.create("input", { id: "task2", className: "quest_input", name:"name",  placeholder:"Your Gender"}, container2);
             var row = domCtr.toDom(
             `<select name="rosengarten" id="rosengarten" tabindex="7"  class="quest_input">
-            <option value="" disabled selected>Do you agree?</option>
+            <option value="" disabled selected></option>
             <option value="1">I strongly disagree</option>
             <option value="2">I disagree</option>
             <option value="3">Neither agree or disagree</option>
@@ -129,41 +129,54 @@ define([
 
             on(this.task1, "input", function (evt) {
                 this.results.age = evt.target.value;
+                evt.target.style.border = "1px solid grey";
                 this.checkFinished();
             }.bind(this));
 
             on(this.task2, "change", function (evt) {
                 this.results.gender = evt.target.value;
+                evt.target.style.border = "1px solid grey";
                 this.checkFinished();
             }.bind(this));
 
             on(this.task3, "input", function (evt) {
                 this.results.profession = evt.target.value;
+                evt.target.style.border = "1px solid grey";
                 this.checkFinished();
             }.bind(this));
 
             on(this.task4, "change", function (evt) {
                 this.results.education = evt.target.value;
+                evt.target.style.border = "1px solid grey";
+
                 this.checkFinished();
             }.bind(this));
 
             on(this.task5, "change", function (evt) {
                 this.results.experience = evt.target.value;
+                evt.target.style.border = "1px solid grey";
+
                 this.checkFinished();
             }.bind(this));
 
             on(this.task6, "input", function (evt) {
                 this.results.vote = evt.target.value;
+                evt.target.style.border = "1px solid grey";
+
                 this.checkFinished();
             }.bind(this));
 
             on(this.task7, "change", function (evt) {
                 this.results.knowledge = evt.target.value;
+                evt.target.style.border = "1px solid grey";
+
                 this.checkFinished();
             }.bind(this));
 
             on(this.task8, "change", function (evt) {
                 this.results.rosengarten = evt.target.value;
+                evt.target.style.border = "1px solid grey";
+
                 this.checkFinished();
             }.bind(this));
 

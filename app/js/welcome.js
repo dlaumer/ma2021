@@ -70,6 +70,7 @@ define([
                 //this.version1 = domCtr.create("div", { id: "version1", className: "link", innerHTML: "2D" }, containerLinks);
                 //this.version2 = domCtr.create("div", { id: "version2", className: "link", innerHTML: "3D" }, containerLinks);
                 this.userStudyButton = domCtr.create("div", { id: "userStudyButton", className: "link", innerHTML: "Start User Study" }, container);
+                domCtr.create("div", { id: "description3", className: "description", innerHTML: "(Note: Not designed for mobile devices)" }, container);
 
                 domCtr.create("hr", { id: "welcomeLine"}, container);
                 

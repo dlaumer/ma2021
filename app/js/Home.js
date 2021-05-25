@@ -92,9 +92,54 @@ define([
                 this.createUI();
                 this.clickHandler();
                 var that = this;
+                //var permutations = permute([0,1,2,3]);
+                var permutations = [[0, 2, 1, 3],
+                                    [2, 0, 3, 1],
+                                    [3, 1, 0, 2],
+                                    [1, 3, 2, 0],
+                                    [0, 1, 2, 3],
+                                    [3, 2, 1, 0]]
+
+                this.questionOrder = permutations[Math.floor(parseInt(this.settings.userId)/4) % 6];
+                this.userStudy.questionOrder = this.questionOrder;
+
+                /*
+                that.genInfo = new Array(24).fill(0);
+                that.userResultsOnline.readFeatures(function (features) { 
+                    for (var i = 0; i < features.length;i++) {
+                        if (features[i].attributes.GeneralInfo != null) {
+                            var genInfo = features[i].attributes.GeneralInfo;
+                            var genInfo = that.genInfo.map(function (num, idx) {
+                                return num + features[i].attributes.GeneralInfo[idx];
+                              });
+                        }
+                    }
+
+                    var min = Math.min.apply(null, that.genInfo);
+                    availableIndexes = []
+                    for (var j = 0; j <  that.genInfo.length; j++) {
+                        if ( that.genInfo[j] == min) {
+                            availableIndexes.push(j)
+                        }
+                    }
+                    index1 = Math.floor(Math.random() * (availableIndexes.length));
+                    index2 = Math.floor(Math.random() * (availableIndexes.length));
+                    that.genInfo = new Array(24).fill(0);
+                    that.genInfo[index1] = 1;
+                    that.genInfo[index2] = 1;
+
+                    that.settings.questionOrder = [permutations[index1], permutations[index2]];
+                    that.userStudy.questionOrder = that.settings.questionOrder;
+                    console.log(that.settings.questionOrder);
+                    that.userResultsOnline.updateFeature(that.settings.userId, {GeneralInfo: that.genInfo}, function(result) {console.log(result)})
+                });
+
+                */
+               
                 that.userResultsOnline.readFeature(this.settings.userId, function (feature) {
                     if (feature.attributes.Status != null) {
                         that.settings.dev ? "" : that.status = JSON.parse(feature.attributes.Status);
+                        that.questionOrder = JSON.parse(feature.attributes.GeneralInfo);
                         for (let [key, value] of Object.entries(that.status)) {
                             if (value != 1) {
                                 that.status[key] = -1;
@@ -104,7 +149,8 @@ define([
                     }
                     else {
                         that.status["1"] = -1;
-                        that.userResultsOnline.updateFeature(that.settings.userId, {"Orders":that.userStudy.order, "ID": that.settings.userId}, function(info) {console.log(info)})
+                        that.userResultsOnline.updateFeature(that.settings.userId, {"Orders":that.userStudy.order, "ID": that.settings.userId, "GeneralInfo": that.settings.questionOrder, "Status": that.status}, function(info) {console.log(info)})
+                        
                     }
                     that.updateUI();
                 })
@@ -123,36 +169,36 @@ define([
                 this.containerTasks = domCtr.create("div", { id: "containerTasks"}, containerHome);
 
                 var container1 = domCtr.create("div", { id: "container1", className: "containerType"}, containerTasks);
-                this.task1 = domCtr.create("div", { id: "task1", className: "task_button", innerHTML: "Task 1" }, container1);
-                this.task1_desc = domCtr.create("div", { id: "task1_desc", className: "task_desc", innerHTML: "Information about project" }, container1);
+                this.task1 = domCtr.create("div", { id: "task1", className: "task_button", innerHTML: "Information about project" }, container1);
+                //this.task1_desc = domCtr.create("div", { id: "task1_desc", className: "task_desc", innerHTML: "Information about project" }, container1);
 
                 var container2 = domCtr.create("div", { id: "container2", className: "containerType"}, containerTasks);
-                this.task2 = domCtr.create("div", { id: "task2", className: "task_button", innerHTML: "Task 2" }, container2);
-                this.task2_desc = domCtr.create("div", { id: "task2_desc", className: "task_desc", innerHTML: "Enter your information" }, container2);
+                this.task2 = domCtr.create("div", { id: "task2", className: "task_button", innerHTML: "Enter your information" }, container2);
+                //this.task2_desc = domCtr.create("div", { id: "task2_desc", className: "task_desc", innerHTML: "Enter your information" }, container2);
 
                 var container3 = domCtr.create("div", { id: "container3", className: "containerType"}, containerTasks);
-                this.task3 = domCtr.create("div", { id: "task3", className: "task_button", innerHTML: "Task 3" }, container3);
-                this.task3_desc = domCtr.create("div", { id: "task3_desc", className: "task_desc", innerHTML: "Watch instruction video" }, container3);
+                this.task3 = domCtr.create("div", { id: "task3", className: "task_button", innerHTML: "Watch instruction video" }, container3);
+                //this.task3_desc = domCtr.create("div", { id: "task3_desc", className: "task_desc", innerHTML: "Watch instruction video" }, container3);
 
                 var container4 = domCtr.create("div", { id: "container4", className: "containerType"}, containerTasks);
-                this.task4 = domCtr.create("div", { id: "task4", className: "task_button", innerHTML: "Task 4" }, container4);
-                this.task4_desc = domCtr.create("div", { id: "task4_desc", className: "task_desc", innerHTML: "Tasks Round 1" }, container4);
+                this.task4 = domCtr.create("div", { id: "task4", className: "task_button", innerHTML: "Tasks Round 1" }, container4);
+                //this.task4_desc = domCtr.create("div", { id: "task4_desc", className: "task_desc", innerHTML: "Tasks Round 1" }, container4);
 
                 var container5 = domCtr.create("div", { id: "container5", className: "containerType"}, containerTasks);
-                this.task5 = domCtr.create("div", { id: "task5", className: "task_button", innerHTML: "Task 5" }, container5);
-                this.task5_desc = domCtr.create("div", { id: "task5_desc", className: "task_desc", innerHTML: "Questionnaire" }, container5);
+                this.task5 = domCtr.create("div", { id: "task5", className: "task_button", innerHTML: "Questionnaire" }, container5);
+                //this.task5_desc = domCtr.create("div", { id: "task5_desc", className: "task_desc", innerHTML: "Questionnaire" }, container5);
 
                 var container6 = domCtr.create("div", { id: "container6", className: "containerType"}, containerTasks);
-                this.task6 = domCtr.create("div", { id: "task6", className: "task_button", innerHTML: "Task 6" }, container6);
-                this.task6_desc = domCtr.create("div", { id: "task6_desc", className: "task_desc", innerHTML: "Tasks Round 2" }, container6);
+                this.task6 = domCtr.create("div", { id: "task6", className: "task_button", innerHTML: "Tasks Round 2" }, container6);
+                //this.task6_desc = domCtr.create("div", { id: "task6_desc", className: "task_desc", innerHTML: "Tasks Round 2" }, container6);
 
                 var container7 = domCtr.create("div", { id: "container7", className: "containerType"}, containerTasks);
-                this.task7 = domCtr.create("div", { id: "task7", className: "task_button", innerHTML: "Task 7" }, container7);
-                this.task7_desc = domCtr.create("div", { id: "task7_desc", className: "task_desc", innerHTML: "Questionnaire" }, container7);
+                this.task7 = domCtr.create("div", { id: "task7", className: "task_button", innerHTML: "Questionnaire" }, container7);
+                //this.task7_desc = domCtr.create("div", { id: "task7_desc", className: "task_desc", innerHTML: "Questionnaire" }, container7);
                 
                 var container8 = domCtr.create("div", { id: "container8", className: "containerType"}, containerTasks);
-                this.task8 = domCtr.create("div", { id: "task8", className: "task_button", innerHTML: "Task 8" }, container8);
-                this.task8_desc = domCtr.create("div", { id: "task8_desc", className: "task_desc", innerHTML: "Final questions" }, container8);
+                this.task8 = domCtr.create("div", { id: "task8", className: "task_button", innerHTML: "Final questions" }, container8);
+                //this.task8_desc = domCtr.create("div", { id: "task8_desc", className: "task_desc", innerHTML: "Final questions" }, container8);
                 
                 var footer = domCtr.create("div", { id: "footer", className: "containerType", innerHTML: "Experiencing technical problems? <br>Please let me know at laumerd@ethz.ch"}, containerTasks);
  
@@ -297,7 +343,8 @@ define([
             
             uploadResults: function(taskNumber, userResult) {
                 var that = this;
-                that["task" + taskNumber.toString()].innerHTML = "Saving..."
+                var taskDesc = that["task" + taskNumber.toString()].innerHTML;
+                that["task" + taskNumber.toString()].innerHTML = "Saving...";
                 data = {};
                 data["Task" + taskNumber.toString()] = userResult;
                 that.userResultsOnline.updateFeature(that.settings.userId, data, function(result){
@@ -314,7 +361,7 @@ define([
                     else {
                         that.status[taskNumber.toString()] = -1;
                     }
-                    that["task" + taskNumber.toString()].innerHTML = "Task" + taskNumber.toString()    
+                    that["task" + taskNumber.toString()].innerHTML = taskDesc;    
                     that.updateUI();
  
                 })
@@ -357,5 +404,22 @@ function getJsonFromUrl() {
         var item = part.split("=");
         result[item[0]] = decodeURIComponent(item[1]);
     });
+    return result;
+}
+
+
+function permute(nums) {
+    let result = [];
+    if (nums.length === 0) return [];
+    if (nums.length === 1) return [nums];
+    for (let i = 0; i < nums.length; i++) {
+        const currentNum = nums[i];
+        const remainingNums = nums.slice(0, i).concat(nums.slice(i + 1));
+        const remainingNumsPermuted = permute(remainingNums);
+        for (let j = 0; j < remainingNumsPermuted.length; j++) {
+            const permutedArray = [currentNum].concat(remainingNumsPermuted[j]);
+            result.push(permutedArray);
+            }
+        }
     return result;
 }

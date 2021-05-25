@@ -432,6 +432,12 @@ div.tooltip {
 
 }
 
+#containerVideo {
+  width:100%;
+  overflow: auto;
+  padding: 0 0 0 100px;
+}
+
 #containerInfoProject{ 
   padding: 30px;
   text-align: justify;
@@ -523,7 +529,10 @@ ul {
   font-size: 1.3vw;
   min-width: 20vw;
   opacity: 0.5;
+}
 
+#containerTasks .task_button {
+  min-width: 30vw;
 }
 
 .done {
@@ -544,7 +553,7 @@ ul {
 
 .quest_input {
   border-radius: 10px;
-  border: 1px solid grey;
+  border: 1px solid var(--project);
   margin: 2%;
   padding: 0px 10px;
   font-size: 1.3vw;

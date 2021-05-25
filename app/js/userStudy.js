@@ -47,6 +47,7 @@ define([
                 this.settings = settings;
                 this.questions = questions;
                 this.order = order;
+                this.questionOrder = null;
                 this.i = 0;
                 this.userResults = {};
                 this.userResults["order"] = this.order;
@@ -78,7 +79,11 @@ define([
 
                 domCtr.create("hr");
 
-                this.questions = shuffle(this.questions);
+                this.questions = [this.questions[this.questionOrder[0]], this.questions[this.questionOrder[1]], this.questions[this.questionOrder[2]], this.questions[this.questionOrder[3]]];
+                //this.questions = shuffle(this.questions);
+
+                //this.generalInfo = [questions[0].id,questions[1].id,questions[2].id,questions[3].id];
+                
 
                 this.questionText.innerHTML = "Please answer this question: <br>" + this.questions[this.i].question[this.order[this.round].version-1];
                 

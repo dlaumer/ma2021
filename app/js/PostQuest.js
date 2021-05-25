@@ -37,9 +37,20 @@ define([
             Please quickly read the description of those fictional people and decide which 
             person you identify with most. Of course never one person will fit perfectly, but nevertheless try to decide for one persona. 
             `
-            domCtr.create("img", { id: "user_persona_1", src: "images/user_persona_4.png"}, this.containerPostQuest);
-            domCtr.create("img", { id: "user_persona_2", src: "images/user_persona_5.png"}, this.containerPostQuest);
-            domCtr.create("img", { id: "user_persona_3", src: "images/user_persona_6.png"}, this.containerPostQuest);
+
+            var permutations = [
+                [1,2,3],
+                [1,3,2],
+                [2,1,3],
+                [2,3,1],
+                [3,1,2],
+                [3,2,1]
+            ]
+
+            var order = permutations[parseInt(this.settings.userId) % 6];
+            domCtr.create("img", { id: "user_persona_1", src: "images/user_persona_"+(order[0] + 3).toString()+".png"}, this.containerPostQuest);
+            domCtr.create("img", { id: "user_persona_2", src: "images/user_persona_"+(order[1] + 3).toString()+".png"}, this.containerPostQuest);
+            domCtr.create("img", { id: "user_persona_3", src: "images/user_persona_"+(order[2] + 3).toString()+".png"}, this.containerPostQuest);
 
             
             var container4 = domCtr.create("div", { id: "container4", className: "containerTypeQuest"}, this.containerPostQuest);
@@ -72,12 +83,15 @@ define([
             this.task10 = domCtr.create("textarea", { id: "task10", className: "quest_input", name:"name", tabindex:"3", placeholder:"Why?"}, container10);
 
             var container13 = domCtr.create("div", { id: "container13", className: "containerTypeQuest"}, this.containerPostQuest);
-            this.task13_desc = domCtr.create("div", { id: "task13_desc", className: "task_desc", innerHTML: "Do you think such an application could help to change the opinion of the public for votes like this?" }, container13);
+            this.task13_desc = domCtr.create("div", { id: "task13_desc", className: "task_desc", innerHTML: "Such an application can help to change the opinion of the public for votes like this." }, container13);
             var row = domCtr.toDom(
             `<select name="change_vote2" id="change_vote2" tabindex:"2" class="quest_input">
-                <option value="" disabled selected>Select your option</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
+                <option value="" disabled selected></option>
+                <option value="1">I strongly disagree</option>
+                <option value="2">I disagree</option>
+                <option value="3">Neither agree or disagree</option>
+                <option value="4">I agree</option>
+                <option value="5">I strongly agree</option>
             </select>`)
             this.task13 = domCtr.place(row, container13);
 
@@ -112,17 +126,23 @@ define([
 
             on(this.task4, "input", function (evt) {
                 this.results.user_persona = evt.target.value;
+                evt.target.style.border = "1px solid grey";
+
                 this.checkFinished();
             }.bind(this));
 
 
             on(this.task9, "input", function (evt) {
                 this.results.change_vote = evt.target.value;
+                evt.target.style.border = "1px solid grey";
+
                 this.checkFinished();
             }.bind(this));
 
             on(this.task13, "input", function (evt) {
                 this.results.change_vote2= evt.target.value;
+                evt.target.style.border = "1px solid grey";
+
                 this.checkFinished();
             }.bind(this));
 
@@ -139,6 +159,8 @@ define([
 
             on(this.task6, "input", function (evt) {
                 this.results.more_info = evt.target.value;
+                evt.target.style.border = "1px solid grey";
+
 
                 if (evt.target.value == "yes") {
                     this.container7.style.display = 'flex';
@@ -153,6 +175,8 @@ define([
 
             on(this.task7, "input", function (evt) {
                 this.results.email = evt.target.value;
+                evt.target.style.border = "1px solid grey";
+
                 this.checkFinished();
             }.bind(this));
 

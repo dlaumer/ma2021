@@ -19,7 +19,7 @@ define([
             this.settings = settings;
             domCtr.destroy("containerQuest");
             this.containerQuest = domCtr.create("div", { id: "containerQuest", className: "questionnaire" }, containerHome);
-            this.containerVideo = domCtr.create("div", { id: "containerVideo", className: "questionnaire2" }, containerQuest);
+            this.containerVideo = domCtr.create("div", { id: "containerVideo" }, containerQuest);
 
             this.results = {};
         },
@@ -39,6 +39,14 @@ define([
             title="UrbanMobility" frameborder="0" allow="accelerometer; autoplay; clipboard-write; 
             encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             `
+
+            this.container2 = domCtr.create("div", { id: "container1", className: "containerTypeInfo" }, this.containerVideo);
+
+            this.container2.innerHTML = `
+            Use left-click and move to change the map position<br>
+            Use scrolling to zoom in and out<br>
+            Use right-click and move to change the viewing angle (only 3D)<br>`
+
             this.finishButton = domCtr.create("div", { id: "finishButton", className: "task_button", innerHTML: "Yes I watched it!" }, this.containerQuest);
             this.settings.dev ? "" : this.finishButton.style.pointerEvents = 'none';
             

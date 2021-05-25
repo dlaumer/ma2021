@@ -74,15 +74,13 @@ define([
             },
 
             readFeatures: function(callback) {
+                var query =  this.table.createQuery();
+
                 this.table
-                .queryFeatures({
-                  outFields: ["*"],
-                  returnGeometry: false
-                })
+                .queryFeatures(query)
                 .then((results) => {
                   if (results.features.length > 0) {
-                    editFeature = results.features[0];
-                    callback(editFeature);
+                    callback(results.features);
                     }
                  });
 
