@@ -390,41 +390,6 @@ div.tooltip {
   align-items: stretch;
 }
 
-#containerAnalysis {
-  height:90vh;
-  width: 100%;
-  flex:1;
-
-  padding: 0;
-  margin: 0;
-
-  display: flex;
-  align-content: stretch;
-  flex-direction: row;
-}
-
-#infoContainer {
-  width:30vw;
-  overflow: auto;
-
-}
-
-#guiContainer {
-  width: 70vw; 
-  height: 39.46vw; /* height:width ratio = 9/16 = .5625  */
-  max-height: 100vh;
-  max-width: 177.37vh; /* 16/9 = 1.778 */
-  margin: auto;
-  position: absolute;
-  top:0;bottom:0; /* vertical center */
-  left:0;right:0; /* horizontal center */
-}
-
-#gui {
-  width: 100%;
-  height:100%;
-}
-
 #containerTasks {
   width: 38%;
   height: 100%;

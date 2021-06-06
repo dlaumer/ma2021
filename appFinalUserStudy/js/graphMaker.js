@@ -221,9 +221,7 @@ define([
                     .range(["#C1FAF9", "#94DBDA", "#68BBBA","#3B9C9B", "#0E7C7B"]);
 
                 that.xScale.domain(hourData.map(function (d) { return d.time; }))
-                that.xAxis.conditionalTransition(firstTime)
-                .attr("class", "axis")
-                .call(d3.axisBottom(that.xScale).tickFormat(function (d) {
+                that.xAxis.conditionalTransition(firstTime).call(d3.axisBottom(that.xScale).tickFormat(function (d) {
                   return d
                 }
                 ))
@@ -235,9 +233,7 @@ define([
               
                 // Add Y axis
                 that.yScale.domain([0,100]);
-                that.yAxis.conditionalTransition(firstTime)
-                .attr("class", "axis")
-                .call(d3.axisLeft(that.yScale).ticks(3));
+                that.yAxis.conditionalTransition(firstTime).call(d3.axisLeft(that.yScale).ticks(3));
               
                 // variable u: map data to existing bars
                 var u = that.svgTimeline.selectAll(".bars")
@@ -331,9 +327,7 @@ define([
 
                 
                 that.xScale.domain(hourData.map(function (d) { return d.time; }))
-                that.xAxis.conditionalTransition(firstTime)
-                .attr("class", "axis")
-                .call(d3.axisBottom(that.xScale).tickFormat(function (d) {
+                that.xAxis.conditionalTransition(firstTime).call(d3.axisBottom(that.xScale).tickFormat(function (d) {
                   return d
                 }
                 ))
@@ -346,9 +340,7 @@ define([
                 // Add Y axis
                 //that.yScale.domain([0, d3.max(hourData, d => d.value_avg)]);
                 that.yScale.domain([0, 1800]);
-                that.yAxis.conditionalTransition(firstTime)
-                .attr("class", "axis")
-                .call(d3.axisLeft(that.yScale).ticks(3));
+                that.yAxis.conditionalTransition(firstTime).call(d3.axisLeft(that.yScale).ticks(3));
               
                 // variable u: map data to existing bars
                 var u = that.svgTimeline.selectAll(".bars")

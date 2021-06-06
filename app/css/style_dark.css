@@ -3,9 +3,17 @@
   -webkit-box-sizing: border-box; 
    box-sizing: border-box; 
    line-height: 150%;
-
 }
 
+.esri-interactive, .esri-widget--button{
+  background: rgb(31, 31, 31) !important;
+  color:rgb(255, 255, 255) !important;
+}
+
+.esri-widget__heading {
+  color:rgb(255, 255, 255) !important;
+
+}
 
 :root {
   --now: #17bebb;
@@ -214,11 +222,12 @@ p {
   padding-left: 0;
   padding-right: 0;
   padding-bottom: 10px;
-  background: white;
+  background: rgb(31, 31, 31);
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: 3px 3px 4px rgb(0, 0, 0);
 
 }
 
@@ -234,7 +243,8 @@ p {
 }
 
 #modeContainer {
-  background: white;
+  background: rgb(31, 31, 31);  
+  color:rgb(255, 255, 255);
   height: 5vh;
   width: 25vw;
   display: flex;
@@ -242,6 +252,8 @@ p {
   flex-wrap: nowrap;
   justify-content: space-between;
   border-radius: 20px;
+  box-shadow: 3px 3px 4px rgb(0, 0, 0);
+
 }
 
 .mode {
@@ -264,7 +276,8 @@ p {
 }
 
 #layerlist{
-  background: white;
+  background: rgb(31, 31, 31);
+  color:rgb(255, 255, 255);
   width: 25vw;
   height: 20vh;
   display: flex;
@@ -273,12 +286,16 @@ p {
   align-items: center;
   z-index: 1;
   cursor: pointer;
+  box-shadow: 3px 3px 4px rgb(0, 0, 0);
+
 }
 
 .layer {
+  background: rgb(75, 75, 75);
+
   height: 40%;
   width: 90%;
-  box-shadow: 3px 3px 4px rgb(182, 182, 182);
+  box-shadow: 3px 3px 4px rgb(0, 0, 0);
   display: flex;
   align-items: center;
 
@@ -286,26 +303,42 @@ p {
 }
 
 .layer:hover { 
-  background-color: #e0ca3c85;
+  background-color: #887914c5;
 }
 
 #legend {
-  background: white;
+  background: rgb(31, 31, 31);
+  color:rgb(255, 255, 255);
   width: 25vw;
   height: 40vh;
 }
 
 #dashboard {
-  background: white;
+  background: rgb(31, 31, 31);
+  color:rgb(255, 255, 255);
   padding: 10px;
   width:70vw;
   height: 25vh;
   font-size: 1.3vw;
   display: flex;
   justify-content: space-around;
+  box-shadow: 3px 3px 4px rgb(0, 0, 0);
 
 
 }
+
+#svgTimeline text{
+  fill: rgb(255, 255, 255);
+}
+
+.axis line{
+  stroke: rgb(255, 255, 255);
+}
+
+.axis path{
+  stroke: rgb(255, 255, 255);
+}
+
 
 #dashboard-text {
   width: 100%;
@@ -388,41 +421,6 @@ div.tooltip {
   align-content: stretch;
   flex-direction: row;
   align-items: stretch;
-}
-
-#containerAnalysis {
-  height:90vh;
-  width: 100%;
-  flex:1;
-
-  padding: 0;
-  margin: 0;
-
-  display: flex;
-  align-content: stretch;
-  flex-direction: row;
-}
-
-#infoContainer {
-  width:30vw;
-  overflow: auto;
-
-}
-
-#guiContainer {
-  width: 70vw; 
-  height: 39.46vw; /* height:width ratio = 9/16 = .5625  */
-  max-height: 100vh;
-  max-width: 177.37vh; /* 16/9 = 1.778 */
-  margin: auto;
-  position: absolute;
-  top:0;bottom:0; /* vertical center */
-  left:0;right:0; /* horizontal center */
-}
-
-#gui {
-  width: 100%;
-  height:100%;
 }
 
 #containerTasks {

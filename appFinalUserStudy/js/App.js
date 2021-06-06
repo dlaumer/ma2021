@@ -57,17 +57,15 @@ define([
 
                 // get settings from choice on welcome page
                 this.settings = settings;
-                this.settings.colorMode = "light"
+                
                 if (userStudy) {
                     this.userStudy = userStudy;
                     this.userStudy.init();
                     this.settings.dimension = this.userStudy.getDimension();
                 }
                 else {
-                    this.settings.dimension = info[0];
-                    if (info.length > 1) {
-                        this.settings.colorMode = info[1];
-                    }
+                    this.settings.dimension = info;
+
                 }
 
                 domCtr.create("div", { id: "viewDiv"}, win.body())
@@ -77,26 +75,11 @@ define([
                     this.settings.webscene = "66bd9befcf064b11811f14c9a352a7fe";
                 }
                 else if (this.settings.dimension == "3D") {
-                    if (this.settings.colorMode == "dark") {
-                        this.settings.webscene = "b5ed00ef861f4aabaea26e73c64ad784";
-                    } 
-                    else {
-                        this.settings.webscene = "2a36b4dbc88f4881aa4e7b9d897b50bc";
-                    }
+                    this.settings.webscene = "2a36b4dbc88f4881aa4e7b9d897b50bc";
                 }
 
-                if (this.settings.colorMode == "dark") {
-                    domCtr.destroy("style_light");
+                
 
-                    var element = document.createElement('link');
-                    element.href = 'css/style_dark.css';
-                    element.rel = 'stylesheet';
-                    element.type = 'text/css';
-                   
-                    document.body.appendChild(element);
-                    
-                }
-               
                 // set portal url
                 esriConfig.portalUrl = this.settings.url;
 
@@ -122,7 +105,6 @@ define([
                             fillOpacity: 0.2,
 
                           },
-                          
                     });
 
                 }
@@ -135,43 +117,18 @@ define([
                         basemap: ""
                     }); 
 
-                    if (this.settings.colorMode == "dark") {
-                        // create a view
+                    // create a view
                     this.view = new SceneView({
-                        container: "viewDiv",
-                        map: this.scene,
-                        qualityProfile: "high",
-                        highlightOptions: {
-                            color: this.settings.colors.highlight,
-                            haloColor: this.settings.colors.highlight,
-                            haloOpacity: 0.3,
-                            fillOpacity: 1,
-                          },
-                        environment: {
-                            background: {
-                            type: "color",
-                            color: [71, 71, 71, 1]
-                            },
-                            starsEnabled: true,
-                            atmosphereEnabled: false
-                        }
-                        });
-                    }
-                    else {
-                        // create a view
-                        this.view = new SceneView({
-                            container: "viewDiv",
-                            map: this.scene,
-                            qualityProfile: "high",
-                            highlightOptions: {
-                                color: this.settings.colors.highlight,
-                                haloColor: this.settings.colors.highlight,
-                                haloOpacity: 0.3,
-                                fillOpacity: 1,
-                            },
-                        });
-                    }
-                    
+                    container: "viewDiv",
+                    map: this.scene,
+                    qualityProfile: "high",
+                    highlightOptions: {
+                        color: this.settings.colors.highlight,
+                        haloColor: this.settings.colors.highlight,
+                        haloOpacity: 0.3,
+                        fillOpacity: 1,
+                      },
+                    });
                 }
                 
                 else if (this.settings.dimension == "noMap") {
@@ -193,8 +150,7 @@ define([
                     }
                     // create header with title according to choice on welcome page
                     var header = domCtr.create("div", { id: "header" }, win.body());
-                    domCtr.create("img", { id: "Logo2", src:this.settings.colorMode=="dark"?"images/Logo_dark.png":"images/Logo.png"}, header);
-
+                    domCtr.create("img", { id: "Logo2", src: "images/Logo.png"}, header);
                     //domCtr.create("div", { id: "headerTitle", innerHTML: settings}, header);
 
                     var modeContainer = domCtr.create("div", { id: "modeContainer" }, win.body());
@@ -219,13 +175,13 @@ define([
 
                     var layerlistContainer = domCtr.create("div", { id: "layerlist" }, win.body());
                     var pt = domCtr.create("div", { id: "pt", className: "layer"}, layerlistContainer);
-                    domCtr.create("img", { id:"pt_image", src:this.settings.colorMode=="dark"?"images/pt_dark.png":"images/pt.png", style:'height: 80%; width: auto; object-fit: contain'}, pt);
+                    domCtr.create("img", { id:"pt_image", src:"images/pt.png", style:'height: 80%; width: auto; object-fit: contain'}, pt);
                     pt.innerHTML = pt.innerHTML + "   Public Transport";
                     var traffic = domCtr.create("div", { id: "traffic",className: "layer" }, layerlistContainer);
-                    domCtr.create("img", { id:"traffic_image", src:this.settings.colorMode=="dark"?"images/traffic_dark.png":"images/traffic.png", style:'height: 80%; width: auto; object-fit: contain'}, traffic);
+                    domCtr.create("img", { id:"traffic_image", src:"images/traffic.png", style:'height: 80%; width: auto; object-fit: contain'}, traffic);
                     traffic.innerHTML = traffic.innerHTML + "   Traffic";
                     //var air = domCtr.create("div", { id: "air",className: "layer" }, layerlistContainer);
-                    //domCtr.create("img", { id:"air_image", src:this.settings.colorMode=="dark"?"images/air_dark.png":"images/air.png", style:'height: 80%; width: auto; object-fit: contain'}, air);
+                    //domCtr.create("img", { id:"air_image", src:"images/air.png", style:'height: 80%; width: auto; object-fit: contain'}, air);
                     //air.innerHTML = air.innerHTML + "   Air Pollution";
 
                     /*
@@ -288,7 +244,7 @@ define([
 
                     on(pt, "click", function () {
                         if (modeManager.viewSettings.theme != "none") {
-                            dom.byId(modeManager.viewSettings.theme).style.backgroundColor = "";
+                            dom.byId(modeManager.viewSettings.theme).style.backgroundColor = "white";
                         }
                         if (modeManager.viewSettings.theme == "pt") {
                             pt.style.backgroundColor = "white";
@@ -310,7 +266,7 @@ define([
                     });
                     on(traffic, "click", function () {
                         if (modeManager.viewSettings.theme != "none") {
-                            dom.byId(modeManager.viewSettings.theme).style.backgroundColor = "";
+                            dom.byId(modeManager.viewSettings.theme).style.backgroundColor = "white";
                         }
                         if (modeManager.viewSettings.theme == "traffic") {
                             traffic.style.backgroundColor = "white";

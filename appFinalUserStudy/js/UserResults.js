@@ -73,19 +73,16 @@ define([
 
             },
 
-            readFeatures: function() {
-                return new Promise((resolve, reject) => {
+            readFeatures: function(callback) {
+                var query =  this.table.createQuery();
 
-                    var query =  this.table.createQuery();
-
-                    this.table
-                    .queryFeatures(query)
-                    .then((results) => {
-                    if (results.features.length > 0) {
-                        resolve(results.features);
-                        }
-                    });
-                })
+                this.table
+                .queryFeatures(query)
+                .then((results) => {
+                  if (results.features.length > 0) {
+                    callback(results.features);
+                    }
+                 });
 
             },
 

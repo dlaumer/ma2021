@@ -12,12 +12,12 @@ define([
     "urbanmobility/App",
     "urbanmobility/Home",
     "urbanmobility/UserResults",
-    "urbanmobility/Analysis",
+
 
 
 ], function (
     Accessor,
-    domCtr, win, dom, domStyle, on, mouse, App, Home, UserResults, Analysis) {
+    domCtr, win, dom, domStyle, on, mouse, App, Home, UserResults) {
 
         // application settings
         var settings= {
@@ -112,15 +112,11 @@ define([
                 var urlParams = Object.keys(getJsonFromUrl());
                 if (urlParams.length >= 1 && (urlParams[0] === "2D" || urlParams[0] === "3D")) {
                     var app = new App();
-                    app.init(this.settings, urlParams, null);
+                    app.init(this.settings, urlParams[0], null);
                 }
-                else if (urlParams.length >= 1 && (urlParams[0] === "userStudy")) {
+                if (urlParams.length >= 1 && (urlParams[0] === "userStudy")) {
                     var home = new Home();
                     home.init(this.settings);
-                }
-                else if (urlParams.length >= 1 && (urlParams[0] === "analysis")) {
-                    var analysis = new Analysis();
-                    analysis.init(this.settings, urlParams, null);
                 }
             }
         });

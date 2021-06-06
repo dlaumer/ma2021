@@ -1,3 +1,6 @@
+// Cookies oder local storage
+
+
 define([
     "esri/core/Accessor",
 
@@ -19,6 +22,10 @@ define([
     "urbanmobility/UserResults",
     "urbanmobility/Outro",
     "urbanmobility/Video",
+
+
+
+
 
 
 ], function (
