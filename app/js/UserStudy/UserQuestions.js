@@ -9,7 +9,7 @@ define([
     "dojo/on",
     "dojo/mouse",
 
-    "urbanmobility/App",
+    "urbanmobility/Application/App",
 
 ], function (
     Accessor,
@@ -40,7 +40,7 @@ define([
         ];
 
         return Accessor.createSubclass({
-            declaredClass: "urbanmobility.userStudy",
+            declaredClass: "urbanmobility.UserQuestions",
 
             constructor: function (settings, order) {
                

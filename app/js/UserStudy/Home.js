@@ -8,17 +8,17 @@ define([
     "dojo/on",
     "dojo/mouse",
 
-    "urbanmobility/App",
-    "urbanmobility/welcome",
-    "urbanmobility/userStudy",
-    "urbanmobility/Nasa",
-    "urbanmobility/Ueq",
-    "urbanmobility/PreQuest",
-    "urbanmobility/PostQuest",
-    "urbanmobility/InfoProject",
-    "urbanmobility/UserResults",
+    "urbanmobility/Application/App",
+    "urbanmobility/Welcome",
+    "urbanmobility/UserStudy/UserQuestions",
+    "urbanmobility/UserStudy/Nasa",
+    "urbanmobility/UserStudy/Ueq",
+    "urbanmobility/UserStudy/PreQuest",
+    "urbanmobility/UserStudy/PostQuest",
+    "urbanmobility/UserStudy/InfoProject",
+    "urbanmobility/UserStudy/ConnectionAGO",
     "urbanmobility/Outro",
-    "urbanmobility/Video",
+    "urbanmobility/UserStudy/Video",
 
 
 ], function (

@@ -22,11 +22,11 @@ define([
 
     "esri/widgets/Search",
 
-    "urbanmobility/userStudy",
-    "urbanmobility/dataDrill",
-    "urbanmobility/graphMaker",    
-    "urbanmobility/modeManager",
-    "urbanmobility/vizChanger",
+    "urbanmobility/UserStudy/UserQuestions",
+    "urbanmobility/Application/DataDrill",
+    "urbanmobility/Application/GraphMaker",    
+    "urbanmobility/Application/ModeManager",
+    "urbanmobility/Application/VizChanger",
 
 
 

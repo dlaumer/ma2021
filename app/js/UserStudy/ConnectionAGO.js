@@ -16,7 +16,7 @@ define([
     "dojo/on",
     "dojo/mouse",
 
-    "urbanmobility/App",
+    "urbanmobility/Application/App",
 
 ], function (
     Accessor, Map, MapView, FeatureLayer,Graphic,Feature,
@@ -24,7 +24,7 @@ define([
 
 
         return Accessor.createSubclass({
-            declaredClass: "urbanmobility.UserResults",
+            declaredClass: "urbanmobility.ConnectionAGO",
 
             constructor: function (settings) {
                

@@ -9,15 +9,17 @@ define([
     "dojo/on",
     "dojo/mouse",
 
-    "urbanmobility/App",
-    "urbanmobility/Home",
-    "urbanmobility/UserResults",
-    "urbanmobility/Analysis",
+    "urbanmobility/Application/App",
+    "urbanmobility/UserStudy/Home",
+    "urbanmobility/UserStudy/connectionAGO",
+    "urbanmobility/Analysis/Analysis",
+    "urbanmobility/Analysis/Comments",
+
 
 
 ], function (
     Accessor,
-    domCtr, win, dom, domStyle, on, mouse, App, Home, UserResults, Analysis) {
+    domCtr, win, dom, domStyle, on, mouse, App, Home, UserResults, Analysis, Comments) {
 
         // application settings
         var settings= {
@@ -44,7 +46,7 @@ define([
 
 
         return Accessor.createSubclass({
-            declaredClass: "urbanmobility.welcome",
+            declaredClass: "urbanmobility.Welcome",
 
             constructor: function () {
                 
@@ -122,7 +124,11 @@ define([
                     var analysis = new Analysis();
                     analysis.init(this.settings, urlParams, null);
                 }
-            }
+                else if (urlParams.length >= 1 && (urlParams[0] === "comments")) {
+                    var comments = new Comments();
+                    comments.init(this.settings, urlParams, null);
+                }
+            }, 
         });
     });
 

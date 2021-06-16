@@ -8,7 +8,7 @@ define([
     "dojo/_base/window",
     "dojo/dom-style",
 
-    "urbanmobility/Ueq",
+    "urbanmobility/UserStudy/Ueq",
 
 
 ], function (

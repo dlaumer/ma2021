@@ -7,7 +7,7 @@ define([
     "dojo/dom",
     "dojo/on",
 
-    "urbanmobility/modeManager",
+    "urbanmobility/Application/ModeManager",
 
 
 ], function (
@@ -15,7 +15,7 @@ define([
     domCtr, win, dom, on, modeManager
 ) {
         return Accessor.createSubclass({
-            declaredClass: "urbanmobility.vizChanger",
+            declaredClass: "urbanmobility.VizChanger",
 
             constructor: function (scene, view, settings) {
                 this.scene = scene;
@@ -108,7 +108,6 @@ define([
                 
                 if (mode == "project" && theme == "traffic") {
                     modeManager.getLayer(this.settings.layerNames.traffic_pro).visible = true;
-                     // Filter the layer
                     this.view.whenLayerView(modeManager.getLayer(this.settings.layerNames.traffic_pro)).then(function(layerView) {
                         layerView.refresh()
                     });
@@ -124,12 +123,10 @@ define([
                     modeManager.getLayer(this.settings.layerNames.streets_pro).visible = false;
                 }
 
-                 // Filter the layer
                  this.view.whenLayerView(modeManager.getLayer(this.settings.layerNames.traffic)).then(function(layerView) {
                     layerView.refresh()
                 });
 
-                 // Filter the layer
                  this.view.whenLayerView(modeManager.getLayer(this.settings.layerNames.pt)).then(function(layerView) {
                     layerView.refresh()
                 });

@@ -12,7 +12,7 @@ define([
     domCtr, win, dom, on
 ) {
         return Accessor.createSubclass({
-            declaredClass: "urbanmobility.graphMaker",
+            declaredClass: "urbanmobility.GraphMaker",
 
             constructor: function (scene, view, settings) {
                 this.scene = scene;

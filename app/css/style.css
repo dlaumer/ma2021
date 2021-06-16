@@ -409,6 +409,18 @@ div.tooltip {
 
 }
 
+#background_comments {
+padding: 2%;
+}
+
+.comments {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid grey;
+  padding: 2%;
+  margin: 2% 0;
+}
+
 #guiContainer {
   width: 70vw; 
   height: 39.46vw; /* height:width ratio = 9/16 = .5625  */

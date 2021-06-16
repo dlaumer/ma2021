@@ -7,8 +7,8 @@ define([
     "dojo/dom",
     "dojo/on",
 
-    "urbanmobility/graphMaker",
-    "urbanmobility/modeManager",
+    "urbanmobility/Application/GraphMaker",
+    "urbanmobility/Application/ModeManager",
 
 
 
@@ -17,7 +17,7 @@ define([
     domCtr, win, dom, on, graphMaker, modeManager
 ) {
     return Accessor.createSubclass({
-        declaredClass: "urbanmobility.dataDrill",
+        declaredClass: "urbanmobility.DataDrill",
 
         constructor: function (scene, view, settings, infoText) {
             this.scene = scene;

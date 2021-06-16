@@ -7,7 +7,7 @@ define([
     "dojo/dom-style",
     "dojo/on",
     "dojo/mouse",
-    "urbanmobility/UserResults",
+    "urbanmobility/UserStudy/ConnectionAGO",
 
 
 
@@ -154,6 +154,20 @@ define([
                     this.getClickData("dimension");
 
                 }.bind(this));
+
+                var that = this;
+                document.addEventListener('keydown', function(e) {
+                    switch (e.code) {
+                        case "ArrowUp":
+                            that.userIdSelect.selectedIndex =  that.userIdSelect.selectedIndex - 1;
+                            that.getClickData("userId")
+                            break;
+                        case "ArrowDown":
+                            that.userIdSelect.selectedIndex =  that.userIdSelect.selectedIndex + 1;
+                            that.getClickData("userId")
+                            break;
+                    }
+                });
             },
 
             readData: function(feats) {
@@ -211,25 +225,15 @@ define([
                 userID = this.userIdSelect.value;
                 question = this.questionSelect.value;
                 dimension = this.dimensionSelect.value;
-
-                if (dimension == "2D") {
-                    this.gui.src="images/2D.png"
-                }
-                else {
-                    this.gui.src="images/3D.png"
-                }
-
-                this.containerHeight = this.gui.clientHeight;
-                this.containerWidth = this.gui.clientWidth;
                 
                 var data = this.features[userID].attributes;
 
                 var order = JSON.parse(data.Orders);
                 var task = "Task4";
-                var round = 0;
+                var version = parseInt(order[0].version)-1;
                 if (order[1].dimension == dimension) {
                     task = "Task6";
-                    round = 1;
+                    version = parseInt(order[1].version)-1;
                 }
                 var results = JSON.parse(data[task])
 
@@ -258,12 +262,21 @@ define([
                     this.dimensionSelect.value = dimension;
                 }
 
-
                 userID = this.userIdSelect.value;
                 question = this.questionSelect.value;
                 dimension = this.dimensionSelect.value;
 
+                if (dimension == "2D") {
+                    this.gui.src="images/2D.png"
+                }
+                else {
+                    this.gui.src="images/3D.png"
+                }
 
+
+                this.containerHeight = this.gui.clientHeight;
+                this.containerWidth = this.gui.clientWidth;
+                
                 this.clickPositions = results[question].clickPositions;
                 this.clicks = results[question].clicks;
                 this.screen = JSON.parse(data.Task1).screen;
@@ -279,9 +292,9 @@ define([
                 }
                 this.updateHeatmap(this.clickPositionsNorm);
 
-                this.questionDiv.innerHTML = questions[question -1].question[round];
+                this.questionDiv.innerHTML = questions[question - 1].question[version];
                 this.answerDiv.innerHTML = results[question].results;
-                this.correctAnswerDiv.innerHTML = questions[question -1].result[round];
+                this.correctAnswerDiv.innerHTML = questions[question -1].result[version];
                 this.timeDiv.innerHTML = results[question].time;
                 this.clicksDiv.innerHTML = results[question].clicks;
                 this.orderQuestionDiv.innerHTML = orderQuestions;
