@@ -1,20 +1,34 @@
+/*  Copyright (c) by Daniel Laumer. All rights reserved.
+Developed at ETH Zurich in the scope of my Master's Thesis
 
+Authors: Daniel Laumer
+Date: 19.July 2021
+Project: UrbanMobility, Evaluation of mobility indicator visualizations in interactive 3D environments 
+Questions at: daniel.laumer@gmail.com
+ */
+
+/*
+--------------
+UserStudy/InfoProject.js
+--------------
+Manages and creates the part with the information about the study and the project. There is mainly a lot of 
+text and a button to confirm that the user read the info. 
+
+*/
 define([
     "esri/core/Accessor",
 
-    "dojo/dom",
     "dojo/on",
     "dojo/dom-construct",
-    "dojo/_base/window",
-    "dojo/dom-style",
 
 ], function (
     Accessor,
-    dom, on, domCtr, win, domStyle) {
+    on, domCtr) {
 
     return Accessor.createSubclass({
         declaredClass: "urbanmobility.InfoProject",
 
+        // Create basic GUI
         constructor: function (settings, containerHome) {
             this.settings = settings;
             domCtr.destroy("containerQuest");
@@ -24,10 +38,12 @@ define([
             this.results = {};
         },
 
+        // Fill the basic GUI with the text
         init: function () {
 
             this.container1 = domCtr.create("div", { id: "container1", className: "containerTypeInfo" }, this.containerInfoProject);
 
+            // Since there are different html elements like <ul> and <h3>, it was easier to write all in html and add it as a whole bunch here
             this.container1.innerHTML = `
             Hi there :)<br>
             I'm Daniel and in the scope of my master thesis, I developed a web app called UrbanMobility. 
@@ -61,7 +77,7 @@ define([
             relieve a heavily frequented road segment of around 700m in the middle of the city. 
             The original road should be scaled down and provide space for two new tram lines.<br><br>
             `
-            domCtr.create("img", { id: "rosengartenImg", src: "images/rosengarten.png"}, this.containerInfoProject);
+            domCtr.create("img", { id: "rosengartenImg", src: "images/rosengarten.png" }, this.containerInfoProject);
             this.container2 = domCtr.create("div", { id: "container2", className: "containerTypeInfo" }, this.containerInfoProject);
 
             this.container2.innerHTML = `
@@ -90,11 +106,12 @@ define([
             this.finishButton = domCtr.create("div", { id: "finishButton", className: "task_button", innerHTML: "Yes I read it!" }, this.containerQuest);
             this.settings.dev ? "" : this.finishButton.style.pointerEvents = 'none';
 
-            
+
             this.clickHandler();
-            
+
             var that = this;
-            setTimeout(function(){ 
+            // Only activate the button to confirm once the user scrolls all the way to the bottom
+            setTimeout(function () {
                 if ((that.containerInfoProject.clientHeight + that.containerInfoProject.scrollTop + 20) >= that.containerInfoProject.scrollHeight) {
                     that.finishButton.style.pointerEvents = 'auto';
                     that.finishButton.className = "task_button active"
@@ -102,6 +119,7 @@ define([
             }, 1000);
         },
 
+        // Deal with the interaction (only one button here)
         clickHandler: function () {
 
             on(this.finishButton, "click", function (evt) {
@@ -113,13 +131,13 @@ define([
                 this.results["browser"] = navigator.userAgent;
                 this.settings.home.returnToHome(this.results);
             }.bind(this));
-            
+
             var that = this;
-            that.containerInfoProject.onscroll = function(ev) {
+            that.containerInfoProject.onscroll = function (ev) {
 
                 if ((that.containerInfoProject.clientHeight + that.containerInfoProject.scrollTop + 20) >= that.containerInfoProject.scrollHeight) {
                     that.finishButton.style.pointerEvents = 'auto';
-                    that.finishButton.className = "task_button active" 
+                    that.finishButton.className = "task_button active"
                 }
             };
 

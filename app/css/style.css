@@ -98,6 +98,15 @@ p {
 }
 
 
+#containerLinks2 {
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  width:100%;
+}
+
 .link{
   text-align: center;
   
@@ -412,6 +421,10 @@ div.tooltip {
 #background_comments {
 padding: 2%;
 }
+
+#background_diagrams{
+  padding: 2%;
+  }
 
 .comments {
   width: 100%;
