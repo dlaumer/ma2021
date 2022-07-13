@@ -6,7 +6,7 @@ This applicaton was developed in the scope of a master thesis at ETH Zurich and 
 It is a tool called UrbanMobility to visualize information like traffic and public transport in an urban environment in an interactive web application.
 
 # View it live
-CHeck out the application at: https://dlaumer.github.io/ma2021/
+CHeck out the application at: https://dlaumer.github.io/ma2021/app/
 
 # Usage
 It is just vanilla javascript, so just clone the repo and open the file app/index.html in a browser :)
