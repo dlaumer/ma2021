@@ -24,7 +24,7 @@ define([
 
     "urbanmobility/Application/App",
     "urbanmobility/UserStudy/Home",
-    "urbanmobility/UserStudy/connectionAGO",
+    "urbanmobility/UserStudy/ConnectionAGO",
     "urbanmobility/Analysis/Analysis",
     "urbanmobility/Analysis/Comments"
 
