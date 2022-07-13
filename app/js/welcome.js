@@ -108,33 +108,6 @@ define([
                 window.location.href = window.location.href + "?3D";
             }.bind(this));
 
-            on(this.version3, "click", function (evt) {
-                window.location.href = window.location.href + "?3D&dark";
-            }.bind(this));
-
-            // If we start a new user study, create a new row on AGO and create a new uniue user ID!
-            on(this.userStudyButton, "click", function (evt) {
-                this.userStudyButton.innerHTML = "Loading...";
-                var userResults = new UserResults();
-                userResults.init(this.settings)
-                userResults.addFeature(function (objectId) {
-                    document.cookie = "userId=" + objectId.toString();
-                    if (document.cookie == "") {
-                        window.location.href = window.location.href + "?userStudy&userId=" + objectId;
-                    }
-                    else {
-                        window.location.href = window.location.href + "?userStudy";
-                    }
-                });
-            }.bind(this));
-
-            on(this.analysis, "click", function (evt) {
-                window.location.href = window.location.href + "?analysis";
-            }.bind(this));
-
-            on(this.comments, "click", function (evt) {
-                window.location.href = window.location.href + "?comments";
-            }.bind(this));
 
         },
 
@@ -146,21 +119,7 @@ define([
                 var app = new App();
                 app.init(this.settings, urlParams, null);
             }
-            // case user study: start the homescreen of the user study
-            else if (urlParams.length >= 1 && (urlParams[0] === "userStudy")) {
-                var home = new Home();
-                home.init(this.settings);
-            }
-            // case analysis
-            else if (urlParams.length >= 1 && (urlParams[0] === "analysis")) {
-                var analysis = new Analysis();
-                analysis.init(this.settings, urlParams, null);
-            }
-            // case comments 
-            else if (urlParams.length >= 1 && (urlParams[0] === "comments")) {
-                var comments = new Comments();
-                comments.init(this.settings, urlParams, null);
-            }
+
         },
     });
 });
