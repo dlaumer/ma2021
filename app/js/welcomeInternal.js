@@ -85,7 +85,12 @@ define([
             // There are six options, the 2D version, the 3D version, the 3d version in dark mode, the user study, the analysis and the comments
             this.version1 = domCtr.create("div", { id: "version1", className: "link", innerHTML: "2D" }, containerLinks);
             this.version2 = domCtr.create("div", { id: "version2", className: "link", innerHTML: "3D" }, containerLinks);
-        
+            this.version3 = domCtr.create("div", { id: "version3", className: "link", innerHTML: "3D (dark mode)" }, containerLinks);
+            this.userStudyButton = domCtr.create("div", { id: "userStudyButton", className: "link", innerHTML: "Start User Study" }, container);
+            var containerLinks2 = domCtr.create("div", { id: "containerLinks2" }, container);
+
+            this.analysis = domCtr.create("div", { id: "analysis", className: "link", innerHTML: "Analysis" }, containerLinks2);
+            this.comments = domCtr.create("div", { id: "comments", className: "link", innerHTML: "Comments" }, containerLinks2);
             domCtr.create("div", { id: "description3", className: "description", innerHTML: "(Note: Not designed for mobile devices)" }, container);
 
             domCtr.create("hr", { id: "welcomeLine" }, container);
